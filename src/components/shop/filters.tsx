@@ -1,0 +1,86 @@
+import Link from "next/link";
+import type { CatalogCategory, CatalogCollection } from "@/lib/catalog/types";
+import type { ShopFilters } from "@/lib/validations";
+import { Button } from "@/components/ui/button";
+import { Input, Label } from "@/components/ui/input";
+
+export function ShopFilters({
+  filters,
+  collections,
+  categories,
+}: {
+  filters: ShopFilters;
+  collections: CatalogCollection[];
+  categories: CatalogCategory[];
+}) {
+  return (
+    <form className="space-y-6" method="get">
+      <div>
+        <Label htmlFor="q">Search</Label>
+        <Input id="q" name="q" defaultValue={filters.q ?? ""} placeholder="Name, notes, brand" />
+      </div>
+      <div>
+        <Label htmlFor="collection">Collection</Label>
+        <select
+          id="collection"
+          name="collection"
+          defaultValue={filters.collection ?? ""}
+          className="min-h-11 w-full border border-espresso/15 bg-white px-3 text-sm"
+        >
+          <option value="">All collections</option>
+          {collections.map((collection) => (
+            <option key={collection.id} value={collection.slug}>
+              {collection.name}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div>
+        <Label htmlFor="category">Category</Label>
+        <select
+          id="category"
+          name="category"
+          defaultValue={filters.category ?? ""}
+          className="min-h-11 w-full border border-espresso/15 bg-white px-3 text-sm"
+        >
+          <option value="">All categories</option>
+          {categories.map((category) => (
+            <option key={category.id} value={category.id}>
+              {category.name}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="grid grid-cols-2 gap-2">
+        <div>
+          <Label htmlFor="min">Min (pesewas)</Label>
+          <Input id="min" name="min" type="number" min={0} defaultValue={filters.min ?? ""} />
+        </div>
+        <div>
+          <Label htmlFor="max">Max (pesewas)</Label>
+          <Input id="max" name="max" type="number" min={0} defaultValue={filters.max ?? ""} />
+        </div>
+      </div>
+      <div>
+        <Label htmlFor="sort">Sort</Label>
+        <select
+          id="sort"
+          name="sort"
+          defaultValue={filters.sort}
+          className="min-h-11 w-full border border-espresso/15 bg-white px-3 text-sm"
+        >
+          <option value="featured">Featured</option>
+          <option value="newest">Newest</option>
+          <option value="price-asc">Price: low to high</option>
+          <option value="price-desc">Price: high to low</option>
+        </select>
+      </div>
+      <Button type="submit" className="w-full">
+        Apply
+      </Button>
+      <Link href="/shop" className="block text-center text-xs uppercase tracking-[0.16em] text-taupe">
+        Reset
+      </Link>
+    </form>
+  );
+}

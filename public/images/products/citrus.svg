@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" role="img" aria-label="Demonstration perfume bottle">
+  <rect width="900" height="1200" fill="#F3EDE3"/>
+  <ellipse cx="450" cy="1040" rx="180" ry="24" fill="#241914" opacity=".12"/>
+  <rect x="410" y="160" width="80" height="70" fill="#241914"/>
+  <rect x="390" y="230" width="120" height="28" fill="#C6A66B"/>
+  <path d="M330 270h240l30 620c0 70-70 110-150 110s-150-40-150-110z" fill="#E8D08A"/>
+  <path d="M360 300h180l22 560c0 50-50 80-112 80s-112-30-112-80z" fill="#F7E7B0" opacity=".55"/>
+</svg>

@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+:root {
+  --ivory: #f7f3ed;
+  --champagne: #c6a66b;
+  --espresso: #241914;
+  --rich-black: #171513;
+  --taupe: #a79a8b;
+  --white: #ffffff;
+  --background: var(--ivory);
+  --foreground: var(--espresso);
+  --muted: var(--taupe);
+  --ring: var(--champagne);
+}
+
+@theme inline {
+  --color-ivory: var(--ivory);
+  --color-champagne: var(--champagne);
+  --color-espresso: var(--espresso);
+  --color-rich: var(--rich-black);
+  --color-taupe: var(--taupe);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-outfit);
+  --font-serif: var(--font-cormorant);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+}
+
+h1,
+h2,
+h3,
+.font-serif {
+  font-family: var(--font-cormorant), ui-serif, Georgia, serif;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--champagne) 40%, transparent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--champagne);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
