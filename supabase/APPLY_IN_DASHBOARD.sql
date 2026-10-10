@@ -536,7 +536,7 @@ on conflict (key) do update
 set value = excluded.value, updated_at = now();
 
 update public.faq_items
-set answer = 'Add a fragrance to your cart, proceed to checkout, and complete delivery details. Pay by MTN MoMo (0593634512, merchant ID 949805) or Fidelity Bank 2400454612819, then send the receipt on WhatsApp.',
+set answer = 'Add a fragrance to your cart, proceed to checkout, and complete delivery details. Confirm payment on WhatsApp 0593634512.',
     requires_owner_review = false
 where id = 'faq-order';
 
@@ -546,6 +546,6 @@ set answer = 'We deliver across Ghana and offer pickup at Ells Luxe Annex. Messa
 where id = 'faq-delivery';
 
 update public.faq_items
-set answer = 'Pay with MTN Mobile Money on 0593634512 (merchant ID 949805) or transfer to Fidelity Bank account 2400454612819. Use your name as the reference and send the receipt on WhatsApp.',
+set answer = 'Message the house on WhatsApp 0593634512 after you place an order to confirm how to pay.',
     requires_owner_review = false
 where id = 'faq-payment';

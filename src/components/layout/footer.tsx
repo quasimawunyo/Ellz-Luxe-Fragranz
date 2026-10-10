@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { StoreSettings } from "@/lib/catalog/types";
 import { BrandLogo } from "@/components/brand/logo";
 import { NewsletterForm } from "@/components/layout/newsletter-form";
-import { PaymentInstructions, StoreContact, StoreSocials } from "@/components/layout/store-details";
+import { StoreContact, StoreSocials } from "@/components/layout/store-details";
 
 export function Footer({ settings }: { settings: StoreSettings }) {
   return (
@@ -17,10 +17,6 @@ export function Footer({ settings }: { settings: StoreSettings }) {
           <StoreContact settings={settings} className="mt-3 space-y-2 text-sm text-ivory/80" />
           <p className="mt-6 text-xs uppercase tracking-[0.2em] text-champagne">Social</p>
           <StoreSocials settings={settings} />
-          <p className="mt-6 text-xs uppercase tracking-[0.2em] text-champagne">Pay</p>
-          <div className="mt-3 text-ivory/80">
-            <PaymentInstructions settings={settings} />
-          </div>
         </div>
         <div>
           <p className="text-xs uppercase tracking-[0.2em] text-champagne">Shop</p>

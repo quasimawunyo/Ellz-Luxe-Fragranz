@@ -9,7 +9,6 @@ import { resolveCart } from "@/lib/cart/store";
 import { getStoreSettings } from "@/lib/catalog/queries";
 import { getAuthContext } from "@/lib/auth/session";
 import { GHANA_REGIONS } from "@/lib/ghana";
-import { PaymentInstructions } from "@/components/layout/store-details";
 import { isPaystackConfigured } from "@/lib/payments/paystack";
 import Link from "next/link";
 
@@ -37,7 +36,7 @@ export default async function CheckoutPage() {
       <Breadcrumbs items={[{ href: "/", label: "Home" }, { href: "/cart", label: "Cart" }, { label: "Checkout" }]} />
       <h1 className="mt-6 font-serif text-5xl">Checkout</h1>
       <p className="mt-3 max-w-xl text-sm text-taupe">
-        Place the order, then pay by MoMo or Fidelity transfer using the details on this page. Send the receipt on WhatsApp
+        Place the order, then confirm payment on WhatsApp
         {settings.contactPhone ? ` ${settings.contactPhone}` : ""}.
         {isPaystackConfigured()
           ? " Card payments through Paystack are also available when offered at checkout."
@@ -112,10 +111,6 @@ export default async function CheckoutPage() {
             <span>Subtotal</span>
             <Price amountMinor={cart.subtotalMinor} currencyCode={cart.currencyCode} />
           </p>
-          <h3 className="mt-8 font-serif text-xl">How to pay</h3>
-          <div className="mt-3">
-            <PaymentInstructions settings={settings} />
-          </div>
         </aside>
       </div>
     </div>

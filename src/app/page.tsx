@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Headphones, ShieldCheck, Sparkles, Truck } from "lucide-react";
+import { Headphones, Sparkles, Truck } from "lucide-react";
 import { BrandGrid } from "@/components/brand/brand-grid";
 import { NewsletterForm } from "@/components/layout/newsletter-form";
 import { ProductGrid } from "@/components/product/product-card";
@@ -90,11 +90,10 @@ export default async function HomePage() {
       <BrandGrid />
 
       <section className="bg-white py-12">
-        <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:grid-cols-3">
           {[
             { icon: Truck, title: "Ghana delivery", text: "Nationwide dispatch, plus pickup at Ells Luxe Annex." },
             { icon: Headphones, title: "WhatsApp 0593634512", text: "Call or message the house on the same number." },
-            { icon: ShieldCheck, title: "MoMo and Fidelity", text: "Pay to 0593634512 or Fidelity 2400454612819." },
             { icon: Sparkles, title: "House brands", text: "Lattafa, Armaf, Maison Alhambra, and more." },
           ].map((item) => (
             <div key={item.title} className="text-center">

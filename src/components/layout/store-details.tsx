@@ -1,6 +1,5 @@
 import type { ComponentType, ReactNode, SVGProps } from "react";
 import { MapPin, Phone } from "lucide-react";
-import { FidelityBankLogo, MtnMomoLogo } from "@/components/brand/payment-logos";
 import { InstagramIcon, SnapchatIcon, TikTokIcon, WhatsAppIcon } from "@/components/brand/social-icons";
 import type { StoreSettings } from "@/lib/catalog/types";
 import { whatsappHref } from "@/lib/whatsapp";
@@ -92,33 +91,5 @@ export function StoreSocials({ settings }: { settings: StoreSettings }) {
         </li>
       ))}
     </ul>
-  );
-}
-
-export function PaymentInstructions({ settings }: { settings: StoreSettings }) {
-  return (
-    <div className="space-y-5 text-sm">
-      {settings.momoNumber || settings.momoMerchantId ? (
-        <div className="space-y-1.5">
-          <MtnMomoLogo />
-          {settings.momoNumber ? <p className="font-medium">{settings.momoNumber}</p> : null}
-          {settings.momoMerchantId ? (
-            <p className="text-xs opacity-80">
-              <span className="sr-only">Merchant ID </span>
-              {settings.momoMerchantId}
-            </p>
-          ) : null}
-        </div>
-      ) : null}
-      {settings.bankAccount ? (
-        <div className="space-y-1.5">
-          <FidelityBankLogo />
-          <p className="font-medium">{settings.bankAccount}</p>
-        </div>
-      ) : null}
-      <p className="text-taupe">
-        Use your order name as the transfer reference, then send the receipt on WhatsApp.
-      </p>
-    </div>
   );
 }

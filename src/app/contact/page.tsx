@@ -1,6 +1,6 @@
 import { submitContact } from "@/app/actions/commerce";
 import { ActionForm } from "@/components/forms/form-status";
-import { PaymentInstructions, StoreContact, StoreSocials } from "@/components/layout/store-details";
+import { StoreContact, StoreSocials } from "@/components/layout/store-details";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/input";
 import { getStoreSettings } from "@/lib/catalog/queries";
@@ -19,10 +19,6 @@ export default async function ContactPage() {
         <StoreContact settings={settings} className="mt-8 space-y-2 text-sm" />
         <h2 className="mt-10 font-serif text-3xl">Social</h2>
         <StoreSocials settings={settings} />
-        <h2 className="mt-10 font-serif text-3xl">Payment</h2>
-        <div className="mt-3">
-          <PaymentInstructions settings={settings} />
-        </div>
       </div>
       <ActionForm action={submitContact} className="space-y-4">
         <div>

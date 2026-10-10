@@ -380,7 +380,7 @@ export const DEMO_FAQS: FaqItem[] = [
     id: "faq-order",
     question: "How do I place an order?",
     answer:
-      "Add a fragrance to your cart, proceed to checkout, and complete delivery details. Pay by MTN MoMo (0593634512, merchant ID 949805) or Fidelity Bank 2400454612819, then send the receipt on WhatsApp.",
+      "Add a fragrance to your cart, proceed to checkout, and complete delivery details. Confirm payment on WhatsApp 0593634512.",
     requiresOwnerReview: false,
   },
   {
@@ -394,7 +394,7 @@ export const DEMO_FAQS: FaqItem[] = [
     id: "faq-payment",
     question: "Which payment methods are accepted?",
     answer:
-      "Pay with MTN Mobile Money on 0593634512 (merchant ID 949805) or transfer to Fidelity Bank account 2400454612819. Use your name as the reference and send the receipt on WhatsApp.",
+      "Message the house on WhatsApp 0593634512 after you place an order to confirm how to pay.",
     requiresOwnerReview: false,
   },
   {
