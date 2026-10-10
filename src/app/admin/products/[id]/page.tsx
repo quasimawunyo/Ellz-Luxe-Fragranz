@@ -32,7 +32,7 @@ export default async function AdminProductPage({ params }: { params: Promise<{ i
         </div>
         <div>
           <Label htmlFor="brand">Brand</Label>
-          <Input id="brand" name="brand" defaultValue={product?.brand ?? "Ellz Luxe Fragranz"} required />
+          <Input id="brand" name="brand" defaultValue={product?.brand ?? "EllzLuxe Fragranz"} required />
         </div>
         <div>
           <Label htmlFor="concentration">Concentration</Label>

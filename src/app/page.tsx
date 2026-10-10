@@ -29,7 +29,7 @@ export default async function HomePage() {
             loop
             playsInline
             poster="/images/hero.jpg"
-            aria-label="Ellz Luxe Fragranz campaign film"
+            aria-label="EllzLuxe Fragranz campaign film"
           >
             <source src="/videos/hero.mp4" type="video/mp4" />
           </video>
@@ -39,7 +39,7 @@ export default async function HomePage() {
 
       <section className="px-4 py-12 text-center">
         <p className="text-xs uppercase tracking-[0.28em] text-champagne">Ghana boutique</p>
-        <h1 className="mt-3 font-serif text-4xl leading-tight md:text-6xl">Welcome to Ellz Luxe Fragranz</h1>
+        <h1 className="mt-3 font-serif text-4xl leading-tight md:text-6xl">Welcome to EllzLuxe Fragranz</h1>
         <p className="mx-auto mt-4 max-w-xl font-serif text-xl italic text-taupe">
           Fragrance as a private signature.
         </p>

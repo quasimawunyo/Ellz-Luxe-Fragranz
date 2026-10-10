@@ -1,4 +1,4 @@
--- Ellz Luxe Fragranz initial schema, RLS, checkout function, and demonstration seed.
+-- EllzLuxe Fragranz initial schema, RLS, checkout function, and demonstration seed.
 
 create extension if not exists pgcrypto;
 
@@ -361,5 +361,5 @@ insert into public.store_settings (key, value) values
   ('returns_note', '"Returns and refunds are not yet defined. Do not treat this page as an operational policy until the owner approves the final text."'),
   ('privacy_note', '"This privacy page is a structural placeholder. Replace it with counsel-reviewed language before collecting customer data in production."'),
   ('terms_note', '"These terms are a structural placeholder and are not a binding commercial contract."'),
-  ('about_story', '"Ellz Luxe Fragranz is a Ghana-based fragrance house in formation. This story will be replaced with owner-approved copy."'),
+  ('about_story', '"EllzLuxe Fragranz is a Ghana-based fragrance house in formation. This story will be replaced with owner-approved copy."'),
   ('delivery_methods', '[{"id":"accra","label":"Greater Accra delivery","amountMinor":3000,"description":"Placeholder Accra rate."},{"id":"national","label":"Rest of Ghana","amountMinor":5000,"description":"Placeholder nationwide rate."},{"id":"pickup","label":"Scheduled pickup","amountMinor":0,"description":"Placeholder pickup option."}]');

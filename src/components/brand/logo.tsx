@@ -12,13 +12,14 @@ export function BrandLogo({
   priority?: boolean;
 }) {
   return (
-    <Link href="/" className={cn("inline-flex shrink-0", className)} aria-label="Ellz Luxe Fragranz home">
+    <Link href="/" className={cn("inline-flex shrink-0", className)} aria-label="EllzLuxe Fragranz home">
       <Image
-        src="/images/logo.png"
-        alt="Ellz Luxe Fragranz"
+        src="/images/logo-mark.png"
+        alt="EllzLuxe Fragranz"
         width={size}
         height={size}
         priority={priority}
+        unoptimized
         className="h-auto w-full object-contain"
       />
     </Link>

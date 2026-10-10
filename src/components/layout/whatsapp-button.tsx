@@ -1,7 +1,7 @@
 import { whatsappHref } from "@/lib/whatsapp";
 
 export function WhatsAppButton({ phone }: { phone: string }) {
-  const href = whatsappHref(phone, "Hello, I have a question about Ellz Luxe Fragranz.");
+  const href = whatsappHref(phone, "Hello, I have a question about EllzLuxe Fragranz.");
   if (!href) return null;
 
   return (

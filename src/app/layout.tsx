@@ -18,13 +18,13 @@ const cormorant = Cormorant_Garamond({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
   title: {
-    default: "Ellz Luxe Fragranz",
-    template: "%s · Ellz Luxe Fragranz",
+    default: "EllzLuxe Fragranz",
+    template: "%s · EllzLuxe Fragranz",
   },
   description:
     "A Ghana-based boutique for captivating fragrances — accessible luxury with the poise of a niche perfume house.",
   openGraph: {
-    title: "Ellz Luxe Fragranz",
+    title: "EllzLuxe Fragranz",
     description:
       "Discover fragrances that express personality, confidence, elegance, and individuality.",
     type: "website",

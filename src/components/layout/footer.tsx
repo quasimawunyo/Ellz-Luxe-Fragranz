@@ -8,7 +8,7 @@ export function Footer({ settings }: { settings: StoreSettings }) {
     <footer className="mt-auto border-t border-espresso/10 bg-rich text-ivory">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-16 md:grid-cols-4">
         <div>
-          <BrandLogo className="w-28 ring-1 ring-champagne/30" size={224} />
+          <BrandLogo className="w-32" size={256} />
           <p className="mt-4 text-sm leading-7 text-ivory/70">
             Accessible luxury fragrance for personality, confidence, and quiet elegance.
           </p>

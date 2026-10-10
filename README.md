@@ -1,4 +1,4 @@
-# Ellz Luxe Fragranz
+# EllzLuxe Fragranz
 
 Luxury fragrance e-commerce for a Ghana-first boutique. Next.js App Router, TypeScript, Tailwind, Supabase, and Paystack.
 
