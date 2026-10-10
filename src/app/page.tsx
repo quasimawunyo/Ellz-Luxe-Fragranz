@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Headphones, Sparkles, Truck } from "lucide-react";
 import { BrandGrid } from "@/components/brand/brand-grid";
 import { NewsletterForm } from "@/components/layout/newsletter-form";
 import { ProductGrid } from "@/components/product/product-card";
@@ -88,22 +87,6 @@ export default async function HomePage() {
       </section>
 
       <BrandGrid />
-
-      <section className="bg-white py-12">
-        <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:grid-cols-3">
-          {[
-            { icon: Truck, title: "Ghana delivery", text: "Nationwide dispatch, plus pickup at Ells Luxe Annex." },
-            { icon: Headphones, title: "WhatsApp 0593634512", text: "Call or message the house on the same number." },
-            { icon: Sparkles, title: "House brands", text: "Lattafa, Armaf, Maison Alhambra, and more." },
-          ].map((item) => (
-            <div key={item.title} className="text-center">
-              <item.icon className="mx-auto size-8 text-champagne" />
-              <h3 className="mt-3 font-serif text-2xl">{item.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-taupe">{item.text}</p>
-            </div>
-          ))}
-        </div>
-      </section>
 
       <section className="mx-auto max-w-7xl px-4 py-16">
         <h2 className="font-serif text-4xl">Best-selling</h2>
