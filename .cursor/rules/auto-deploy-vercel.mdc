@@ -1,0 +1,16 @@
+---
+description: After finishing work, push to GitHub so Vercel production deploys
+alwaysApply: true
+---
+
+# Auto-deploy to Vercel
+
+Vercel production for `ellz-luxe-fragranz` deploys from `main` on GitHub (`quasimawunyo/Ellz-Luxe-Fragranz`).
+
+When a user task is done and it changed the repo:
+
+1. Commit relevant files (never `.env.local`, credentials, or secrets).
+2. `git push origin HEAD` (this project uses `main`).
+3. Treat that push as the production deploy. Do not wait to be asked.
+
+Skip commit/push only if there is nothing to ship, or the user said not to deploy this change.

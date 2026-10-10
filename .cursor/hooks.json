@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "hooks": {
+    "stop": [
+      {
+        "type": "prompt",
+        "timeout": 30,
+        "loop_limit": 2,
+        "prompt": "The user requires every finished change in this repo to ship to Vercel via git push to origin main. If the working tree or unpushed commits include project work (code, assets, rules) and not secrets, continue: commit if needed (exclude .env.local and credentials) and git push origin HEAD. If already clean and synced with origin, do not continue."
+      }
+    ]
+  }
+}
