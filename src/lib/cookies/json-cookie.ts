@@ -13,11 +13,15 @@ export async function readJsonCookie<T>(name: string, fallback: T): Promise<T> {
 
 export async function writeJsonCookie<T>(name: string, value: T) {
   const store = await cookies();
-  store.set(name, JSON.stringify(value), {
-    httpOnly: true,
-    sameSite: "lax",
-    path: "/",
-    secure: process.env.NODE_ENV === "production",
-    maxAge: 60 * 60 * 24 * 30,
-  });
+  try {
+    store.set(name, JSON.stringify(value), {
+      httpOnly: true,
+      sameSite: "lax",
+      path: "/",
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 60 * 60 * 24 * 30,
+    });
+  } catch {
+    // Render paths cannot mutate cookies; mutations happen in Server Actions.
+  }
 }

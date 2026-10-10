@@ -18,27 +18,39 @@ async function writeCookieCart(state: CartState) {
   await writeJsonCookie(CART_ITEMS_COOKIE, state);
 }
 
-async function getOrCreateCartId() {
+async function readCartId() {
   const store = await cookies();
-  const existing = store.get(CART_ID_COOKIE)?.value;
-  if (existing) return existing;
-  const id = crypto.randomUUID();
-  store.set(CART_ID_COOKIE, id, {
+  return store.get(CART_ID_COOKIE)?.value;
+}
+
+function cartIdCookieOptions() {
+  return {
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: "lax" as const,
     path: "/",
     secure: process.env.NODE_ENV === "production",
     maxAge: 60 * 60 * 24 * 30,
-  });
+  };
+}
+
+async function getOrCreateCartId() {
+  const existing = await readCartId();
+  if (existing) return existing;
+  const id = crypto.randomUUID();
+  const store = await cookies();
+  try {
+    store.set(CART_ID_COOKIE, id, cartIdCookieOptions());
+  } catch {
+    // Cookie writes are only allowed in Server Actions / Route Handlers.
+  }
   return id;
 }
 
 export async function getCartItems(): Promise<CartItem[]> {
   if (isSupabaseAdminConfigured()) {
     const admin = createServiceClient();
-    if (admin) {
-      const cartId = await getOrCreateCartId();
-      await admin.from("carts").upsert({ id: cartId });
+    const cartId = await readCartId();
+    if (admin && cartId) {
       const { data } = await admin
         .from("cart_items")
         .select("variant_id, quantity")
