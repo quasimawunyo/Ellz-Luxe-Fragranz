@@ -34,7 +34,7 @@ export function Header({
   const router = useRouter();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-espresso/10 bg-white/95 backdrop-blur-sm">
+    <header className="sticky top-0 z-40 border-b border-espresso/10 bg-white">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3">
         <button
           type="button"
