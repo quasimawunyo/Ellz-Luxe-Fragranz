@@ -200,6 +200,7 @@ export async function queryShop(raw: Record<string, string | string[] | undefine
     q: Array.isArray(raw.q) ? raw.q[0] : raw.q,
     collection: Array.isArray(raw.collection) ? raw.collection[0] : raw.collection,
     category: Array.isArray(raw.category) ? raw.category[0] : raw.category,
+    brand: Array.isArray(raw.brand) ? raw.brand[0] : raw.brand,
     min: Array.isArray(raw.min) ? raw.min[0] : raw.min,
     max: Array.isArray(raw.max) ? raw.max[0] : raw.max,
     sort: Array.isArray(raw.sort) ? raw.sort[0] : raw.sort,

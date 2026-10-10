@@ -9,6 +9,12 @@ describe("catalog filters", () => {
     expect(result.every((product) => JSON.stringify(product).toLowerCase().includes("oud"))).toBe(true);
   });
 
+  it("filters by house brand slug", () => {
+    const result = filterProducts(DEMO_PRODUCTS, { brand: "lattafa", sort: "featured", page: 1 });
+    expect(result.length).toBeGreaterThan(0);
+    expect(result.every((product) => product.brand === "Lattafa")).toBe(true);
+  });
+
   it("sorts by price ascending", () => {
     const result = filterProducts(DEMO_PRODUCTS, { sort: "price-asc", page: 1 });
     const prices = result.map((product) => Math.min(...product.variants.map((v) => v.priceMinor)));

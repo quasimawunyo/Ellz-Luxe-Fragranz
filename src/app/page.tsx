@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Headphones, ShieldCheck, Sparkles, Truck } from "lucide-react";
+import { BrandGrid } from "@/components/brand/brand-grid";
 import { NewsletterForm } from "@/components/layout/newsletter-form";
 import { ProductGrid } from "@/components/product/product-card";
 import { buttonVariants } from "@/components/ui/button";
@@ -85,6 +86,8 @@ export default async function HomePage() {
           ))}
         </div>
       </section>
+
+      <BrandGrid />
 
       <section className="bg-white py-12">
         <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:grid-cols-2 lg:grid-cols-4">

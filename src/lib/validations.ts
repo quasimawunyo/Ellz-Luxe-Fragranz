@@ -80,6 +80,7 @@ export const shopFilterSchema = z.object({
   q: z.string().trim().max(120).optional(),
   collection: z.string().trim().max(120).optional(),
   category: z.string().trim().max(120).optional(),
+  brand: z.string().trim().max(120).optional(),
   min: z.coerce.number().int().min(0).optional(),
   max: z.coerce.number().int().min(0).optional(),
   sort: z

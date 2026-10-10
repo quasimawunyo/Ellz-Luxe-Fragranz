@@ -23,6 +23,7 @@ export function Footer({ settings }: { settings: StoreSettings }) {
           <p className="text-xs uppercase tracking-[0.2em] text-champagne">Shop</p>
           <ul className="mt-4 space-y-2 text-sm text-ivory/80">
             <li><Link href="/shop">All perfumes</Link></li>
+            <li><Link href="/brands">Brands</Link></li>
             <li><Link href="/collections/womens-fragrances">Women</Link></li>
             <li><Link href="/collections/mens-fragrances">Men</Link></li>
             <li><Link href="/collections/unisex-fragrances">Unisex</Link></li>

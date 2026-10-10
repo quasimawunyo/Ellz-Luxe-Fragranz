@@ -1,3 +1,4 @@
+import { brandMatches } from "@/lib/catalog/brands";
 import type { ShopFilters } from "@/lib/validations";
 import type { CatalogProduct as Product } from "@/lib/catalog/types";
 
@@ -43,6 +44,9 @@ export function filterProducts(
   }
   if (filters.category) {
     result = result.filter((product) => product.categoryId === filters.category);
+  }
+  if (filters.brand) {
+    result = result.filter((product) => brandMatches(product.brand, filters.brand!));
   }
   if (filters.collection && collectionProductIds) {
     result = result.filter((product) => collectionProductIds.has(product.id));

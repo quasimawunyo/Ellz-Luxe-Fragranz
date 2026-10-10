@@ -9,6 +9,7 @@ import { BrandLogo } from "@/components/brand/logo";
 const NAV = [
   { href: "/", label: "Home" },
   { href: "/shop", label: "Shop" },
+  { href: "/brands", label: "Brands" },
   { href: "/about", label: "Our Story" },
 ];
 
@@ -18,6 +19,7 @@ const SHOP = [
   { href: "/collections/unisex-fragrances", label: "Unisex" },
   { href: "/collections/gift-and-discovery-sets", label: "Gifts" },
   { href: "/shop", label: "All perfumes" },
+  { href: "/brands", label: "Our brands" },
 ];
 
 export function Header({

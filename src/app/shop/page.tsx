@@ -46,6 +46,7 @@ export default async function ShopPage({
                 if (result.filters.q) params.set("q", result.filters.q);
                 if (result.filters.collection) params.set("collection", result.filters.collection);
                 if (result.filters.category) params.set("category", result.filters.category);
+                if (result.filters.brand) params.set("brand", result.filters.brand);
                 if (result.filters.sort) params.set("sort", result.filters.sort);
                 params.set("page", String(page));
                 return (

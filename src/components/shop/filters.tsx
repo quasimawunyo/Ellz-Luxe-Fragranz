@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { HOUSE_BRANDS } from "@/lib/catalog/brands";
 import type { CatalogCategory, CatalogCollection } from "@/lib/catalog/types";
 import type { ShopFilters } from "@/lib/validations";
 import { Button } from "@/components/ui/button";
@@ -31,6 +32,22 @@ export function ShopFilters({
           {collections.map((collection) => (
             <option key={collection.id} value={collection.slug}>
               {collection.name}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div>
+        <Label htmlFor="brand">Brand</Label>
+        <select
+          id="brand"
+          name="brand"
+          defaultValue={filters.brand ?? ""}
+          className="min-h-11 w-full border border-espresso/15 bg-white px-3 text-sm"
+        >
+          <option value="">All brands</option>
+          {HOUSE_BRANDS.map((brand) => (
+            <option key={brand.slug} value={brand.slug}>
+              {brand.name}
             </option>
           ))}
         </select>
