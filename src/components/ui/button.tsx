@@ -10,7 +10,7 @@ const buttonVariants = cva(
         primary:
           "bg-espresso text-ivory hover:bg-rich px-6 py-3 text-sm uppercase tracking-wide",
         gold:
-          "bg-champagne text-espresso hover:bg-[#b89455] px-6 py-3 text-sm uppercase",
+          "bg-champagne text-espresso hover:bg-[#c4a45a] px-6 py-3 text-sm uppercase",
         outline:
           "border border-espresso/20 text-espresso hover:border-espresso px-6 py-3 text-sm uppercase bg-transparent",
         ghost: "text-espresso hover:text-champagne px-3 py-2 text-sm",

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { StoreSettings } from "@/lib/catalog/types";
+import { BrandLogo } from "@/components/brand/logo";
 import { NewsletterForm } from "@/components/layout/newsletter-form";
 
 export function Footer({ settings }: { settings: StoreSettings }) {
@@ -7,7 +8,7 @@ export function Footer({ settings }: { settings: StoreSettings }) {
     <footer className="mt-auto border-t border-espresso/10 bg-rich text-ivory">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-16 md:grid-cols-4">
         <div>
-          <p className="font-serif text-3xl">Ellz Luxe Fragranz</p>
+          <BrandLogo className="w-28 ring-1 ring-champagne/30" size={224} />
           <p className="mt-4 text-sm leading-7 text-ivory/70">
             Accessible luxury fragrance for personality, confidence, and quiet elegance.
           </p>

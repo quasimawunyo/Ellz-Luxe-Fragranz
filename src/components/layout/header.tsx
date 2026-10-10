@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { ChevronDown, Menu, Search, ShoppingBag, User, X } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { BrandLogo } from "@/components/brand/logo";
 
 const NAV = [
   { href: "/", label: "Home" },
@@ -41,9 +42,7 @@ export function Header({
         >
           {open ? <X /> : <Menu />}
         </button>
-        <Link href="/" className="font-serif text-xl tracking-[0.06em] sm:text-2xl md:text-3xl">
-          Ellz Luxe Fragranz
-        </Link>
+        <BrandLogo className="w-16 sm:w-[4.5rem] md:w-20" size={160} priority />
         <nav className="hidden items-center gap-7 text-sm lg:flex">
           {NAV.map((item) =>
             item.label === "Shop" ? (

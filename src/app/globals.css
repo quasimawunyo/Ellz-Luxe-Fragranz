@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
 :root {
-  --ivory: #f7f3ed;
-  --champagne: #c6a66b;
-  --espresso: #241914;
-  --rich-black: #171513;
-  --taupe: #a79a8b;
+  --ivory: #ffffff;
+  --champagne: #d7b86f;
+  --espresso: #0e2714;
+  --rich-black: #0a1f10;
+  --taupe: #6b7a6e;
   --white: #ffffff;
   --background: var(--ivory);
   --foreground: var(--espresso);

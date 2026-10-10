@@ -33,7 +33,7 @@ export default async function HomePage() {
           >
             <source src="/videos/hero.mp4" type="video/mp4" />
           </video>
-          <div className="absolute inset-0 bg-gradient-to-r from-rich/55 via-rich/15 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-rich/25 via-transparent to-transparent" />
         </div>
       </section>
 
