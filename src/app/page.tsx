@@ -92,10 +92,10 @@ export default async function HomePage() {
       <section className="bg-white py-12">
         <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:grid-cols-2 lg:grid-cols-4">
           {[
-            { icon: Truck, title: "Nationwide delivery", text: "Ghana-wide dispatch once rates are confirmed." },
-            { icon: Headphones, title: "House support", text: "Write or call — details live in Contact." },
-            { icon: ShieldCheck, title: "Secure checkout", text: "Paystack when live; orders verified server-side." },
-            { icon: Sparkles, title: "Considered catalog", text: "No invented stock, reviews, or founder claims." },
+            { icon: Truck, title: "Ghana delivery", text: "Nationwide dispatch, plus pickup at Ellz Luxe Annex." },
+            { icon: Headphones, title: "WhatsApp 0593634512", text: "Call or message the house on the same number." },
+            { icon: ShieldCheck, title: "MoMo and Fidelity", text: "Pay to 0593634512 or Fidelity 2400454612819." },
+            { icon: Sparkles, title: "House brands", text: "Lattafa, Armaf, Maison Alhambra, and more." },
           ].map((item) => (
             <div key={item.title} className="text-center">
               <item.icon className="mx-auto size-8 text-champagne" />

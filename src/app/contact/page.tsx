@@ -1,5 +1,6 @@
 import { submitContact } from "@/app/actions/commerce";
 import { ActionForm } from "@/components/forms/form-status";
+import { PaymentInstructions, StoreContact, StoreSocials } from "@/components/layout/store-details";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/input";
 import { getStoreSettings } from "@/lib/catalog/queries";
@@ -13,10 +14,15 @@ export default async function ContactPage() {
       <div>
         <h1 className="font-serif text-5xl">Contact</h1>
         <p className="mt-4 text-taupe">
-          Write to the house. Messages are stored when the database is connected. Contact details below are configurable placeholders until the owner publishes live information.
+          Visit the annex, call, or send a WhatsApp message. The form stores a note when the database is connected.
         </p>
-        <p className="mt-8 text-sm">{settings.contactEmail}</p>
-        <p className="text-sm">{settings.contactPhone}</p>
+        <StoreContact settings={settings} className="mt-8 space-y-2 text-sm" />
+        <h2 className="mt-10 font-serif text-3xl">Social</h2>
+        <StoreSocials settings={settings} />
+        <h2 className="mt-10 font-serif text-3xl">Payment</h2>
+        <div className="mt-3">
+          <PaymentInstructions settings={settings} />
+        </div>
       </div>
       <ActionForm action={submitContact} className="space-y-4">
         <div>

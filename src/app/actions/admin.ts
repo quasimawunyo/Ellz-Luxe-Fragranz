@@ -27,6 +27,13 @@ export async function saveSettingsAction(_prev: { error?: string; ok?: boolean; 
     ["contact_email", formData.get("contactEmail")],
     ["contact_phone", formData.get("contactPhone")],
     ["instagram_url", formData.get("instagramUrl")],
+    ["location", formData.get("location")],
+    ["tiktok_url", formData.get("tiktokUrl")],
+    ["snapchat_handle", formData.get("snapchatHandle")],
+    ["momo_number", formData.get("momoNumber")],
+    ["momo_merchant_id", formData.get("momoMerchantId")],
+    ["bank_name", formData.get("bankName")],
+    ["bank_account", formData.get("bankAccount")],
     ["about_story", formData.get("aboutStory")],
   ] as const;
   for (const [key, value] of entries) {

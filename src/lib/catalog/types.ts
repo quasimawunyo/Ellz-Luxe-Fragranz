@@ -66,7 +66,14 @@ export type StoreSettings = {
   announcement: string;
   contactEmail: string;
   contactPhone: string;
+  location: string;
   instagramUrl: string;
+  tiktokUrl: string;
+  snapchatHandle: string;
+  momoNumber: string;
+  momoMerchantId: string;
+  bankName: string;
+  bankAccount: string;
   currencyCode: string;
   shippingNote: string;
   returnsNote: string;

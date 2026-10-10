@@ -25,7 +25,7 @@ test("checkout is reachable with a cart and does not fake payment", async ({ pag
   await expect(page.getByRole("link", { name: /cart, 1 item/i })).toBeVisible();
   await page.goto("/checkout");
   await expect(page.getByRole("heading", { name: "Checkout" })).toBeVisible();
-  await expect(page.getByText(/paystack is not configured|initiated on the server/i)).toBeVisible();
+  await expect(page.getByText(/momo or fidelity|merchant id/i)).toBeVisible();
 });
 
 test("unauthorized visitors cannot open admin", async ({ page }) => {

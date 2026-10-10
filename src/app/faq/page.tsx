@@ -8,7 +8,7 @@ export default async function FaqPage() {
     <div className="mx-auto max-w-3xl px-4 py-16">
       <h1 className="font-serif text-5xl">Questions</h1>
       <p className="mt-4 text-taupe">
-        Answers marked for owner review are drafts and should not be treated as policy until approved.
+        Answers marked for owner review are drafts. Payment and contact details on this page match the boutique.
       </p>
       <div className="mt-10 space-y-4">
         {faqs.map((item) => (

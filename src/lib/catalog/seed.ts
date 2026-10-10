@@ -331,13 +331,20 @@ export const DEMO_PRODUCTS: CatalogProduct[] = [
 ];
 
 export const DEMO_SETTINGS: StoreSettings = {
-  announcement: "Demonstration catalog — prices shown in Ghana cedis. Policies are placeholders pending owner review.",
-  contactEmail: "hello@example.com",
-  contactPhone: "+233 00 000 0000",
-  instagramUrl: "https://instagram.com/",
+  announcement: "Ellz Luxe Annex · Call or WhatsApp 0593634512",
+  contactEmail: "",
+  contactPhone: "0593634512",
+  location: "Ellz Luxe Annex",
+  instagramUrl: "https://www.instagram.com/ellzLuxe_fragranz.gh/",
+  tiktokUrl: "https://www.tiktok.com/@ellzluxefragranz.gh",
+  snapchatHandle: "ama_candy90",
+  momoNumber: "0593634512",
+  momoMerchantId: "949805",
+  bankName: "Fidelity Bank",
+  bankAccount: "2400454612819",
   currencyCode: "GHS",
   shippingNote:
-    "Shipping and delivery terms are placeholders. The business owner must publish confirmed Ghana delivery options, timelines, and fees before launch.",
+    "Delivery is available across Ghana. Pickup is at Ellz Luxe Annex. Call or WhatsApp 0593634512 to confirm timing and rates for your area.",
   returnsNote:
     "Returns and refunds are not yet defined. Do not treat this page as an operational policy until the owner approves the final text.",
   privacyNote:
@@ -345,25 +352,25 @@ export const DEMO_SETTINGS: StoreSettings = {
   termsNote:
     "These terms are a structural placeholder and are not a binding commercial contract. The owner must review and publish approved terms before launch.",
   aboutStory:
-    "EllzLuxe Fragranz is a Ghana-based fragrance house in formation: a boutique for scents that feel considered, personal, and quietly luxurious. This story will be replaced with owner-approved copy. No founding date, biography, or sourcing claim is stated here.",
+    "EllzLuxe Fragranz is a Ghana-based fragrance boutique at Ellz Luxe Annex. We carry houses including Lattafa, Armaf, Maison Alhambra, and others listed on the Brands page.",
   deliveryMethods: [
     {
       id: "accra",
       label: "Greater Accra delivery",
       amountMinor: 3000,
-      description: "Placeholder rate for Accra addresses. Confirm with operations before launch.",
+      description: "Delivery within Greater Accra. Confirm timing on WhatsApp 0593634512.",
     },
     {
       id: "national",
       label: "Rest of Ghana",
       amountMinor: 5000,
-      description: "Placeholder nationwide rate. Confirm carrier and timeline before launch.",
+      description: "Nationwide dispatch. Confirm carrier and timeline on WhatsApp 0593634512.",
     },
     {
       id: "pickup",
-      label: "Scheduled pickup",
+      label: "Pickup at Ellz Luxe Annex",
       amountMinor: 0,
-      description: "Placeholder pickup option. Location must be confirmed by the business.",
+      description: "Collect your order at Ellz Luxe Annex. Message 0593634512 to schedule.",
     },
   ],
 };
@@ -373,21 +380,21 @@ export const DEMO_FAQS: FaqItem[] = [
     id: "faq-order",
     question: "How do I place an order?",
     answer:
-      "Add a fragrance to your cart, proceed to checkout, and complete delivery details. Payment is processed by Paystack when those credentials are configured. Until then, orders remain unpaid.",
+      "Add a fragrance to your cart, proceed to checkout, and complete delivery details. Pay by MTN MoMo (0593634512, merchant ID 949805) or Fidelity Bank 2400454612819, then send the receipt on WhatsApp.",
     requiresOwnerReview: false,
   },
   {
     id: "faq-delivery",
     question: "Where do you deliver?",
     answer:
-      "The storefront is built for Ghana-first delivery, with region and locality fields at checkout. Exact service areas, fees, and timelines must be confirmed by the business before launch.",
-    requiresOwnerReview: true,
+      "We deliver across Ghana and offer pickup at Ellz Luxe Annex. Message 0593634512 to confirm timing for your area.",
+    requiresOwnerReview: false,
   },
   {
     id: "faq-payment",
     question: "Which payment methods are accepted?",
     answer:
-      "The intended processor is Paystack, which can support cards and Ghana mobile money when the business account is connected. The store never stores card numbers.",
+      "Pay with MTN Mobile Money on 0593634512 (merchant ID 949805) or transfer to Fidelity Bank account 2400454612819. Use your name as the reference and send the receipt on WhatsApp.",
     requiresOwnerReview: false,
   },
   {
