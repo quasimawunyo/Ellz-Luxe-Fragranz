@@ -92,7 +92,7 @@ export default async function HomePage() {
       <section className="bg-white py-12">
         <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:grid-cols-2 lg:grid-cols-4">
           {[
-            { icon: Truck, title: "Ghana delivery", text: "Nationwide dispatch, plus pickup at Ellz Luxe Annex." },
+            { icon: Truck, title: "Ghana delivery", text: "Nationwide dispatch, plus pickup at Ells Luxe Annex." },
             { icon: Headphones, title: "WhatsApp 0593634512", text: "Call or message the house on the same number." },
             { icon: ShieldCheck, title: "MoMo and Fidelity", text: "Pay to 0593634512 or Fidelity 2400454612819." },
             { icon: Sparkles, title: "House brands", text: "Lattafa, Armaf, Maison Alhambra, and more." },

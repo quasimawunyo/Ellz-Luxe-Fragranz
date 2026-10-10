@@ -10,7 +10,7 @@ export default function BrandsPage() {
         <Breadcrumbs items={[{ href: "/", label: "Home" }, { label: "Brands" }]} />
         <h1 className="mt-6 font-serif text-5xl">Our Brands</h1>
         <p className="mt-3 max-w-xl text-taupe">
-          Houses carried at Ellz Luxe Annex. Open a mark to see tagged demonstration bottles.
+          Houses carried at Ells Luxe Annex. Open a mark to see tagged demonstration bottles.
         </p>
       </div>
       <div className="mt-10">

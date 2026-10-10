@@ -331,10 +331,10 @@ export const DEMO_PRODUCTS: CatalogProduct[] = [
 ];
 
 export const DEMO_SETTINGS: StoreSettings = {
-  announcement: "Ellz Luxe Annex · Call or WhatsApp 0593634512",
+  announcement: "Ells Luxe Annex · Call or WhatsApp 0593634512",
   contactEmail: "",
   contactPhone: "0593634512",
-  location: "Ellz Luxe Annex",
+  location: "Ells Luxe Annex",
   instagramUrl: "https://www.instagram.com/ellzLuxe_fragranz.gh/",
   tiktokUrl: "https://www.tiktok.com/@ellzluxefragranz.gh",
   snapchatHandle: "ama_candy90",
@@ -344,7 +344,7 @@ export const DEMO_SETTINGS: StoreSettings = {
   bankAccount: "2400454612819",
   currencyCode: "GHS",
   shippingNote:
-    "Delivery is available across Ghana. Pickup is at Ellz Luxe Annex. Call or WhatsApp 0593634512 to confirm timing and rates for your area.",
+    "Delivery is available across Ghana. Pickup is at Ells Luxe Annex. Call or WhatsApp 0593634512 to confirm timing and rates for your area.",
   returnsNote:
     "Returns and refunds are not yet defined. Do not treat this page as an operational policy until the owner approves the final text.",
   privacyNote:
@@ -352,7 +352,7 @@ export const DEMO_SETTINGS: StoreSettings = {
   termsNote:
     "These terms are a structural placeholder and are not a binding commercial contract. The owner must review and publish approved terms before launch.",
   aboutStory:
-    "EllzLuxe Fragranz is a Ghana-based fragrance boutique at Ellz Luxe Annex. We carry houses including Lattafa, Armaf, Maison Alhambra, and others listed on the Brands page.",
+    "EllzLuxe Fragranz is a Ghana-based fragrance boutique at Ells Luxe Annex. We carry houses including Lattafa, Armaf, Maison Alhambra, and others listed on the Brands page.",
   deliveryMethods: [
     {
       id: "accra",
@@ -368,9 +368,9 @@ export const DEMO_SETTINGS: StoreSettings = {
     },
     {
       id: "pickup",
-      label: "Pickup at Ellz Luxe Annex",
+      label: "Pickup at Ells Luxe Annex",
       amountMinor: 0,
-      description: "Collect your order at Ellz Luxe Annex. Message 0593634512 to schedule.",
+      description: "Collect your order at Ells Luxe Annex. Message 0593634512 to schedule.",
     },
   ],
 };
@@ -387,7 +387,7 @@ export const DEMO_FAQS: FaqItem[] = [
     id: "faq-delivery",
     question: "Where do you deliver?",
     answer:
-      "We deliver across Ghana and offer pickup at Ellz Luxe Annex. Message 0593634512 to confirm timing for your area.",
+      "We deliver across Ghana and offer pickup at Ells Luxe Annex. Message 0593634512 to confirm timing for your area.",
     requiresOwnerReview: false,
   },
   {

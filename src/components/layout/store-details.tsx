@@ -1,4 +1,5 @@
 import type { ComponentType, SVGProps } from "react";
+import { BrandLogo } from "@/components/brand/logo";
 import { InstagramIcon, SnapchatIcon, TikTokIcon, WhatsAppIcon } from "@/components/brand/social-icons";
 import type { StoreSettings } from "@/lib/catalog/types";
 import { whatsappHref } from "@/lib/whatsapp";
@@ -13,7 +14,9 @@ export function StoreContact({
   const wa = whatsappHref(settings.contactPhone);
   return (
     <div className={className}>
-      {settings.location ? <p>{settings.location}</p> : null}
+      {settings.location ? (
+        <BrandLogo href={false} label={settings.location} className="w-28" size={224} />
+      ) : null}
       {settings.contactPhone ? (
         <p>
           <a href={`tel:${settings.contactPhone}`}>{settings.contactPhone}</a>
