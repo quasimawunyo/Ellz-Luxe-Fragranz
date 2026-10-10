@@ -1,14 +1,19 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import type { CatalogProduct } from "@/lib/catalog/types";
 import { lowestPrice, primaryImage, totalStock } from "@/lib/catalog/helpers";
 import { Price } from "@/components/ui/price";
+import { QuickAdd } from "@/components/product/quick-add";
+import { cn } from "@/lib/utils";
 
 export function ProductCard({ product }: { product: CatalogProduct }) {
   const image = primaryImage(product);
   const stock = totalStock(product);
   const price = lowestPrice(product);
   const compare = product.variants.find((v) => v.priceMinor === price)?.compareAtMinor;
+  const defaultVariant = product.variants.find((variant) => variant.stock > 0) ?? product.variants[0];
 
   return (
     <article className="group">
@@ -44,13 +49,20 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
           <Price amountMinor={price} compareAtMinor={compare} className="text-sm" />
         </div>
       </Link>
+      {defaultVariant ? <QuickAdd variantId={defaultVariant.id} disabled={stock < 1} /> : null}
     </article>
   );
 }
 
-export function ProductGrid({ products }: { products: CatalogProduct[] }) {
+export function ProductGrid({
+  products,
+  className,
+}: {
+  products: CatalogProduct[];
+  className?: string;
+}) {
   return (
-    <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+    <div className={cn("grid gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-4", className)}>
       {products.map((product) => (
         <ProductCard key={product.id} product={product} />
       ))}

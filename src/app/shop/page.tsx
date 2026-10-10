@@ -32,7 +32,7 @@ export default async function ShopPage({
         </aside>
         <div>
           {result.items.length ? (
-            <ProductGrid products={result.items} />
+            <ProductGrid products={result.items} className="lg:grid-cols-3" />
           ) : (
             <EmptyState title="No fragrances match">
               <p>Adjust filters or reset the catalog.</p>

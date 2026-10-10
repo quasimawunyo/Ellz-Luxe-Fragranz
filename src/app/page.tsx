@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Headphones, ShieldCheck, Sparkles, Truck } from "lucide-react";
 import { NewsletterForm } from "@/components/layout/newsletter-form";
 import { ProductGrid } from "@/components/product/product-card";
 import { buttonVariants } from "@/components/ui/button";
@@ -13,73 +14,101 @@ export default async function HomePage() {
     getCollections(),
     getStoreSettings(),
   ]);
-  const highlights = collections.filter((collection) =>
-    ["col-women", "col-men", "col-oud", "col-gifts"].includes(collection.id),
+  const shopBy = collections.filter((collection) =>
+    ["col-women", "col-men", "col-unisex", "col-gifts"].includes(collection.id),
   );
 
   return (
     <>
-      <section className="relative min-h-[88vh] overflow-hidden bg-rich">
-        <Image
-          src="/images/story.jpg"
-          alt="Editorial still of a glass perfume bottle in warm light"
-          fill
-          priority
-          className="object-cover opacity-70"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-rich/80 via-rich/40 to-transparent" />
-        <div className="relative mx-auto flex min-h-[88vh] max-w-7xl items-end px-4 py-20">
-          <div className="max-w-xl text-ivory">
-            <p className="text-xs uppercase tracking-[0.28em] text-champagne">Ellz Luxe Fragranz</p>
-            <h1 className="mt-4 font-serif text-5xl leading-[1.05] md:text-7xl">
-              Fragrance as a private signature.
-            </h1>
-            <p className="mt-6 max-w-md text-base leading-7 text-ivory/80">
-              Discover compositions that feel considered — citrus air, floral quiet, resinous night — composed for personality rather than spectacle.
-            </p>
-            <Link href="/shop" className={cn(buttonVariants({ variant: "gold" }), "mt-8 inline-flex")}>
-              Shop now
-            </Link>
-          </div>
+      <section className="relative overflow-hidden bg-rich">
+        <div className="relative mx-auto aspect-[21/9] min-h-64 max-w-[1600px] md:min-h-[22rem]">
+          <Image
+            src="/images/hero.jpg"
+            alt="Editorial still of fragrance in warm light"
+            fill
+            priority
+            className="object-cover opacity-80"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-rich/75 via-rich/25 to-transparent" />
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-20">
+      <section className="px-4 py-12 text-center">
+        <p className="text-xs uppercase tracking-[0.28em] text-champagne">Ghana boutique</p>
+        <h1 className="mt-3 font-serif text-4xl leading-tight md:text-6xl">Welcome to Ellz Luxe Fragranz</h1>
+        <p className="mx-auto mt-4 max-w-xl font-serif text-xl italic text-taupe">
+          Fragrance as a private signature.
+        </p>
+        <Link href="/shop" className={cn(buttonVariants({ variant: "gold" }), "mt-8 inline-flex rounded-full")}>
+          View all perfumes
+        </Link>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 py-8">
         <div className="flex items-end justify-between gap-4">
-          <div>
-            <p className="text-xs uppercase tracking-[0.22em] text-taupe">Collections</p>
-            <h2 className="mt-2 font-serif text-4xl md:text-5xl">Find your family</h2>
-          </div>
-          <Link href="/collections" className="hidden text-xs uppercase tracking-[0.2em] md:inline">
-            View all
+          <h2 className="font-serif text-4xl underline decoration-champagne decoration-2 underline-offset-8">
+            New arrivals
+          </h2>
+          <Link href="/shop?sort=newest" className="text-xs uppercase tracking-[0.2em]">
+            Shop all
           </Link>
         </div>
-        <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {highlights.map((collection) => (
-            <Link key={collection.id} href={`/collections/${collection.slug}`} className="group relative min-h-72 overflow-hidden">
+        <div className="mt-10">
+          <ProductGrid products={arrivals} />
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 py-16">
+        <h2 className="text-center font-serif text-4xl">Shop by collection</h2>
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {shopBy.map((collection) => (
+            <Link
+              key={collection.id}
+              href={`/collections/${collection.slug}`}
+              className="group relative min-h-64 overflow-hidden"
+            >
               <Image
                 src={collection.imageUrl}
                 alt=""
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-rich/40" />
-              <span className="absolute bottom-5 left-5 font-serif text-3xl text-ivory">{collection.name}</span>
+              <div className="absolute inset-0 bg-rich/45" />
+              <span className="absolute inset-x-4 bottom-5 text-center font-serif text-3xl text-ivory">
+                {collection.name.replace(" fragrances", "")}
+              </span>
             </Link>
           ))}
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-8">
-        <p className="text-xs uppercase tracking-[0.22em] text-taupe">Featured</p>
-        <h2 className="mt-2 font-serif text-4xl">The atelier edit</h2>
+      <section className="bg-white py-12">
+        <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            { icon: Truck, title: "Nationwide delivery", text: "Ghana-wide dispatch once rates are confirmed." },
+            { icon: Headphones, title: "House support", text: "Write or call — details live in Contact." },
+            { icon: ShieldCheck, title: "Secure checkout", text: "Paystack when live; orders verified server-side." },
+            { icon: Sparkles, title: "Considered catalog", text: "No invented stock, reviews, or founder claims." },
+          ].map((item) => (
+            <div key={item.title} className="text-center">
+              <item.icon className="mx-auto size-8 text-champagne" />
+              <h3 className="mt-3 font-serif text-2xl">{item.title}</h3>
+              <p className="mt-2 text-sm leading-6 text-taupe">{item.text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 py-16">
+        <h2 className="font-serif text-4xl">Best-selling</h2>
+        <p className="mt-2 text-sm text-taupe">Featured compositions from the current catalog.</p>
         <div className="mt-10">
           <ProductGrid products={featured} />
         </div>
       </section>
 
-      <section className="my-16 grid min-h-[28rem] bg-espresso text-ivory md:grid-cols-2">
-        <div className="relative min-h-80">
+      <section className="my-8 grid min-h-[24rem] bg-espresso text-ivory md:grid-cols-2">
+        <div className="relative min-h-72">
           <Image src="/images/story.jpg" alt="Warm still life of perfume bottles" fill className="object-cover" />
         </div>
         <div className="flex flex-col justify-center px-8 py-16 md:px-16">
@@ -92,35 +121,10 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-16">
-        <p className="text-xs uppercase tracking-[0.22em] text-taupe">Discovery</p>
-        <h2 className="mt-2 font-serif text-4xl">Explore by impression</h2>
-        <div className="mt-10 grid gap-6 md:grid-cols-3">
-          {[
-            { title: "Bright", text: "Citrus peel, linen, and air — openings that feel like daylight.", href: "/collections/fresh-and-citrus" },
-            { title: "Bloom", text: "Petal, stem, and white flowers with a quiet trail.", href: "/collections/floral" },
-            { title: "Depth", text: "Wood, amber, oud, and smoke for evening and cloth.", href: "/collections/oud-and-oriental" },
-          ].map((item) => (
-            <Link key={item.title} href={item.href} className="border border-espresso/10 bg-white p-8 transition-colors hover:border-champagne">
-              <h3 className="font-serif text-3xl">{item.title}</h3>
-              <p className="mt-3 text-sm leading-7 text-taupe">{item.text}</p>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-4 py-8">
-        <p className="text-xs uppercase tracking-[0.22em] text-taupe">Arrivals</p>
-        <h2 className="mt-2 font-serif text-4xl">Newly composed</h2>
-        <div className="mt-10">
-          <ProductGrid products={arrivals} />
-        </div>
-      </section>
-
-      <section className="mx-auto my-16 max-w-3xl px-4 py-16 text-center">
+      <section className="mx-auto my-16 max-w-3xl px-4 py-12 text-center">
         <h2 className="font-serif text-4xl">Notes from the house</h2>
         <p className="mt-4 text-taupe">
-          Occasional letters on new compositions and seasonal edits. No invented offers — just the list, when you want it.
+          Occasional letters on new compositions and seasonal edits.
         </p>
         <NewsletterForm />
       </section>

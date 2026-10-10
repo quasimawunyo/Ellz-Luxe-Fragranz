@@ -188,7 +188,7 @@ export async function getNewArrivals() {
   const products = await getPublishedProducts();
   return [...products]
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-    .slice(0, 4);
+    .slice(0, 8);
 }
 
 export async function getRelated(product: CatalogProduct) {
