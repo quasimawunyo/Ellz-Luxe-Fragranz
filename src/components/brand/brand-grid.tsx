@@ -2,33 +2,54 @@ import Image from "next/image";
 import Link from "next/link";
 import { HOUSE_BRANDS } from "@/lib/catalog/brands";
 
+const LOOP = [...HOUSE_BRANDS, ...HOUSE_BRANDS];
+
 export function BrandGrid() {
   return (
-    <section className="bg-white px-4 py-16">
-      <div className="mx-auto max-w-7xl">
-        <h2 className="text-center font-serif text-4xl text-espresso underline decoration-espresso decoration-2 underline-offset-8">
+    <section className="border-y border-espresso/10 bg-white" aria-label="Our brands">
+      <style>{`
+        @keyframes brand-marquee {
+          from { transform: translateX(0); }
+          to { transform: translateX(-50%); }
+        }
+        .brand-marquee-track {
+          animation: brand-marquee 40s linear infinite;
+        }
+        .brand-marquee-track:hover {
+          animation-play-state: paused;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .brand-marquee-track {
+            animation: none;
+          }
+        }
+      `}</style>
+      <div className="flex items-stretch">
+        <p className="hidden shrink-0 items-center border-r border-espresso/10 px-5 font-serif text-lg text-espresso sm:flex">
           Our Brands
-        </h2>
-        <ul className="mt-12 grid grid-cols-2 items-center gap-x-8 gap-y-12 sm:grid-cols-3 lg:grid-cols-5">
-          {HOUSE_BRANDS.map((brand) => (
-            <li key={brand.slug}>
+        </p>
+        <div className="min-w-0 flex-1 overflow-hidden">
+          <p className="px-4 pt-3 text-center font-serif text-lg sm:hidden">Our Brands</p>
+          <div className="brand-marquee-track flex w-max animate-brand-marquee items-center py-4 hover:[animation-play-state:paused]">
+            {LOOP.map((brand, index) => (
               <Link
+                key={`${brand.slug}-${index}`}
                 href={`/brands/${brand.slug}`}
                 aria-label={brand.name}
-                className="flex min-h-28 items-center justify-center px-2 transition-opacity hover:opacity-70"
+                className="mx-8 flex h-12 shrink-0 items-center justify-center sm:mx-10"
               >
                 <Image
                   src={brand.logo}
                   alt={brand.name}
-                  width={220}
-                  height={220}
+                  width={180}
+                  height={72}
                   unoptimized
-                  className="h-24 w-auto max-w-full object-contain"
+                  className="h-10 w-auto max-w-40 object-contain sm:h-12"
                 />
               </Link>
-            </li>
-          ))}
-        </ul>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );

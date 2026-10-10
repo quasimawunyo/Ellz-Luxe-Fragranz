@@ -23,6 +23,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-outfit);
   --font-serif: var(--font-cormorant);
+  --animate-brand-marquee: brand-marquee 40s linear infinite;
 }
 
 html {
@@ -49,6 +50,23 @@ h3,
 :focus-visible {
   outline: 2px solid var(--champagne);
   outline-offset: 3px;
+}
+
+@keyframes brand-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.brand-marquee-track {
+  animation: brand-marquee 40s linear infinite;
+}
+
+.brand-marquee-track:hover {
+  animation-play-state: paused;
 }
 
 @media (prefers-reduced-motion: reduce) {
