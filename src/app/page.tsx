@@ -21,15 +21,19 @@ export default async function HomePage() {
   return (
     <>
       <section className="relative overflow-hidden bg-rich">
-        <div className="relative mx-auto aspect-[21/9] min-h-64 max-w-[1600px] md:min-h-[22rem]">
-          <Image
-            src="/images/hero.jpg"
-            alt="Editorial still of fragrance in warm light"
-            fill
-            priority
-            className="object-cover opacity-80"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-rich/75 via-rich/25 to-transparent" />
+        <div className="relative mx-auto min-h-[70vh] w-full max-w-[1600px]">
+          <video
+            className="absolute inset-0 h-full w-full object-cover"
+            autoPlay
+            muted
+            loop
+            playsInline
+            poster="/images/hero.jpg"
+            aria-label="Ellz Luxe Fragranz campaign film"
+          >
+            <source src="/videos/hero.mp4" type="video/mp4" />
+          </video>
+          <div className="absolute inset-0 bg-gradient-to-r from-rich/55 via-rich/15 to-transparent" />
         </div>
       </section>
 
