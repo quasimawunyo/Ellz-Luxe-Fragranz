@@ -1,9 +1,24 @@
-import type { ComponentType, SVGProps } from "react";
-import { BrandLogo } from "@/components/brand/logo";
+import type { ComponentType, ReactNode, SVGProps } from "react";
+import { MapPin, Phone } from "lucide-react";
 import { FidelityBankLogo, MtnMomoLogo } from "@/components/brand/payment-logos";
 import { InstagramIcon, SnapchatIcon, TikTokIcon, WhatsAppIcon } from "@/components/brand/social-icons";
 import type { StoreSettings } from "@/lib/catalog/types";
 import { whatsappHref } from "@/lib/whatsapp";
+
+function ContactRow({
+  icon: Icon,
+  children,
+}: {
+  icon: ComponentType<{ className?: string; "aria-hidden"?: boolean }>;
+  children: ReactNode;
+}) {
+  return (
+    <p className="flex items-center gap-2.5">
+      <Icon className="size-4 shrink-0 text-champagne" aria-hidden />
+      {children}
+    </p>
+  );
+}
 
 export function StoreContact({
   settings,
@@ -16,19 +31,21 @@ export function StoreContact({
   return (
     <div className={className}>
       {settings.location ? (
-        <BrandLogo href={false} label={settings.location} className="w-28" size={224} />
+        <ContactRow icon={MapPin}>
+          <span>{settings.location}</span>
+        </ContactRow>
       ) : null}
       {settings.contactPhone ? (
-        <p>
+        <ContactRow icon={Phone}>
           <a href={`tel:${settings.contactPhone}`}>{settings.contactPhone}</a>
-        </p>
+        </ContactRow>
       ) : null}
       {wa ? (
-        <p>
+        <ContactRow icon={WhatsAppIcon}>
           <a href={wa} target="_blank" rel="noreferrer">
-            WhatsApp {settings.contactPhone}
+            {settings.contactPhone}
           </a>
-        </p>
+        </ContactRow>
       ) : null}
       {settings.contactEmail ? <p>{settings.contactEmail}</p> : null}
     </div>
