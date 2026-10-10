@@ -9,6 +9,7 @@ import { resolveCart } from "@/lib/cart/store";
 import { getStoreSettings } from "@/lib/catalog/queries";
 import { getAuthContext } from "@/lib/auth/session";
 import { GHANA_REGIONS } from "@/lib/ghana";
+import { isMoolreConfigured } from "@/lib/payments/moolre";
 import { isPaystackConfigured } from "@/lib/payments/paystack";
 import Link from "next/link";
 
@@ -36,11 +37,11 @@ export default async function CheckoutPage() {
       <Breadcrumbs items={[{ href: "/", label: "Home" }, { href: "/cart", label: "Cart" }, { label: "Checkout" }]} />
       <h1 className="mt-6 font-serif text-5xl">Checkout</h1>
       <p className="mt-3 max-w-xl text-sm text-taupe">
-        Place the order, then confirm payment on WhatsApp
-        {settings.contactPhone ? ` ${settings.contactPhone}` : ""}.
-        {isPaystackConfigured()
-          ? " Card payments through Paystack are also available when offered at checkout."
-          : ""}
+        {isMoolreConfigured()
+          ? " Place the order to pay on Moolre (mobile money and cards). The order is marked paid only after Moolre confirms the payment."
+          : isPaystackConfigured()
+            ? " Place the order to pay with Paystack. The order is marked paid only after a verified webhook."
+            : ` Place the order, then confirm payment on WhatsApp${settings.contactPhone ? ` ${settings.contactPhone}` : ""}.`}
       </p>
       <div className="mt-10 grid gap-12 lg:grid-cols-[1fr_20rem]">
         <ActionForm action={placeOrderAction} className="space-y-5">
@@ -93,7 +94,7 @@ export default async function CheckoutPage() {
             <Label htmlFor="notes">Order notes (optional)</Label>
             <Textarea id="notes" name="notes" />
           </div>
-          <Button type="submit">Place order</Button>
+          <Button type="submit">{isMoolreConfigured() ? "Place order and pay" : "Place order"}</Button>
         </ActionForm>
         <aside className="h-fit border border-espresso/10 bg-white p-6">
           <h2 className="font-serif text-2xl">Summary</h2>

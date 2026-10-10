@@ -13,6 +13,13 @@ import {
   type FulfillmentStatus,
   type PaymentStatus,
 } from "@/lib/orders/transitions";
+import {
+  getMoolrePaymentStatus,
+  isMoolreConfigured,
+  moolreAmountMatches,
+  moolrePaymentSucceeded,
+} from "@/lib/payments/moolre";
+import { isPaystackConfigured } from "@/lib/payments/paystack";
 
 const ORDERS_COOKIE = "elf_orders";
 
@@ -95,7 +102,8 @@ export async function createPendingOrder(input: CheckoutInput, userId: string | 
   const subtotalMinor = cart.lines.reduce((sum, line) => sum + line.lineMinor, 0);
   const totalMinor = orderGrandTotal(subtotalMinor, method.amountMinor);
   const orderNumber = `ELF-${Date.now().toString(36).toUpperCase()}`;
-  const reference = `ps_${crypto.randomUUID()}`;
+  const reference = `elf_${crypto.randomUUID()}`;
+  const provider = isMoolreConfigured() ? "moolre" : isPaystackConfigured() ? "paystack" : "manual";
 
   if (isSupabaseAdminConfigured()) {
     const admin = createServiceClient();
@@ -125,7 +133,7 @@ export async function createPendingOrder(input: CheckoutInput, userId: string | 
     const orderId = data as string;
     await admin.from("payments").insert({
       order_id: orderId,
-      provider: "paystack",
+      provider,
       provider_reference: reference,
       amount_minor: totalMinor,
       currency_code: settings.currencyCode,
@@ -212,6 +220,21 @@ export async function getOrderById(id: string) {
   return (await demoOrders()).find((order) => order.id === id) ?? null;
 }
 
+export async function getOrderByPaymentReference(reference: string) {
+  if (isSupabaseAdminConfigured()) {
+    const admin = createServiceClient();
+    if (!admin) return null;
+    const { data: payment } = await admin
+      .from("payments")
+      .select("order_id")
+      .eq("provider_reference", reference)
+      .maybeSingle();
+    if (!payment) return null;
+    return getOrderById(payment.order_id);
+  }
+  return (await demoOrders()).find((order) => order.paystackReference === reference) ?? null;
+}
+
 export async function getOrderByNumber(orderNumber: string) {
   const orders = await listOrders();
   return orders.find((order) => order.orderNumber === orderNumber) ?? null;
@@ -266,6 +289,17 @@ export async function markOrderPaid(reference: string, eventId: string) {
   order.orderStatus = "completed";
   await saveDemoOrders(orders);
   return order.id;
+}
+
+export async function confirmMoolreIfPaid(order: StoreOrder) {
+  if (!isMoolreConfigured() || order.paymentStatus === "paid" || !order.paystackReference) {
+    return order;
+  }
+  const live = await getMoolrePaymentStatus(order.paystackReference);
+  if (!moolrePaymentSucceeded(live) || !live) return order;
+  if (!moolreAmountMatches(live.amount ?? live.value, order.totalMinor)) return order;
+  await markOrderPaid(order.paystackReference, String(live.transactionid ?? order.paystackReference));
+  return (await getOrderById(order.id)) ?? order;
 }
 
 export async function updateFulfillment(

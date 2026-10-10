@@ -1,5 +1,7 @@
 import Link from "next/link";
-import { getOrderById } from "@/lib/orders/store";
+import { confirmMoolreIfPaid, getOrderById } from "@/lib/orders/store";
+import { isMoolreConfigured } from "@/lib/payments/moolre";
+import { isPaystackConfigured } from "@/lib/payments/paystack";
 import { Price } from "@/components/ui/price";
 import { EmptyState } from "@/components/ui/states";
 import { getAuthContext } from "@/lib/auth/session";
@@ -13,7 +15,8 @@ export default async function ConfirmationPage({
   searchParams: Promise<{ order?: string }>;
 }) {
   const { order: orderId } = await searchParams;
-  const order = orderId ? await getOrderById(orderId) : null;
+  let order = orderId ? await getOrderById(orderId) : null;
+  if (order) order = await confirmMoolreIfPaid(order);
   const auth = await getAuthContext();
 
   if (!order) {
@@ -53,7 +56,11 @@ export default async function ConfirmationPage({
       <p className="mt-4 leading-7 text-taupe">
         Payment status: <strong className="text-espresso">{order.paymentStatus}</strong>.
         {order.paymentStatus === "pending"
-          ? " This order is not marked paid. Payment is confirmed only after a verified Paystack webhook — never from this page load alone."
+          ? isMoolreConfigured()
+            ? " This order is not marked paid until Moolre confirms the transaction by callback or status check."
+            : isPaystackConfigured()
+              ? " This order is not marked paid. Payment is confirmed only after a verified Paystack webhook — never from this page load alone."
+              : " This order is not marked paid. Confirm payment with the house on WhatsApp."
           : " Payment was verified server-side."}
       </p>
       <ul className="mt-8 space-y-2 border border-espresso/10 bg-white p-6 text-sm">

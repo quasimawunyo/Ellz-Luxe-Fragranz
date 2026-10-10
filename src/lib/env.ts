@@ -11,6 +11,11 @@ export const env = {
   paystackPublicKey: present(process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY),
   paystackSecretKey: present(process.env.PAYSTACK_SECRET_KEY),
   paystackWebhookSecret: present(process.env.PAYSTACK_WEBHOOK_SECRET),
+  moolreApiUser: present(process.env.MOOLRE_API_USER),
+  moolrePublicKey: present(process.env.MOOLRE_PUBLIC_KEY),
+  moolreAccountNumber: present(process.env.MOOLRE_ACCOUNT_NUMBER),
+  moolreCallbackSecret: present(process.env.MOOLRE_CALLBACK_SECRET),
+  moolreBusinessEmail: present(process.env.MOOLRE_BUSINESS_EMAIL),
 };
 
 export function isSupabaseConfigured() {
