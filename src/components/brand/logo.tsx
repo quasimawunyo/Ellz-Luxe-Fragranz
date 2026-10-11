@@ -4,35 +4,57 @@ import { cn } from "@/lib/utils";
 
 export function BrandLogo({
   className,
-  size = 72,
+  size = 56,
   priority = false,
   href = "/",
   label = "EllzLuxe Fragranz home",
+  onDark = false,
 }: {
   className?: string;
   size?: number;
   priority?: boolean;
   href?: string | false;
   label?: string;
+  onDark?: boolean;
 }) {
-  const image = (
-    <Image
-      src="/images/logo.png?v=gold-2"
-      alt={label}
-      width={size}
-      height={size}
-      priority={priority}
-      unoptimized
-      className="h-auto w-full object-contain"
-    />
+  const lockup = (
+    <span className={cn("inline-flex items-center gap-2.5", className)}>
+      <Image
+        src="/images/mark.png"
+        alt=""
+        width={size}
+        height={size}
+        priority={priority}
+        unoptimized
+        className="h-11 w-11 shrink-0 object-contain sm:h-12 sm:w-12"
+      />
+      <span className="flex min-w-0 flex-col justify-center">
+        <span
+          className={cn(
+            "font-serif text-[1.35rem] leading-none font-semibold tracking-tight sm:text-[1.5rem]",
+            onDark ? "text-ivory" : "text-espresso",
+          )}
+        >
+          EllzLuxe
+        </span>
+        <span
+          className={cn(
+            "mt-1 text-[10px] font-medium uppercase tracking-[0.2em]",
+            onDark ? "text-champagne" : "text-espresso/65",
+          )}
+        >
+          Fragranz
+        </span>
+      </span>
+    </span>
   );
-  const classes = cn("inline-flex shrink-0", className);
+
   if (!href) {
-    return <span className={classes}>{image}</span>;
+    return lockup;
   }
   return (
-    <Link href={href} className={classes} aria-label={label}>
-      {image}
+    <Link href={href} aria-label={label} className="shrink-0">
+      {lockup}
     </Link>
   );
 }
