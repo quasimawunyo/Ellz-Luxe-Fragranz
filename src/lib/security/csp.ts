@@ -1,0 +1,21 @@
+export function contentSecurityPolicy(nonce: string) {
+  const isDev = process.env.NODE_ENV === "development";
+  return [
+    "default-src 'self'",
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${isDev ? " 'unsafe-eval'" : ""} https://js.paystack.co https://vercel.live`,
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' blob: data: https://*.supabase.co",
+    "font-src 'self' data:",
+    "media-src 'self' blob:",
+    "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.paystack.co https://api.moolre.com https://vitals.vercel-insights.com https://vercel.live",
+    "frame-src 'self' https://js.paystack.co https://checkout.paystack.com https://*.moolre.com https://vercel.live",
+    "frame-ancestors 'self'",
+    "form-action 'self' https://checkout.paystack.com https://*.paystack.com https://api.moolre.com https://*.moolre.com",
+    "base-uri 'self'",
+    "object-src 'none'",
+    "upgrade-insecure-requests",
+  ]
+    .join("; ")
+    .replace(/\s+/g, " ")
+    .trim();
+}

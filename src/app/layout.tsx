@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { connection } from "next/server";
 import { Cormorant_Garamond, Outfit } from "next/font/google";
 import { Toaster } from "@/components/ui/toaster";
 import { SiteShell } from "@/components/layout/site-shell";
@@ -29,7 +30,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  await connection();
   return (
     <html lang="en" data-scroll-behavior="smooth" className={`${outfit.variable} ${cormorant.variable} h-full`}>
       <body className="flex min-h-full flex-col bg-ivory text-espresso antialiased">
