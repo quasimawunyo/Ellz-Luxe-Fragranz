@@ -1,24 +1,34 @@
 "use client";
 
+import { useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Package, ShoppingBag, Inbox, Settings } from "lucide-react";
+import { LayoutGrid, ClipboardList, Package, Inbox, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+function subscribe() {
+  return () => {};
+}
+
+function useIsClient() {
+  return useSyncExternalStore(subscribe, () => true, () => false);
+}
+
 const LINKS = [
-  { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
+  { href: "/admin", label: "Overview", icon: LayoutGrid, exact: true },
+  { href: "/admin/orders", label: "Orders", icon: ClipboardList },
   { href: "/admin/products", label: "Products", icon: Package },
-  { href: "/admin/orders", label: "Orders", icon: ShoppingBag },
   { href: "/admin/inbox", label: "Inbox", icon: Inbox },
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 
 export function AdminNav() {
   const pathname = usePathname();
+  const isClient = useIsClient();
   return (
-    <nav aria-label="Admin" className="flex flex-col gap-0.5">
+    <nav aria-label="Admin" className="flex flex-col gap-1">
       {LINKS.map((link) => {
-        const active = link.exact ? pathname === link.href : pathname.startsWith(link.href);
+        const active = isClient && (link.exact ? pathname === link.href : pathname.startsWith(link.href));
         const Icon = link.icon;
         return (
           <Link
@@ -26,11 +36,11 @@ export function AdminNav() {
             href={link.href}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "flex items-center gap-3 px-3 py-2.5 text-sm",
-              active ? "bg-white/10 text-ivory" : "text-ivory/70 hover:bg-white/5 hover:text-ivory",
+              "flex items-center gap-3 rounded-full px-4 py-3 text-[15px] font-medium",
+              active ? "bg-espresso text-ivory" : "text-espresso hover:bg-espresso/5",
             )}
           >
-            <Icon className="size-4 shrink-0" aria-hidden />
+            <Icon className="size-[18px] shrink-0" strokeWidth={1.75} aria-hidden />
             {link.label}
           </Link>
         );

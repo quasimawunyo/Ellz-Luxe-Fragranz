@@ -11,7 +11,7 @@ import { CustomerWhatsApp } from "@/components/admin/customer-whatsapp";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-export const metadata = { title: "Dashboard · Admin" };
+export const metadata = { title: "Overview · Admin" };
 
 export default async function AdminDashboardPage() {
   const [orders, products, messages, subscribers, messageCount] = await Promise.all([
