@@ -30,9 +30,14 @@ export default async function AccountPage() {
       <p className="mt-8">
         <Link href="/account/orders">Order history</Link>
       </p>
-      {auth.role === "admin" ? (
+      {auth.role === "admin" || auth.role === "super_admin" ? (
         <p className="mt-2">
           <Link href="/admin">Admin dashboard</Link>
+        </p>
+      ) : null}
+      {auth.role === "super_admin" ? (
+        <p className="mt-2">
+          <Link href="/admin/super">Super admin</Link>
         </p>
       ) : null}
       <form action={signOutAction} className="mt-8">

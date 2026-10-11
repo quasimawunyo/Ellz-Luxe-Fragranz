@@ -34,6 +34,11 @@ test("unauthorized visitors cannot open admin", async ({ page }) => {
   await expect(page).toHaveURL(/login/);
 });
 
+test("unauthorized visitors cannot open super admin", async ({ page }) => {
+  await page.goto("/admin/super");
+  await expect(page).toHaveURL(/login/);
+});
+
 test("signup explains first account becomes admin", async ({ page }) => {
   await page.goto("/signup");
   await expect(page.getByText(/first account/i)).toBeVisible();

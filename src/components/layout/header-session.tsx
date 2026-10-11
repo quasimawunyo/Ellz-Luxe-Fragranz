@@ -10,7 +10,7 @@ export async function HeaderSession() {
     const [cart, auth] = await Promise.all([resolveCart(), getAuthContext()]);
     cartCount = cart.itemCount;
     signedIn = Boolean(auth.user);
-    isAdmin = auth.role === "admin";
+    isAdmin = auth.role === "admin" || auth.role === "super_admin";
   } catch {
     cartCount = 0;
     signedIn = false;

@@ -10,7 +10,7 @@ export default function SignupPage() {
     <div className="mx-auto max-w-md px-4 py-16">
       <h1 className="font-serif text-4xl">Create account</h1>
       <p className="mt-3 text-sm text-taupe">
-        The first account on this shop becomes the administrator and can open the dashboard at /admin.
+        The first account on this shop becomes super admin and can open /admin/super.
       </p>
       <ActionForm action={signUpAction} className="mt-8 space-y-4">
         <div>

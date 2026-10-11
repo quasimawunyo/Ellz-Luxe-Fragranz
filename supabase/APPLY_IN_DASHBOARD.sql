@@ -8,7 +8,7 @@ create table public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   full_name text,
   phone text,
-  role text not null default 'customer' check (role in ('customer', 'admin')),
+  role text not null default 'customer' check (role in ('customer', 'admin', 'super_admin')),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -184,7 +184,11 @@ set search_path = public
 as $$
 begin
   insert into public.profiles (id, full_name, role)
-  values (new.id, coalesce(new.raw_user_meta_data->>'full_name', ''), 'customer');
+  values (
+    new.id,
+    coalesce(new.raw_user_meta_data->>'full_name', ''),
+    case when not exists (select 1 from public.profiles) then 'super_admin' else 'customer' end
+  );
   return new;
 end;
 $$;
@@ -198,7 +202,8 @@ returns trigger
 language plpgsql
 as $$
 begin
-  if new.role is distinct from old.role then
+  if new.role is distinct from old.role
+     and coalesce(auth.role(), '') <> 'service_role' then
     raise exception 'Role changes are not permitted from this client';
   end if;
   return new;

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { requireAdmin } from "@/lib/auth/require-admin";
+import { isSuperAdminRole } from "@/lib/auth/roles";
 import { AdminNav } from "@/components/admin/admin-nav";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -14,7 +15,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             {auth.email ? <p className="mt-1 text-sm text-taupe">{auth.email}</p> : null}
           </div>
           <div className="flex-1 px-3 pb-4">
-            <AdminNav />
+            <AdminNav showControl={isSuperAdminRole(auth.role)} />
           </div>
           <div className="flex flex-col gap-2 border-t border-espresso/10 p-4 text-sm">
             <Link href="/shop" className="rounded-full border border-espresso/15 px-4 py-2.5 text-center hover:border-espresso/40">
