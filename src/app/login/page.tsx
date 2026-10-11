@@ -18,7 +18,7 @@ export default async function LoginPage({
       <h1 className="font-serif text-4xl">Sign in</h1>
       {!isSupabaseConfigured() ? (
         <p className="mt-4 text-sm text-taupe">
-          Customer accounts require Supabase Auth. Add the environment variables to enable sign-in.
+          Customer accounts are not open yet.
         </p>
       ) : null}
       <ActionForm action={signInAction} className="mt-8 space-y-4">

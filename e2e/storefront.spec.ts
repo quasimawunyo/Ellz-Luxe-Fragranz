@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 test("home page presents the brand and a shop path", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: /ellzluxe fragranz/i })).toBeVisible();
-  await expect(page.getByRole("link", { name: /shop now/i })).toBeVisible();
+  await expect(page.getByRole("main").getByRole("link", { name: "Shop", exact: true }).first()).toBeVisible();
 });
 
 test("shop filters and product detail, cart persists after refresh", async ({ page }) => {

@@ -8,26 +8,20 @@ import { cn } from "@/lib/utils";
 export function QuickAdd({
   variantId,
   disabled,
-  overlay = false,
 }: {
   variantId: string;
   disabled?: boolean;
-  overlay?: boolean;
 }) {
   const [state, formAction] = useActionState(addToCartAction, null);
 
   return (
-    <form action={formAction} className={overlay ? "w-[calc(100%-1.5rem)]" : undefined}>
+    <form action={formAction}>
       <input type="hidden" name="variantId" value={variantId} />
       <input type="hidden" name="quantity" value="1" />
       <button
         type="submit"
         disabled={disabled}
-        className={
-          overlay
-            ? "min-h-11 w-full rounded-full bg-leaf px-4 text-sm font-medium text-white hover:bg-leaf/90 disabled:opacity-50"
-            : cn(buttonVariants({ variant: "shop", size: "sm" }))
-        }
+        className={cn(buttonVariants({ variant: "shop", size: "sm" }))}
       >
         Add to cart
       </button>

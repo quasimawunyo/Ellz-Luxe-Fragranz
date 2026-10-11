@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { BrandGrid } from "@/components/brand/brand-grid";
-import { NewsletterForm } from "@/components/layout/newsletter-form";
 import { ProductGrid } from "@/components/product/product-card";
 import { buttonVariants } from "@/components/ui/button";
 import { getCollections, getFeaturedProducts, getNewArrivals, getStoreSettings } from "@/lib/catalog/queries";
@@ -33,7 +32,7 @@ export default async function HomePage() {
           >
             <source src="/videos/hero.mp4" type="video/mp4" />
           </video>
-          <div className="absolute inset-0 bg-gradient-to-r from-rich/25 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-rich/15" />
         </div>
       </section>
 
@@ -41,15 +40,15 @@ export default async function HomePage() {
         <h1 className="font-serif text-4xl md:text-5xl">EllzLuxe Fragranz</h1>
         <p className="mx-auto mt-4 max-w-md text-taupe">Perfume boutique at Ells Luxe Annex, Ghana.</p>
         <Link href="/shop" className={cn(buttonVariants({ variant: "gold" }), "mt-8 inline-flex")}>
-          Shop now
+          Shop
         </Link>
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-8">
         <div className="flex items-end justify-between gap-4">
-          <h2 className="font-serif text-3xl">New arrivals</h2>
-          <Link href="/shop?sort=newest" className="text-sm text-taupe hover:text-espresso">
-            Shop all
+          <h2 className="font-serif text-3xl">In the shop</h2>
+          <Link href="/shop" className="text-sm text-taupe hover:text-espresso">
+            All bottles
           </Link>
         </div>
         <div className="mt-8">
@@ -58,7 +57,7 @@ export default async function HomePage() {
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-16">
-        <h2 className="text-center font-serif text-3xl">Shop by collection</h2>
+        <h2 className="text-center font-serif text-3xl">Collections</h2>
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {shopBy.map((collection) => (
             <Link
@@ -70,9 +69,9 @@ export default async function HomePage() {
                 src={collection.imageUrl}
                 alt=""
                 fill
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                className="object-cover"
               />
-              <div className="absolute inset-0 bg-rich/40" />
+              <div className="absolute inset-0 bg-rich/35" />
               <span className="absolute inset-x-4 bottom-5 text-center font-serif text-2xl text-ivory">
                 {collection.name.replace(" fragrances", "")}
               </span>
@@ -84,7 +83,7 @@ export default async function HomePage() {
       <BrandGrid />
 
       <section className="mx-auto max-w-7xl px-4 py-16">
-        <h2 className="font-serif text-3xl">Best sellers</h2>
+        <h2 className="font-serif text-3xl">Featured</h2>
         <div className="mt-8">
           <ProductGrid products={featured} />
         </div>
@@ -98,15 +97,9 @@ export default async function HomePage() {
           <h2 className="font-serif text-3xl">About</h2>
           <p className="mt-6 max-w-md leading-7 text-ivory/75">{settings.aboutStory}</p>
           <Link href="/about" className={cn(buttonVariants({ variant: "gold" }), "mt-8 w-fit")}>
-            Read more
+            About the annex
           </Link>
         </div>
-      </section>
-
-      <section className="mx-auto my-16 max-w-3xl px-4 py-8 text-center">
-        <h2 className="font-serif text-3xl">Email updates</h2>
-        <p className="mt-3 text-taupe">New arrivals and restocks.</p>
-        <NewsletterForm />
       </section>
     </>
   );

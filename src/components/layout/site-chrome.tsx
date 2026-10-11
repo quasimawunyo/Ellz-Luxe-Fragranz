@@ -6,7 +6,6 @@ import type { StoreSettings } from "@/lib/catalog/types";
 import { AnnouncementBar } from "@/components/layout/announcement-bar";
 import { Footer } from "@/components/layout/footer";
 import { TrustAndPay } from "@/components/layout/trust-and-pay";
-import { WhatsAppButton } from "@/components/layout/whatsapp-button";
 
 export function SiteChrome({
   children,
@@ -29,7 +28,6 @@ export function SiteChrome({
       <main className="flex-1">{children}</main>
       <TrustAndPay phone={settings.contactPhone} />
       <Footer settings={settings} />
-      <WhatsAppButton phone={settings.contactPhone} />
     </>
   );
 }

@@ -89,7 +89,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       </div>
       {related.length ? (
         <section className="mt-20">
-          <h2 className="font-serif text-3xl">You may also like</h2>
+          <h2 className="font-serif text-3xl">More bottles</h2>
           <div className="mt-8">
             <ProductGrid products={related} />
           </div>

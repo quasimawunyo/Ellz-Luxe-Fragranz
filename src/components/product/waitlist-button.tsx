@@ -6,13 +6,7 @@ import { useSavedLists } from "@/lib/saved/use-saved-lists";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-export function WaitlistButton({
-  productId,
-  overlay = false,
-}: {
-  productId: string;
-  overlay?: boolean;
-}) {
+export function WaitlistButton({ productId }: { productId: string }) {
   const { isWaiting, addWaiting } = useSavedLists();
   const waiting = isWaiting(productId);
   const [open, setOpen] = useState(false);
@@ -22,28 +16,20 @@ export function WaitlistButton({
     if (state?.ok) addWaiting(productId);
   }, [state, addWaiting, productId]);
 
-  const pill = overlay
-    ? "w-[calc(100%-1.5rem)] rounded-full bg-leaf text-white hover:bg-leaf/90"
-    : cn(buttonVariants({ variant: "shop", size: "sm" }));
-
   if (waiting || state?.ok) {
-    return (
-      <p className={cn("text-center text-sm font-medium text-leaf", overlay && "rounded-full bg-white/95 px-4 py-2.5")}>
-        Waiting for restock
-      </p>
-    );
+    return <p className="text-sm text-leaf">Waiting for restock</p>;
   }
 
   if (!open) {
     return (
-      <button type="button" className={cn(pill, overlay && "min-h-11 px-4 text-sm font-medium")} onClick={() => setOpen(true)}>
+      <button type="button" className={cn(buttonVariants({ variant: "shop", size: "sm" }))} onClick={() => setOpen(true)}>
         Notify me
       </button>
     );
   }
 
   return (
-    <form action={formAction} className={cn("space-y-2", overlay && "w-[calc(100%-1.5rem)]")}>
+    <form action={formAction} className="space-y-2">
       <input type="hidden" name="productId" value={productId} />
       <label className="sr-only" htmlFor={`wait-${productId}`}>
         Email for restock notice
@@ -54,9 +40,9 @@ export function WaitlistButton({
         type="email"
         required
         placeholder="Email for restock notice"
-        className="min-h-11 w-full rounded-full border border-espresso/15 bg-white px-4 text-sm"
+        className="min-h-11 w-full border border-espresso/15 bg-white px-3 text-sm"
       />
-      <button type="submit" className={cn(buttonVariants({ variant: "shop", size: "sm" }), "w-full")}>
+      <button type="submit" className={cn(buttonVariants({ variant: "shop", size: "sm" }))}>
         Join waitlist
       </button>
       {state?.error ? (

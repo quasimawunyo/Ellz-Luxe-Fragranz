@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { KeyRound, Layers, Shield, Users } from "lucide-react";
 import { requireSuperAdmin } from "@/lib/auth/require-super-admin";
 import { listStaff } from "@/lib/admin/staff";
 import { listOrders } from "@/lib/orders/store";
@@ -10,8 +9,6 @@ import { dataMode } from "@/lib/env";
 import { formatMoney } from "@/lib/money";
 import { roleLabel } from "@/lib/auth/roles";
 import { StaffRoleForm } from "@/components/admin/staff-role-form";
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 
 export const metadata = { title: "Control · Super admin" };
 
@@ -27,25 +24,21 @@ export default async function SuperAdminPage() {
       label: "Accounts",
       value: String(staff.length),
       hint: `${staff.filter((member) => member.role === "super_admin").length} super · ${staff.filter((member) => member.role === "admin").length} admin`,
-      icon: Users,
     },
     {
       label: "Live catalog",
       value: String(metrics.live.length),
       hint: `${metrics.demonstration.length} testers · ${missingPhotos} without photos`,
-      icon: Layers,
     },
     {
       label: "Checkout",
       value: launch.checkout,
       hint: launch.moolre ? "Moolre keys present" : "Card pay not configured",
-      icon: KeyRound,
     },
     {
       label: "Your role",
       value: "Super admin",
       hint: auth.email ?? "House owner",
-      icon: Shield,
     },
   ];
 
@@ -54,24 +47,18 @@ export default async function SuperAdminPage() {
       <header>
         <h1 className="text-2xl font-semibold">Super admin</h1>
         <p className="mt-2 text-sm text-taupe">
-          Staff roles, launch keys, and catalog health. Shop work stays in Orders and Products.
+          Staff roles, checkout keys, and catalog health. Day-to-day shop work stays in Orders and Products.
         </p>
       </header>
 
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {cards.map((card) => {
-          const Icon = card.icon;
-          return (
-            <article key={card.label} className="border border-espresso/10 bg-white p-5">
-              <div className="flex items-start justify-between gap-3">
-                <p className="text-sm text-taupe">{card.label}</p>
-                <Icon className="size-4 text-taupe" aria-hidden />
-              </div>
-              <p className="mt-3 text-2xl font-semibold leading-none">{card.value}</p>
-              <p className="mt-2 text-sm text-taupe">{card.hint}</p>
-            </article>
-          );
-        })}
+        {cards.map((card) => (
+          <article key={card.label} className="border border-espresso/10 bg-white p-5">
+            <p className="text-sm text-taupe">{card.label}</p>
+            <p className="mt-3 text-2xl font-semibold leading-none">{card.value}</p>
+            <p className="mt-2 text-sm text-taupe">{card.hint}</p>
+          </article>
+        ))}
       </section>
 
       <section className="border border-espresso/10 bg-white p-5">
@@ -139,18 +126,6 @@ export default async function SuperAdminPage() {
             </table>
           </div>
         )}
-      </section>
-
-      <section className="flex flex-wrap gap-3">
-        <Link href="/admin/orders" className={cn(buttonVariants({ variant: "outline" }))}>
-          Orders
-        </Link>
-        <Link href="/admin/products" className={cn(buttonVariants({ variant: "outline" }))}>
-          Products
-        </Link>
-        <Link href="/admin/inbox" className={cn(buttonVariants({ variant: "outline" }))}>
-          Inbox
-        </Link>
       </section>
     </div>
   );

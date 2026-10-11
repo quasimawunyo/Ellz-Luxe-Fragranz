@@ -21,7 +21,7 @@ export default async function CheckoutPage() {
     return (
       <div className="mx-auto max-w-3xl px-4 py-16">
         <EmptyState title="Your cart is empty">
-          <Link href="/shop">Return to the shop</Link>
+          <Link href="/shop">Shop</Link>
         </EmptyState>
       </div>
     );

@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { AlertTriangle, Layers, Package, ShoppingBag, Wallet } from "lucide-react";
 import { listOrders } from "@/lib/orders/store";
 import { getAllProductsForAdmin } from "@/lib/catalog/queries";
 import { countContactMessages, countNewsletterSubscribers, listContactMessages } from "@/lib/admin/inbox";
@@ -8,8 +7,6 @@ import { formatMoney } from "@/lib/money";
 import { totalStock } from "@/lib/catalog/helpers";
 import { StatusPill } from "@/components/admin/status-pill";
 import { CustomerWhatsApp } from "@/components/admin/customer-whatsapp";
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { getLaunchStatus } from "@/lib/launch/status";
 
 export const metadata = { title: "Overview · Admin" };
@@ -33,25 +30,21 @@ export default async function AdminDashboardPage() {
       label: "Paid revenue",
       value: formatMoney(metrics.paidRevenue),
       hint: `${metrics.paidCount} verified ${metrics.paidCount === 1 ? "order" : "orders"}`,
-      icon: Wallet,
     },
     {
       label: "Awaiting payment",
       value: formatMoney(metrics.pendingValue),
       hint: `${metrics.pendingCount} not counted as income`,
-      icon: ShoppingBag,
     },
     {
       label: "To pack",
       value: String(metrics.toPack.length),
       hint: "Paid, still unfulfilled",
-      icon: Package,
     },
     {
       label: "Catalog",
       value: String(metrics.live.length),
       hint: `${metrics.demonstration.length} testers · ${metrics.drafts.length} drafts`,
-      icon: Layers,
     },
   ];
 
@@ -60,27 +53,21 @@ export default async function AdminDashboardPage() {
       {(!launch.canSaveCatalog || launch.checkout === "WhatsApp") && (
         <p className="border border-espresso/10 bg-white px-4 py-3 text-sm">
           {launch.canSaveCatalog
-            ? "Catalog saves are on. Card checkout waits on Moolre keys in Vercel."
-            : "Add SUPABASE_SERVICE_ROLE_KEY in Vercel so product saves stick. Checkout is still WhatsApp until Moolre keys are set."}{" "}
+            ? "Catalog saves are on. Card checkout waits on Moolre keys."
+            : "Product saves need the service role key. Checkout stays on WhatsApp until Moolre keys are set."}{" "}
           <Link href="/admin/settings" className="underline underline-offset-4">
-            Launch details
+            Settings
           </Link>
         </p>
       )}
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {cards.map((card) => {
-          const Icon = card.icon;
-          return (
+        {cards.map((card) => (
           <article key={card.label} className="border border-espresso/10 bg-white p-5">
-            <div className="flex items-start justify-between gap-3">
-              <p className="text-sm text-taupe">{card.label}</p>
-              <Icon className="size-4 text-taupe" aria-hidden />
-            </div>
+            <p className="text-sm text-taupe">{card.label}</p>
             <p className="mt-3 text-2xl font-semibold leading-none">{card.value}</p>
             <p className="mt-2 text-sm text-taupe">{card.hint}</p>
           </article>
-          );
-        })}
+        ))}
       </section>
 
       <section className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
@@ -107,32 +94,33 @@ export default async function AdminDashboardPage() {
         </article>
 
         <article className="border border-espresso/10 bg-white p-5">
-          <h2 className="text-lg font-semibold">Quick actions</h2>
+          <h2 className="text-lg font-semibold">Open</h2>
           <ul className="mt-5 space-y-3 text-sm">
             <li>
-              <Link href="/admin/products/new" className={cn(buttonVariants({ variant: "gold" }), "w-full")}>
-                Add product
+              <Link href="/admin/products/new" className="underline underline-offset-4">
+                New bottle
               </Link>
             </li>
             <li>
-              <Link href="/admin/orders?payment=pending" className={cn(buttonVariants({ variant: "outline" }), "w-full")}>
+              <Link href="/admin/orders?payment=pending" className="underline underline-offset-4">
                 Unpaid orders
               </Link>
             </li>
             <li>
-              <Link href="/admin/inbox" className={cn(buttonVariants({ variant: "outline" }), "w-full")}>
+              <Link href="/admin/inbox" className="underline underline-offset-4">
                 Inbox
               </Link>
             </li>
             <li>
-              <Link href="/admin/settings" className={cn(buttonVariants({ variant: "ghost" }), "w-full justify-start px-0")}>
+              <Link href="/admin/settings" className="underline underline-offset-4">
                 Settings
               </Link>
             </li>
           </ul>
-            <p className="mt-6 text-sm text-taupe">
-              {metrics.subscribers} newsletter {metrics.subscribers === 1 ? "address" : "addresses"} · {metrics.messages} contact {metrics.messages === 1 ? "note" : "notes"}.
-            </p>
+          <p className="mt-6 text-sm text-taupe">
+            {metrics.subscribers} newsletter {metrics.subscribers === 1 ? "address" : "addresses"} · {metrics.messages}{" "}
+            contact {metrics.messages === 1 ? "note" : "notes"}.
+          </p>
         </article>
       </section>
 
@@ -179,9 +167,6 @@ export default async function AdminDashboardPage() {
         <article className="border border-espresso/10 bg-white">
           <div className="flex items-center justify-between border-b border-espresso/10 px-5 py-3">
             <h2 className="text-lg font-semibold">Needs attention</h2>
-            {metrics.lowStock.length || metrics.outOfStock.length || metrics.toPack.length ? (
-              <AlertTriangle className="size-4 text-champagne" aria-hidden />
-            ) : null}
           </div>
           <div className="space-y-6 px-6 py-5 text-sm">
             <div>

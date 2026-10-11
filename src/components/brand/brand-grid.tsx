@@ -6,31 +6,14 @@ const LOOP = [...HOUSE_BRANDS, ...HOUSE_BRANDS];
 
 export function BrandGrid() {
   return (
-    <section className="border-y border-espresso/10 bg-white" aria-label="Our brands">
-      <style>{`
-        @keyframes brand-marquee {
-          from { transform: translateX(0); }
-          to { transform: translateX(-50%); }
-        }
-        .brand-marquee-track {
-          animation: brand-marquee 40s linear infinite;
-        }
-        .brand-marquee-track:hover {
-          animation-play-state: paused;
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .brand-marquee-track {
-            animation: none;
-          }
-        }
-      `}</style>
+    <section className="border-y border-espresso/10 bg-white" aria-label="Brands">
       <div className="flex items-stretch">
-        <p className="hidden shrink-0 items-center border-r border-espresso/10 px-5 text-sm font-medium text-espresso sm:flex">
+        <p className="hidden shrink-0 items-center border-r border-espresso/10 px-5 text-sm text-espresso sm:flex">
           Brands
         </p>
         <div className="min-w-0 flex-1 overflow-hidden">
-          <p className="px-4 pt-3 text-center text-sm font-medium sm:hidden">Brands</p>
-          <div className="brand-marquee-track flex w-max animate-brand-marquee items-center py-4 hover:[animation-play-state:paused]">
+          <p className="px-4 pt-3 text-center text-sm sm:hidden">Brands</p>
+          <div className="brand-marquee-track flex w-max items-center py-4">
             {LOOP.map((brand, index) => (
               <Link
                 key={`${brand.slug}-${index}`}

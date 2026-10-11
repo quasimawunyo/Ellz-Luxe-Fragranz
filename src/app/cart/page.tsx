@@ -21,7 +21,7 @@ export default async function CartPage() {
       {!cart.lines.length ? (
         <div className="mt-10">
           <EmptyState title="Your cart is empty">
-            <Link href="/shop">Continue shopping</Link>
+            <Link href="/shop">Shop</Link>
           </EmptyState>
         </div>
       ) : (

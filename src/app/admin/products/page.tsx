@@ -19,7 +19,7 @@ export default async function AdminProductsPage() {
           <p className="mt-1 text-sm text-taupe">{products.length} products. Uncheck tester when a bottle is live stock.</p>
         </div>
         <Link href="/admin/products/new" className={cn(buttonVariants({ variant: "gold", size: "sm" }))}>
-          New product
+          New bottle
         </Link>
       </div>
       <div className="luxe-panel mt-8 overflow-x-auto">
