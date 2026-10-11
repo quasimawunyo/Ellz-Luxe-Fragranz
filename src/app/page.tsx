@@ -37,13 +37,14 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="px-4 py-12 text-center">
-        <p className="text-xs uppercase tracking-[0.28em] text-champagne">Ghana boutique</p>
-        <h1 className="mt-3 font-serif text-4xl leading-tight md:text-6xl">Welcome to EllzLuxe Fragranz</h1>
-        <h2 className="mx-auto mt-4 max-w-xl font-serif text-xl italic font-normal text-taupe">
+      <section className="px-4 py-20 text-center">
+        <p className="text-[11px] uppercase tracking-[0.42em] text-champagne">Ghana boutique</p>
+        <div className="luxe-rule mx-auto mt-5 w-16" />
+        <h1 className="mt-6 font-serif text-5xl leading-tight md:text-7xl">Welcome to EllzLuxe Fragranz</h1>
+        <h2 className="mx-auto mt-5 max-w-xl font-serif text-2xl italic font-normal text-taupe">
           Fragrance as a private signature.
         </h2>
-        <Link href="/shop" className={cn(buttonVariants({ variant: "gold" }), "mt-8 inline-flex rounded-full")}>
+        <Link href="/shop" className={cn(buttonVariants({ variant: "gold" }), "mt-10 inline-flex")}>
           Shop now
         </Link>
       </section>

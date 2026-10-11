@@ -26,7 +26,9 @@ export function AdminNav() {
             href={link.href}
             className={cn(
               "inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs uppercase tracking-[0.16em] transition-colors",
-              active ? "bg-champagne text-espresso" : "text-ivory/80 hover:bg-white/10 hover:text-ivory",
+              active
+                ? "border border-champagne bg-champagne text-espresso"
+                : "border border-transparent text-ivory/75 hover:border-ivory/20 hover:text-ivory",
             )}
           >
             <Icon className="size-3.5" aria-hidden />

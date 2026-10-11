@@ -18,7 +18,7 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
   return (
     <article className="group">
       <Link href={`/product/${product.slug}`} className="block">
-        <div className="relative aspect-[3/4] overflow-hidden bg-espresso/5">
+        <div className="relative aspect-[3/4] overflow-hidden bg-espresso/5 ring-1 ring-espresso/10 transition duration-500 group-hover:ring-champagne/60">
           {image ? (
             <Image
               src={image.url}
@@ -43,10 +43,10 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
             </span>
           ) : null}
         </div>
-        <div className="mt-4 space-y-1">
-          <p className="text-[11px] uppercase tracking-[0.2em] text-taupe">{product.brand}</p>
-          <h3 className="font-serif text-2xl leading-tight">{product.name}</h3>
-          <Price amountMinor={price} compareAtMinor={compare} className="text-sm" />
+        <div className="mt-5 space-y-1.5">
+          <p className="text-[10px] uppercase tracking-[0.24em] text-taupe">{product.brand}</p>
+          <h3 className="font-serif text-2xl leading-tight group-hover:text-champagne">{product.name}</h3>
+          <Price amountMinor={price} compareAtMinor={compare} className="font-serif text-base" />
         </div>
       </Link>
       {defaultVariant ? <QuickAdd variantId={defaultVariant.id} disabled={stock < 1} /> : null}

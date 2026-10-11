@@ -12,7 +12,7 @@ export default async function AdminInboxPage() {
       <p className="mt-3 text-sm text-taupe">
         {subscribers} newsletter {subscribers === 1 ? "subscriber" : "subscribers"}. Contact notes are stored when Supabase is connected.
       </p>
-      <ul className="mt-8 divide-y divide-espresso/10 border border-espresso/10 bg-white">
+      <ul className="luxe-panel mt-8 divide-y divide-espresso/10">
         {messages.map((note) => (
           <li key={note.id} className="px-6 py-5">
             <div className="flex flex-wrap items-baseline justify-between gap-2">

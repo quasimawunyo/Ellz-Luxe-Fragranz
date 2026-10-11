@@ -23,7 +23,7 @@ export default async function AdminProductsPage() {
           New product
         </Link>
       </div>
-      <div className="mt-8 overflow-x-auto border border-espresso/10 bg-white">
+      <div className="luxe-panel mt-8 overflow-x-auto">
         <table className="w-full min-w-[44rem] text-left text-sm">
           <thead>
             <tr className="border-b border-espresso/10 text-[11px] uppercase tracking-[0.16em] text-taupe">

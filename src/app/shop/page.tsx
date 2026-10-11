@@ -18,8 +18,9 @@ export default async function ShopPage({
   return (
     <div className="mx-auto max-w-7xl px-4 py-10">
       <Breadcrumbs items={[{ href: "/", label: "Home" }, { label: "Shop" }]} />
-      <h1 className="mt-6 font-serif text-5xl">The catalog</h1>
-      <p className="mt-3 max-w-xl text-taupe">
+      <p className="mt-8 text-[11px] uppercase tracking-[0.36em] text-champagne">Ells Luxe Annex</p>
+      <h1 className="mt-3 font-serif text-5xl md:text-6xl">The catalog</h1>
+      <p className="mt-4 max-w-xl text-taupe">
         House bottles available from Ells Luxe Annex. Demonstration pieces are tagged until a live SKU is confirmed.
       </p>
       <div className="mt-10 grid gap-10 lg:grid-cols-[16rem_1fr]">

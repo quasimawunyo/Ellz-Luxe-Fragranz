@@ -59,7 +59,7 @@ export default async function AdminDashboardPage() {
         {cards.map((card) => {
           const Icon = card.icon;
           return (
-          <article key={card.label} className="border border-espresso/10 bg-white p-5 shadow-[0_1px_0_rgba(14,39,20,0.04)]">
+          <article key={card.label} className="luxe-panel p-6">
             <div className="flex items-start justify-between gap-3">
               <p className="text-[11px] uppercase tracking-[0.2em] text-taupe">{card.label}</p>
               <Icon className="size-4 text-champagne" aria-hidden />
@@ -72,7 +72,7 @@ export default async function AdminDashboardPage() {
       </section>
 
       <section className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
-        <article className="border border-espresso/10 bg-white p-6">
+        <article className="luxe-panel p-6">
           <div className="flex items-end justify-between gap-4">
             <div>
               <h2 className="font-serif text-3xl">Last 7 days</h2>
@@ -84,7 +84,7 @@ export default async function AdminDashboardPage() {
             {metrics.weekSeries.map((point) => (
               <div key={point.label} className="flex h-full flex-1 flex-col justify-end">
                 <div
-                  className="w-full bg-espresso"
+                  className="w-full bg-champagne"
                   style={{ height: `${Math.max(6, (point.amountMinor / metrics.weekPeak) * 100)}%` }}
                   title={`${point.label}: ${formatMoney(point.amountMinor)}`}
                 />
@@ -94,7 +94,7 @@ export default async function AdminDashboardPage() {
           </div>
         </article>
 
-        <article className="border border-espresso/10 bg-white p-6">
+        <article className="luxe-panel p-6">
           <h2 className="font-serif text-3xl">Quick actions</h2>
           <ul className="mt-6 space-y-3 text-sm">
             <li>
@@ -125,7 +125,7 @@ export default async function AdminDashboardPage() {
       </section>
 
       <section className="grid gap-6 lg:grid-cols-2">
-        <article className="border border-espresso/10 bg-white">
+        <article className="luxe-panel">
           <div className="flex items-center justify-between border-b border-espresso/10 px-6 py-4">
             <h2 className="font-serif text-3xl">Recent orders</h2>
             <Link href="/admin/orders" className="text-xs uppercase tracking-[0.16em] text-taupe">
@@ -164,7 +164,7 @@ export default async function AdminDashboardPage() {
           </ul>
         </article>
 
-        <article className="border border-espresso/10 bg-white">
+        <article className="luxe-panel">
           <div className="flex items-center justify-between border-b border-espresso/10 px-6 py-4">
             <h2 className="font-serif text-3xl">Needs attention</h2>
             {metrics.lowStock.length || metrics.outOfStock.length || metrics.toPack.length ? (
@@ -235,7 +235,7 @@ export default async function AdminDashboardPage() {
         </article>
       </section>
 
-      <section className="border border-espresso/10 bg-white">
+      <section className="luxe-panel">
         <div className="flex items-center justify-between border-b border-espresso/10 px-6 py-4">
           <h2 className="font-serif text-3xl">Latest messages</h2>
           <Link href="/admin/inbox" className="text-xs uppercase tracking-[0.16em] text-taupe">

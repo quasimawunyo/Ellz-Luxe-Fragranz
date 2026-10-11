@@ -55,8 +55,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           {product.isDemonstration ? (
             <p className="text-xs uppercase tracking-[0.2em] text-champagne">Demonstration fragrance</p>
           ) : null}
-          <h1 className="mt-3 font-serif text-5xl">{product.name}</h1>
-          <p className="mt-2 text-sm uppercase tracking-[0.16em] text-taupe">
+          <h1 className="mt-3 font-serif text-5xl md:text-6xl">{product.name}</h1>
+          <p className="mt-3 text-[11px] uppercase tracking-[0.22em] text-taupe">
             {product.brand}
             {product.concentration ? ` · ${product.concentration}` : ""}
           </p>

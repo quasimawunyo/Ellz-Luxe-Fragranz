@@ -67,7 +67,7 @@ export default async function CartPage() {
               </li>
             ))}
           </ul>
-          <aside className="h-fit border border-espresso/10 bg-white p-6">
+          <aside className="luxe-panel h-fit p-6">
             <p className="text-xs uppercase tracking-[0.18em] text-taupe">Subtotal</p>
             <p className="mt-2 font-serif text-3xl">
               <Price amountMinor={cart.subtotalMinor} currencyCode={cart.currencyCode} />

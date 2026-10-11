@@ -6,7 +6,7 @@ export function TrustAndPay({ phone }: { phone: string }) {
 
   return (
     <div>
-      <section className="border-t border-espresso/10 bg-white py-8" aria-label="Payment methods">
+      <section className="border-t border-champagne/20 bg-ivory py-10" aria-label="Payment methods">
         <p className="text-center text-[11px] font-medium uppercase tracking-[0.28em] text-espresso">
           Payment methods
         </p>

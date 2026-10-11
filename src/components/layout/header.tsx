@@ -36,8 +36,8 @@ export function Header({
   const router = useRouter();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-espresso/10 bg-white">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3">
+    <header className="sticky top-0 z-40 border-b border-champagne/25 bg-ivory/90 backdrop-blur-md">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4">
         <button
           type="button"
           className="lg:hidden"
@@ -47,7 +47,7 @@ export function Header({
           {open ? <X /> : <Menu />}
         </button>
         <BrandLogo className="w-20 sm:w-24 md:w-28" size={224} priority />
-        <nav className="hidden items-center gap-7 text-sm lg:flex">
+        <nav className="hidden items-center gap-8 text-[11px] uppercase tracking-[0.22em] lg:flex">
           {NAV.map((item) =>
             item.label === "Shop" ? (
               <div key={item.href} className="relative">
@@ -57,15 +57,15 @@ export function Header({
                   aria-expanded={shopOpen}
                   onClick={() => setShopOpen((value) => !value)}
                 >
-                  Shop <ChevronDown className="size-4" />
+                  Shop <ChevronDown className="size-3.5" />
                 </button>
                 {shopOpen ? (
-                  <div className="absolute left-0 top-full z-50 mt-3 min-w-48 border border-espresso/10 bg-white py-2 shadow-lg">
+                  <div className="absolute left-0 top-full z-50 mt-4 min-w-52 border border-champagne/30 bg-ivory py-3 shadow-[0_20px_50px_rgba(18,36,24,0.08)]">
                     {SHOP.map((link) => (
                       <Link
                         key={link.href + link.label}
                         href={link.href}
-                        className="block px-4 py-2 text-sm hover:bg-ivory"
+                        className="block px-5 py-2 text-[11px] uppercase tracking-[0.18em] hover:text-champagne"
                         onClick={() => setShopOpen(false)}
                       >
                         {link.label}
@@ -91,14 +91,14 @@ export function Header({
         </nav>
         <Link href="/cart" className="relative" aria-label={`Cart, ${cartCount} ${cartCount === 1 ? "item" : "items"}`}>
           <ShoppingBag className="size-5" />
-          <span className="absolute -right-2 -top-2 grid size-5 place-items-center bg-champagne text-[10px] font-semibold text-espresso">
+          <span className="absolute -right-2 -top-2 grid size-5 place-items-center rounded-full bg-champagne text-[10px] font-semibold text-espresso">
             {cartCount}
           </span>
         </Link>
       </div>
-      <div className="border-t border-espresso/10 bg-ivory px-4 py-3">
+      <div className="border-t border-champagne/20 px-4 py-3">
         <form
-          className="mx-auto flex max-w-7xl items-center gap-2 rounded-full border border-espresso/10 bg-white px-4"
+          className="mx-auto flex max-w-7xl items-center gap-3 border-b border-espresso/15 px-1"
           onSubmit={(event) => {
             event.preventDefault();
             const q = String(new FormData(event.currentTarget).get("q") ?? "");
@@ -113,20 +113,20 @@ export function Header({
             id="site-search"
             name="q"
             placeholder="Find your perfume…"
-            className="min-h-11 flex-1 bg-transparent text-sm outline-none"
+            className="min-h-10 flex-1 bg-transparent text-sm outline-none placeholder:text-taupe"
           />
-          <button type="submit" className="text-xs uppercase tracking-widest text-espresso">
+          <button type="submit" className="text-[11px] uppercase tracking-[0.22em] text-espresso">
             Search
           </button>
         </form>
       </div>
       {open ? (
-        <nav className="border-t border-espresso/10 px-4 py-4 lg:hidden">
+        <nav className="border-t border-champagne/20 px-4 py-4 lg:hidden">
           {NAV.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="block py-3 text-sm uppercase tracking-[0.18em]"
+              className="block py-3 text-[11px] uppercase tracking-[0.22em]"
               onClick={() => setOpen(false)}
             >
               {item.label}
@@ -145,7 +145,7 @@ export function Header({
           {isAdmin ? (
             <Link
               href="/admin"
-              className="mt-2 block py-3 text-sm uppercase tracking-[0.18em]"
+              className="mt-2 block py-3 text-[11px] uppercase tracking-[0.22em]"
               onClick={() => setOpen(false)}
             >
               Admin
@@ -153,7 +153,7 @@ export function Header({
           ) : null}
           <Link
             href={signedIn ? "/account" : "/login"}
-            className="mt-2 flex items-center gap-2 py-3 text-sm uppercase tracking-[0.18em]"
+            className="mt-2 flex items-center gap-2 py-3 text-[11px] uppercase tracking-[0.22em]"
             onClick={() => setOpen(false)}
           >
             <User className="size-4" />

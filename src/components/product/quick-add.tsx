@@ -15,7 +15,7 @@ export function QuickAdd({ variantId, disabled }: { variantId: string; disabled?
       <button
         type="submit"
         disabled={disabled}
-        className={cn(buttonVariants({ variant: "primary", size: "sm" }), "w-full")}
+        className={cn(buttonVariants({ variant: "outline", size: "sm" }), "w-full")}
       >
         {disabled ? "Sold out" : "Add to cart"}
       </button>

@@ -15,7 +15,9 @@ export default async function LoginPage({
   const { next } = await searchParams;
   return (
     <div className="mx-auto max-w-md px-4 py-16">
-      <h1 className="font-serif text-5xl">Sign in</h1>
+      <div className="luxe-panel px-8 py-12">
+      <p className="text-[11px] uppercase tracking-[0.36em] text-champagne">Ells Luxe Annex</p>
+      <h1 className="mt-3 font-serif text-5xl">Sign in</h1>
       {!isSupabaseConfigured() ? (
         <p className="mt-4 text-sm text-taupe">
           Customer accounts require Supabase Auth. Configure environment variables to enable sign-in.
@@ -38,6 +40,7 @@ export default async function LoginPage({
         {" · "}
         <Link href="/forgot-password">Forgot password</Link>
       </p>
+      </div>
     </div>
   );
 }

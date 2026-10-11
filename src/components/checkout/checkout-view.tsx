@@ -117,7 +117,7 @@ export function CheckoutView({
         </div>
         <Button type="submit">{payLabel}</Button>
       </ActionForm>
-      <aside className="h-fit border border-espresso/10 bg-white p-6">
+      <aside className="luxe-panel h-fit p-6">
         <h2 className="font-serif text-2xl">Summary</h2>
         <ul className="mt-4 space-y-3 text-sm">
           {lines.map((line) => (

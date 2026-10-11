@@ -6,9 +6,10 @@ export function EmptyState({
   children?: React.ReactNode;
 }) {
   return (
-    <div className="border border-dashed border-espresso/20 px-8 py-16 text-center">
-      <h2 className="font-serif text-3xl">{title}</h2>
-      {children ? <div className="mt-3 text-taupe">{children}</div> : null}
+    <div className="luxe-panel px-8 py-20 text-center">
+      <div className="luxe-rule mx-auto mb-8 w-24" />
+      <h2 className="font-serif text-4xl">{title}</h2>
+      {children ? <div className="mx-auto mt-4 max-w-md text-sm leading-7 text-taupe">{children}</div> : null}
     </div>
   );
 }

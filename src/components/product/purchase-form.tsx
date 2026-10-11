@@ -38,10 +38,10 @@ export function PurchaseForm({
             return (
               <label
                 key={variant.id}
-                className={`cursor-pointer border px-4 py-2 text-sm ${
+                className={`cursor-pointer border px-5 py-2.5 text-[11px] uppercase tracking-[0.16em] ${
                   selectedSize
-                    ? "border-espresso bg-espresso text-ivory"
-                    : "border-espresso/20"
+                    ? "border-champagne bg-espresso text-ivory"
+                    : "border-espresso/20 hover:border-champagne"
                 }`}
               >
                 <input

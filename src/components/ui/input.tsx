@@ -5,7 +5,7 @@ export function Input({ className, ...props }: ComponentProps<"input">) {
   return (
     <input
       className={cn(
-        "min-h-11 w-full border border-espresso/15 bg-white px-3 text-sm text-espresso placeholder:text-taupe",
+        "min-h-11 w-full border border-espresso/12 bg-white/70 px-3 text-sm text-espresso placeholder:text-taupe/80 transition-colors focus:border-champagne",
         className,
       )}
       {...props}
@@ -26,7 +26,7 @@ export function Textarea({ className, ...props }: ComponentProps<"textarea">) {
   return (
     <textarea
       className={cn(
-        "min-h-32 w-full border border-espresso/15 bg-white px-3 py-3 text-sm text-espresso placeholder:text-taupe",
+        "min-h-32 w-full border border-espresso/12 bg-white/70 px-3 py-3 text-sm text-espresso placeholder:text-taupe/80 transition-colors focus:border-champagne",
         className,
       )}
       {...props}

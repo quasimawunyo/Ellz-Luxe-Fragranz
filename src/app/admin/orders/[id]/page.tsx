@@ -22,7 +22,7 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
       {order.paystackReference ? (
         <p className="mt-3 text-sm text-taupe">Reference {order.paystackReference}</p>
       ) : null}
-      <section className="mt-8 border border-espresso/10 bg-white p-6">
+      <section className="luxe-panel mt-8 p-6">
         <p className="text-[11px] uppercase tracking-[0.18em] text-taupe">Customer</p>
         <h2 className="mt-2 font-serif text-3xl">{order.fullName}</h2>
         <dl className="mt-4 space-y-3 text-sm">
