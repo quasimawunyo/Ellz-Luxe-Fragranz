@@ -11,7 +11,9 @@ export default async function AdminSettingsPage() {
   const settings = await getStoreSettings();
   return (
     <div className="max-w-2xl">
-      <h1 className="font-serif text-4xl">Store settings</h1>
+      <p className="text-[11px] uppercase tracking-[0.22em] text-taupe">Annex</p>
+      <h1 className="mt-2 font-serif text-4xl">Store settings</h1>
+      <p className="mt-2 text-sm text-taupe">Contact, delivery fees, and story copy shown on the shop.</p>
       <ActionForm action={saveSettingsAction} className="mt-8 space-y-4">
         <div>
           <Label htmlFor="announcement">Announcement</Label>

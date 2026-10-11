@@ -6,6 +6,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
 import { Price } from "@/components/ui/price";
 import { annexOrderNotice, whatsappHref } from "@/lib/whatsapp";
+import { StatusPill } from "@/components/admin/status-pill";
 import { cn } from "@/lib/utils";
 
 export default async function AdminOrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -17,10 +18,13 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
   return (
     <div className="max-w-2xl">
       <h1 className="font-serif text-4xl">{order.orderNumber}</h1>
-      <p className="mt-2 text-sm text-taupe">
-        Payment {order.paymentStatus} · Fulfillment {order.fulfillmentStatus}
-        {order.paystackReference ? ` · ${order.paystackReference}` : ""}
-      </p>
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        <StatusPill value={order.paymentStatus} />
+        <StatusPill value={order.fulfillmentStatus} />
+      </div>
+      {order.paystackReference ? (
+        <p className="mt-3 text-sm text-taupe">Reference {order.paystackReference}</p>
+      ) : null}
       <p className="mt-4 text-sm">
         {order.fullName} · {order.email} · {order.phone}
         <br />
