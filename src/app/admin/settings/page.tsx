@@ -4,15 +4,36 @@ import { ActionForm } from "@/components/forms/form-status";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/input";
 import { cedisInputFromMinor } from "@/lib/money";
+import { getLaunchStatus } from "@/lib/launch/status";
 
 export const metadata = { title: "Settings · Admin" };
 
 export default async function AdminSettingsPage() {
   const settings = await getStoreSettings();
+  const launch = getLaunchStatus();
   return (
     <div className="max-w-2xl">
       <h1 className="text-2xl font-semibold">Store settings</h1>
       <p className="mt-2 text-sm text-taupe">Contact, delivery fees, and story copy shown on the shop.</p>
+      <section className="mt-8 border border-espresso/10 bg-white p-5 text-sm">
+        <h2 className="text-lg font-semibold">Launch</h2>
+        <ul className="mt-4 space-y-2">
+          <li>Catalog saves: {launch.canSaveCatalog ? "Ready" : "Needs SUPABASE_SERVICE_ROLE_KEY on Vercel"}</li>
+          <li>Checkout: {launch.checkout}</li>
+          <li>Moolre keys: {launch.moolre ? "Ready" : "Not set"}</li>
+          <li>Paystack keys: {launch.paystack ? "Ready" : "Not set"}</li>
+        </ul>
+        <p className="mt-4 text-taupe">Moolre callback URL</p>
+        <p className="mt-1 break-all">{launch.moolreWebhook}</p>
+        <p className="mt-4 text-taupe">
+          Add <code className="text-espresso">MOOLRE_API_USER</code>,{" "}
+          <code className="text-espresso">MOOLRE_PUBLIC_KEY</code>,{" "}
+          <code className="text-espresso">MOOLRE_ACCOUNT_NUMBER</code>,{" "}
+          <code className="text-espresso">MOOLRE_CALLBACK_SECRET</code>, and{" "}
+          <code className="text-espresso">NEXT_PUBLIC_SITE_URL</code> in Vercel → Settings → Environment
+          Variables, then redeploy.
+        </p>
+      </section>
       <ActionForm action={saveSettingsAction} className="mt-8 space-y-4">
         <div>
           <Label htmlFor="announcement">Announcement</Label>

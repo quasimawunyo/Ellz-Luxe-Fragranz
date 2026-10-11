@@ -3,6 +3,7 @@ import { connection } from "next/server";
 import { Cormorant_Garamond, Outfit } from "next/font/google";
 import { Toaster } from "@/components/ui/toaster";
 import { SiteShell } from "@/components/layout/site-shell";
+import { resolveSiteUrl } from "@/lib/site-url";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -17,7 +18,13 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+  metadataBase: new URL(
+    resolveSiteUrl({
+      NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
+      VERCEL_PROJECT_PRODUCTION_URL: process.env.VERCEL_PROJECT_PRODUCTION_URL,
+      VERCEL_URL: process.env.VERCEL_URL,
+    }),
+  ),
   title: {
     default: "EllzLuxe Fragranz",
     template: "%s · EllzLuxe Fragranz",

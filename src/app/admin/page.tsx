@@ -10,6 +10,7 @@ import { StatusPill } from "@/components/admin/status-pill";
 import { CustomerWhatsApp } from "@/components/admin/customer-whatsapp";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { getLaunchStatus } from "@/lib/launch/status";
 
 export const metadata = { title: "Overview · Admin" };
 
@@ -25,6 +26,7 @@ export default async function AdminDashboardPage() {
     messages: messageCount,
     subscribers,
   });
+  const launch = getLaunchStatus();
 
   const cards = [
     {
@@ -55,6 +57,16 @@ export default async function AdminDashboardPage() {
 
   return (
     <div className="space-y-10">
+      {(!launch.canSaveCatalog || launch.checkout === "WhatsApp") && (
+        <p className="border border-espresso/10 bg-white px-4 py-3 text-sm">
+          {launch.canSaveCatalog
+            ? "Catalog saves are on. Card checkout waits on Moolre keys in Vercel."
+            : "Add SUPABASE_SERVICE_ROLE_KEY in Vercel so product saves stick. Checkout is still WhatsApp until Moolre keys are set."}{" "}
+          <Link href="/admin/settings" className="underline underline-offset-4">
+            Launch details
+          </Link>
+        </p>
+      )}
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {cards.map((card) => {
           const Icon = card.icon;

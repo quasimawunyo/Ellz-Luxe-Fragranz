@@ -20,7 +20,7 @@ export default async function AdminProductPage({ params }: { params: Promise<{ i
     <div className="max-w-2xl">
       <h1 className="text-2xl font-semibold">{isNew ? "New product" : product?.name}</h1>
       <p className="mt-2 text-sm text-taupe">
-        Prices are Ghana cedis. Saving requires a Supabase service role. Uncheck tester when this is live stock.
+        Prices are Ghana cedis. Saving requires a Supabase service role. Leave tester unchecked for bottles you sell.
       </p>
       <ActionForm action={saveProductAction} encType="multipart/form-data" className="mt-8 space-y-4">
         <input type="hidden" name="id" value={product?.id ?? ""} />
@@ -72,12 +72,12 @@ export default async function AdminProductPage({ params }: { params: Promise<{ i
           <input type="checkbox" name="featured" defaultChecked={product?.featured} /> Featured
         </label>
         <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" name="isDemonstration" defaultChecked={product?.isDemonstration ?? true} />
-          Demonstration piece (not a confirmed live SKU)
+          <input type="checkbox" name="isDemonstration" defaultChecked={product?.isDemonstration ?? false} />
+          Tester (not for sale)
         </label>
         <div>
           <Label htmlFor="status">Status</Label>
-          <select id="status" name="status" defaultValue={product?.status ?? "draft"} className="min-h-11 w-full border border-espresso/15 bg-white px-3 text-sm">
+          <select id="status" name="status" defaultValue={product?.status ?? "published"} className="min-h-11 w-full border border-espresso/15 bg-white px-3 text-sm">
             <option value="draft">Draft</option>
             <option value="published">Published</option>
             <option value="archived">Archived</option>
