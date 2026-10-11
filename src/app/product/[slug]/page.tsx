@@ -61,7 +61,12 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             {product.concentration ? ` · ${product.concentration}` : ""}
           </p>
           <p className="mt-6 max-w-lg leading-7 text-espresso/80">{product.description}</p>
-          <PurchaseForm variants={product.variants} currencyCode={settings.currencyCode} />
+          <PurchaseForm
+            variants={product.variants}
+            productId={product.id}
+            productName={product.name}
+            currencyCode={settings.currencyCode}
+          />
           <dl className="mt-10 space-y-4 border-t border-espresso/10 pt-8 text-sm">
             <div>
               <dt className="text-sm text-taupe">Top notes</dt>

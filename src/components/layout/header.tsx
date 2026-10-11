@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { ChevronDown, Menu, Search, ShoppingBag, User, X } from "lucide-react";
+import { SavedHeartLink } from "@/components/layout/saved-heart-link";
 import { useRouter } from "next/navigation";
 import { BrandLogo } from "@/components/brand/logo";
 
@@ -117,6 +118,7 @@ export function Header({
           ) : (
             <span className="inline-block size-5" aria-hidden />
           )}
+          <SavedHeartLink className="hover:text-champagne" />
           <Link href="/cart" className="relative" aria-label={`Cart, ${cartCount} ${cartCount === 1 ? "item" : "items"}`}>
             <ShoppingBag className="size-5" />
             {ready && cartCount > 0 ? (
@@ -169,6 +171,9 @@ export function Header({
               Admin
             </Link>
           ) : null}
+          <Link href="/saved" className="mt-1 block py-2.5 text-sm" onClick={() => setOpen(false)}>
+            Saved
+          </Link>
           <Link
             href={signedIn ? "/account" : "/login"}
             className="mt-1 block py-2.5 text-sm"

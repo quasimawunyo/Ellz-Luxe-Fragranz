@@ -6,6 +6,7 @@
   --espresso: #1a211c;
   --rich-black: #121814;
   --taupe: #6b706b;
+  --leaf: #1f6b45;
   --white: #fcfbf8;
   --background: var(--ivory);
   --foreground: var(--espresso);
@@ -19,6 +20,7 @@
   --color-espresso: var(--espresso);
   --color-rich: var(--rich-black);
   --color-taupe: var(--taupe);
+  --color-leaf: var(--leaf);
   --color-white: var(--white);
   --color-background: var(--background);
   --color-foreground: var(--foreground);

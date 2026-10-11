@@ -29,6 +29,17 @@ function applyStock(products: CatalogProduct[], overlay: Record<string, number>)
   }));
 }
 
+function withCategoryNames(
+  products: CatalogProduct[],
+  categories: { id: string; name: string }[],
+) {
+  const names = Object.fromEntries(categories.map((category) => [category.id, category.name]));
+  return products.map((product) => ({
+    ...product,
+    categoryName: product.categoryName ?? names[product.categoryId] ?? product.brand,
+  }));
+}
+
 export async function getStoreSettings(): Promise<StoreSettings> {
   if (!isSupabaseConfigured()) return DEMO_SETTINGS;
   const supabase = await createUserSupabase();
@@ -99,24 +110,25 @@ export async function getCategories() {
 async function loadAllProducts(): Promise<CatalogProduct[]> {
   if (!isSupabaseConfigured()) {
     const overlay = await demoStockOverlay();
-    return applyStock(DEMO_PRODUCTS, overlay);
+    return withCategoryNames(applyStock(DEMO_PRODUCTS, overlay), DEMO_CATEGORIES);
   }
   const supabase = createServiceClient() ?? (await createUserSupabase());
   if (!supabase) {
     const overlay = await demoStockOverlay();
-    return applyStock(DEMO_PRODUCTS, overlay);
+    return withCategoryNames(applyStock(DEMO_PRODUCTS, overlay), DEMO_CATEGORIES);
   }
 
   const { data: products } = await supabase.from("products").select("*");
   const { data: variants } = await supabase.from("product_variants").select("*");
   const { data: images } = await supabase.from("product_images").select("*");
   const { data: links } = await supabase.from("collection_products").select("*");
+  const { data: categories } = await supabase.from("categories").select("id, name");
   if (!products?.length) {
     const overlay = await demoStockOverlay();
-    return applyStock(DEMO_PRODUCTS, overlay);
+    return withCategoryNames(applyStock(DEMO_PRODUCTS, overlay), DEMO_CATEGORIES);
   }
 
-  return products.map((product) => ({
+  return withCategoryNames(products.map((product) => ({
     id: product.id,
     slug: product.slug,
     name: product.name,
@@ -156,7 +168,7 @@ async function loadAllProducts(): Promise<CatalogProduct[]> {
         stock: variant.stock,
       })),
     createdAt: product.created_at,
-  }));
+  })), categories ?? []);
 }
 
 export async function getPublishedProducts() {

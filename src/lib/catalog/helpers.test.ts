@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { filterProducts } from "@/lib/catalog/helpers";
+import { filterProducts, isNewProduct } from "@/lib/catalog/helpers";
 import { DEMO_PRODUCTS } from "@/lib/catalog/seed";
 
 describe("catalog filters", () => {
@@ -13,6 +13,11 @@ describe("catalog filters", () => {
     const result = filterProducts(DEMO_PRODUCTS, { brand: "lattafa", sort: "featured", page: 1 });
     expect(result.length).toBeGreaterThan(0);
     expect(result.every((product) => product.brand === "Lattafa")).toBe(true);
+  });
+
+  it("treats recent products as new", () => {
+    expect(isNewProduct({ ...DEMO_PRODUCTS[0], createdAt: new Date().toISOString() })).toBe(true);
+    expect(isNewProduct({ ...DEMO_PRODUCTS[0], createdAt: "2020-01-01T00:00:00.000Z" })).toBe(false);
   });
 
   it("sorts by price ascending", () => {

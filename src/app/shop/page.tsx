@@ -30,7 +30,7 @@ export default async function ShopPage({
         </aside>
         <div>
           {result.items.length ? (
-            <ProductGrid products={result.items} className="lg:grid-cols-3" />
+            <ProductGrid products={result.items} />
           ) : (
             <EmptyState title="No products match">
               <p>Try different filters or reset.</p>

@@ -31,6 +31,7 @@ export type CatalogProduct = {
   brand: string;
   concentration: string | null;
   categoryId: string;
+  categoryName?: string;
   collectionIds: string[];
   featured: boolean;
   status: ProductStatus;

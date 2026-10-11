@@ -1,16 +1,38 @@
-import { listContactMessages, countNewsletterSubscribers } from "@/lib/admin/inbox";
+import { listContactMessages, countNewsletterSubscribers, listRestockWaitlist } from "@/lib/admin/inbox";
+import { getAllProductsForAdmin } from "@/lib/catalog/queries";
 
 export const metadata = { title: "Inbox · Admin" };
 
 export default async function AdminInboxPage() {
-  const [messages, subscribers] = await Promise.all([listContactMessages(), countNewsletterSubscribers()]);
+  const [messages, subscribers, waitlist, products] = await Promise.all([
+    listContactMessages(),
+    countNewsletterSubscribers(),
+    listRestockWaitlist(),
+    getAllProductsForAdmin(),
+  ]);
+  const names = Object.fromEntries(products.map((product) => [product.id, product.name]));
 
   return (
     <div>
       <h1 className="text-2xl font-semibold">Inbox</h1>
       <p className="mt-2 text-sm text-taupe">
-        {subscribers} newsletter {subscribers === 1 ? "subscriber" : "subscribers"}.
+        {subscribers} newsletter {subscribers === 1 ? "subscriber" : "subscribers"} · {waitlist.length} restock{" "}
+        {waitlist.length === 1 ? "request" : "requests"}.
       </p>
+      {waitlist.length ? (
+        <section className="mt-8">
+          <h2 className="text-lg font-semibold">Restock waitlist</h2>
+          <ul className="luxe-panel mt-3 divide-y divide-espresso/10">
+            {waitlist.map((row) => (
+              <li key={row.id} className="flex flex-wrap justify-between gap-2 px-6 py-4 text-sm">
+                <span>
+                  {names[row.productId] ?? row.productId} · {row.email}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
       <ul className="luxe-panel mt-8 divide-y divide-espresso/10">
         {messages.map((note) => (
           <li key={note.id} className="px-6 py-5">

@@ -16,6 +16,13 @@ export function primaryImage(product: Product) {
   return [...product.images].sort((a, b) => a.position - b.position)[0];
 }
 
+const NEW_MS = 21 * 24 * 60 * 60 * 1000;
+
+export function isNewProduct(product: Product, now = Date.now()) {
+  const created = new Date(product.createdAt).getTime();
+  return Number.isFinite(created) && now - created < NEW_MS;
+}
+
 export function searchHaystack(product: Product) {
   return [
     product.name,

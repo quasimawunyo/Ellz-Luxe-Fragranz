@@ -35,6 +35,30 @@ export async function countNewsletterSubscribers() {
   return count ?? 0;
 }
 
+export type WaitlistNote = {
+  id: string;
+  productId: string;
+  email: string;
+  createdAt: string;
+};
+
+export async function listRestockWaitlist(limit = 80): Promise<WaitlistNote[]> {
+  if (!isSupabaseAdminConfigured()) return [];
+  const admin = createServiceClient();
+  if (!admin) return [];
+  const { data } = await admin
+    .from("restock_waitlist")
+    .select("id, product_id, email, created_at")
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  return (data ?? []).map((row) => ({
+    id: row.id,
+    productId: row.product_id,
+    email: row.email,
+    createdAt: row.created_at,
+  }));
+}
+
 export async function countContactMessages() {
   if (!isSupabaseAdminConfigured()) return 0;
   const admin = createServiceClient();

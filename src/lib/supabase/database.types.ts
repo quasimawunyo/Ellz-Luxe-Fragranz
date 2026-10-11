@@ -196,6 +196,11 @@ export type Database = {
         Insert: { email: string };
         Update: never;
       };
+      restock_waitlist: {
+        Row: { id: string; product_id: string; email: string; created_at: string };
+        Insert: { id?: string; product_id: string; email: string; created_at?: string };
+        Update: never;
+      };
       contact_messages: {
         Row: {
           id: string;

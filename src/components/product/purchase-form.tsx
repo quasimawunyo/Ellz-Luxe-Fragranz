@@ -5,13 +5,19 @@ import { addToCartAction } from "@/app/actions/cart";
 import { QuantitySelector } from "@/components/product/quantity-selector";
 import { Button } from "@/components/ui/button";
 import { Price } from "@/components/ui/price";
+import { LikeButton } from "@/components/product/like-button";
+import { WaitlistButton } from "@/components/product/waitlist-button";
 import type { ProductVariant } from "@/lib/catalog/types";
 
 export function PurchaseForm({
   variants,
+  productId,
+  productName,
   currencyCode = "GHS",
 }: {
   variants: ProductVariant[];
+  productId: string;
+  productName: string;
   currencyCode?: string;
 }) {
   const [variantId, setVariantId] = useState(variants[0]?.id ?? "");
@@ -24,7 +30,7 @@ export function PurchaseForm({
     <form action={formAction} className="mt-8 space-y-5">
       {selected ? (
         <Price
-          className="text-xl"
+          className="text-xl font-medium text-leaf"
           amountMinor={selected.priceMinor}
           compareAtMinor={selected.compareAtMinor}
           currencyCode={currencyCode}
@@ -59,10 +65,18 @@ export function PurchaseForm({
           })}
         </div>
       </fieldset>
-      <QuantitySelector key={variantId} max={max} />
-      <Button type="submit" disabled={soldOut}>
-        Add to cart
-      </Button>
+      {soldOut ? null : <QuantitySelector key={variantId} max={max} />}
+      <div className="flex flex-wrap items-center gap-3">
+        {soldOut ? (
+          <WaitlistButton productId={productId} />
+        ) : (
+          <Button type="submit" variant="shop">
+            Add to cart
+          </Button>
+        )}
+        <LikeButton productId={productId} name={productName} />
+      </div>
+      {soldOut ? <p className="text-sm text-taupe">Out of stock. Join the restock list to be notified.</p> : null}
       {state?.error ? (
         <p role="alert" className="text-sm text-red-800">
           {state.error}

@@ -17,6 +17,11 @@ export const newsletterSchema = z.object({
   email: z.email("Enter a valid email address."),
 });
 
+export const waitlistSchema = z.object({
+  productId: z.string().min(1),
+  email: z.email("Enter a valid email address."),
+});
+
 export const contactSchema = z.object({
   name: z.string().trim().min(2).max(120),
   email: z.email(),
