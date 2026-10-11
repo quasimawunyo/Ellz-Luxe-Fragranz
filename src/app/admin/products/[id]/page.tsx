@@ -18,9 +18,9 @@ export default async function AdminProductPage({ params }: { params: Promise<{ i
 
   return (
     <div className="max-w-2xl">
-      <h1 className="font-serif text-4xl">{isNew ? "New product" : product?.name}</h1>
+      <h1 className="text-2xl font-semibold">{isNew ? "New product" : product?.name}</h1>
       <p className="mt-2 text-sm text-taupe">
-        Prices are Ghana cedis. Saving requires a Supabase service role. Uncheck demonstration when this is a live bottle.
+        Prices are Ghana cedis. Saving requires a Supabase service role. Uncheck tester when this is live stock.
       </p>
       <ActionForm action={saveProductAction} encType="multipart/form-data" className="mt-8 space-y-4">
         <input type="hidden" name="id" value={product?.id ?? ""} />

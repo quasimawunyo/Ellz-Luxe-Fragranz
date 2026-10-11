@@ -20,14 +20,14 @@ export default async function SearchPage({
   return (
     <div className="mx-auto max-w-7xl px-4 py-10">
       <Breadcrumbs items={[{ href: "/", label: "Home" }, { label: "Search" }]} />
-      <h1 className="mt-6 font-serif text-5xl">Search</h1>
+      <h1 className="mt-6 font-serif text-4xl">Search</h1>
       <form className="mt-8 flex max-w-xl gap-2" method="get">
         <label className="sr-only" htmlFor="search-q">
           Search
         </label>
         <Input id="search-q" name="q" defaultValue={q} placeholder="Name, description, brand, notes" />
         <Button type="submit">Search</Button>
-        <Link href="/search" className="grid place-items-center px-3 text-xs uppercase tracking-widest">
+        <Link href="/search" className="grid place-items-center px-3 text-sm text-taupe">
           Reset
         </Link>
       </form>

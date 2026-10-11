@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --ivory: #f6f1e8;
-  --champagne: #c4a35a;
-  --espresso: #122418;
-  --rich-black: #0c1a12;
-  --taupe: #6d7468;
-  --white: #fdfbf7;
+  --ivory: #f7f4ef;
+  --champagne: #b0893e;
+  --espresso: #1a211c;
+  --rich-black: #121814;
+  --taupe: #6b706b;
+  --white: #fcfbf8;
   --background: var(--ivory);
   --foreground: var(--espresso);
   --muted: var(--taupe);
@@ -32,12 +32,9 @@ html {
 }
 
 body {
-  background:
-    radial-gradient(1200px 480px at 50% -10%, color-mix(in srgb, var(--champagne) 14%, transparent), transparent 60%),
-    var(--background);
+  background: var(--background);
   color: var(--foreground);
   font-family: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
-  letter-spacing: 0.01em;
 }
 
 h1,
@@ -45,27 +42,20 @@ h2,
 h3,
 .font-serif {
   font-family: var(--font-cormorant), ui-serif, Georgia, serif;
-  letter-spacing: 0.01em;
 }
 
 ::selection {
-  background: color-mix(in srgb, var(--champagne) 40%, transparent);
+  background: color-mix(in srgb, var(--champagne) 35%, transparent);
 }
 
 :focus-visible {
-  outline: 1px solid var(--champagne);
-  outline-offset: 3px;
-}
-
-.luxe-rule {
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--champagne), transparent);
+  outline: 2px solid var(--espresso);
+  outline-offset: 2px;
 }
 
 .luxe-panel {
-  border: 1px solid color-mix(in srgb, var(--espresso) 10%, transparent);
-  background: color-mix(in srgb, var(--white) 88%, transparent);
-  box-shadow: 0 24px 60px color-mix(in srgb, var(--espresso) 5%, transparent);
+  border: 1px solid color-mix(in srgb, var(--espresso) 12%, transparent);
+  background: var(--white);
 }
 
 @keyframes brand-marquee {

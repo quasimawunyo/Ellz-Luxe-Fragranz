@@ -24,7 +24,7 @@ export default async function AccountOrderPage({ params }: { params: Promise<{ i
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-16">
-      <h1 className="font-serif text-5xl">{order.orderNumber}</h1>
+      <h1 className="font-serif text-4xl">{order.orderNumber}</h1>
       <p className="mt-3 text-taupe">
         Payment {order.paymentStatus} · Fulfillment {order.fulfillmentStatus}
       </p>

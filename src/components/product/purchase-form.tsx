@@ -31,17 +31,17 @@ export function PurchaseForm({
         />
       ) : null}
       <fieldset>
-        <legend className="mb-2 text-xs uppercase tracking-[0.16em] text-taupe">Size</legend>
+        <legend className="mb-2 text-sm font-medium">Size</legend>
         <div className="flex flex-wrap gap-2">
           {variants.map((variant) => {
             const selectedSize = variant.id === variantId;
             return (
               <label
                 key={variant.id}
-                className={`cursor-pointer border px-5 py-2.5 text-[11px] uppercase tracking-[0.16em] ${
+                className={`cursor-pointer border px-4 py-2 text-sm ${
                   selectedSize
-                    ? "border-champagne bg-espresso text-ivory"
-                    : "border-espresso/20 hover:border-champagne"
+                    ? "border-espresso bg-espresso text-ivory"
+                    : "border-espresso/20 hover:border-espresso"
                 }`}
               >
                 <input

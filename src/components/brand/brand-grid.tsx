@@ -25,11 +25,11 @@ export function BrandGrid() {
         }
       `}</style>
       <div className="flex items-stretch">
-        <p className="hidden shrink-0 items-center border-r border-espresso/10 px-5 font-serif text-lg text-espresso sm:flex">
-          Our Brands
+        <p className="hidden shrink-0 items-center border-r border-espresso/10 px-5 text-sm font-medium text-espresso sm:flex">
+          Brands
         </p>
         <div className="min-w-0 flex-1 overflow-hidden">
-          <p className="px-4 pt-3 text-center font-serif text-lg sm:hidden">Our Brands</p>
+          <p className="px-4 pt-3 text-center text-sm font-medium sm:hidden">Brands</p>
           <div className="brand-marquee-track flex w-max animate-brand-marquee items-center py-4 hover:[animation-play-state:paused]">
             {LOOP.map((brand, index) => (
               <Link

@@ -21,12 +21,10 @@ export const metadata: Metadata = {
     default: "EllzLuxe Fragranz",
     template: "%s · EllzLuxe Fragranz",
   },
-  description:
-    "A Ghana-based boutique for captivating fragrances — accessible luxury with the poise of a niche perfume house.",
+  description: "Perfume boutique at Ells Luxe Annex, Ghana. Shop Lattafa, Armaf, Maison Alhambra, and more.",
   openGraph: {
     title: "EllzLuxe Fragranz",
-    description:
-      "Discover fragrances that express personality, confidence, elegance, and individuality.",
+    description: "Perfume boutique at Ells Luxe Annex, Ghana.",
     type: "website",
   },
 };

@@ -2,15 +2,13 @@ import { CreditCard, Headphones, ShieldCheck, Truck } from "lucide-react";
 import { AcceptedPayMarks } from "@/components/brand/accepted-pay-marks";
 
 export function TrustAndPay({ phone }: { phone: string }) {
-  const support = phone ? `Call or WhatsApp ${phone}.` : "Call or message the house.";
+  const support = phone ? `Call or WhatsApp ${phone}.` : "Call or message us.";
 
   return (
     <div>
-      <section className="border-t border-champagne/20 bg-ivory py-10" aria-label="Payment methods">
-        <p className="text-center text-[11px] font-medium uppercase tracking-[0.28em] text-espresso">
-          Payment methods
-        </p>
-        <div className="mt-5 px-4">
+      <section className="border-t border-espresso/10 bg-white py-8" aria-label="Payment methods">
+        <p className="text-center text-sm font-medium">Payment methods</p>
+        <div className="mt-4 px-4">
           <AcceptedPayMarks />
         </div>
       </section>
@@ -19,28 +17,28 @@ export function TrustAndPay({ phone }: { phone: string }) {
           {[
             {
               icon: Truck,
-              title: "Nationwide delivery",
-              text: "Dispatch across Ghana, plus pickup at Ells Luxe Annex.",
+              title: "Delivery",
+              text: "Nationwide in Ghana, plus pickup at Ells Luxe Annex.",
             },
             {
               icon: Headphones,
-              title: "Online support",
+              title: "Support",
               text: support,
             },
             {
               icon: CreditCard,
-              title: "Secure payments",
-              text: "Card and mobile money, confirmed with the house.",
+              title: "Payments",
+              text: "Card and mobile money, confirmed after checkout.",
             },
             {
               icon: ShieldCheck,
-              title: "Genuine products",
-              text: "House bottles as listed, with demonstration pieces marked.",
+              title: "Products",
+              text: "Bottles as listed. Testers are marked on the product page.",
             },
           ].map((item) => (
-            <div key={item.title} className="text-center">
-              <item.icon className="mx-auto size-8 text-champagne" />
-              <h2 className="mt-3 font-serif text-xl">{item.title}</h2>
+            <div key={item.title}>
+              <item.icon className="size-5 text-champagne" />
+              <h2 className="mt-3 text-sm font-medium">{item.title}</h2>
               <p className="mt-2 text-sm leading-6 text-ivory/70">{item.text}</p>
             </div>
           ))}

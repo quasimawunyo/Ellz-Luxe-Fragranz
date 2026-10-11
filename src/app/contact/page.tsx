@@ -12,12 +12,10 @@ export default async function ContactPage() {
   return (
     <div className="mx-auto grid max-w-6xl gap-12 px-4 py-16 lg:grid-cols-2">
       <div>
-        <h1 className="font-serif text-5xl">Contact</h1>
-        <p className="mt-4 text-taupe">
-          Visit the annex, call, or send a WhatsApp message. The form stores a note when the database is connected.
-        </p>
+        <h1 className="font-serif text-4xl">Contact</h1>
+        <p className="mt-4 text-taupe">Visit Ells Luxe Annex, call, or send a WhatsApp message.</p>
         <StoreContact settings={settings} className="mt-8 space-y-2 text-sm" />
-        <h2 className="mt-10 font-serif text-3xl">Social</h2>
+        <h2 className="mt-10 text-lg font-semibold">Social</h2>
         <StoreSocials settings={settings} />
       </div>
       <ActionForm action={submitContact} className="space-y-4">

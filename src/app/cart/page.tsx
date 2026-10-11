@@ -17,7 +17,7 @@ export default async function CartPage() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-10">
       <Breadcrumbs items={[{ href: "/", label: "Home" }, { label: "Cart" }]} />
-      <h1 className="mt-6 font-serif text-5xl">Your cart</h1>
+      <h1 className="mt-6 font-serif text-4xl">Cart</h1>
       {!cart.lines.length ? (
         <div className="mt-10">
           <EmptyState title="Your cart is empty">
@@ -33,7 +33,7 @@ export default async function CartPage() {
                   <Image src={line.imageUrl} alt={line.imageAlt} fill className="object-cover" />
                 </div>
                 <div className="flex-1">
-                  <Link href={`/product/${line.productSlug}`} className="font-serif text-2xl">
+                  <Link href={`/product/${line.productSlug}`} className="font-medium">
                     {line.productName}
                   </Link>
                   <p className="text-sm text-taupe">{line.label}</p>
@@ -59,7 +59,7 @@ export default async function CartPage() {
                   <ActionForm action={updateCartAction}>
                     <input type="hidden" name="variantId" value={line.variantId} />
                     <input type="hidden" name="quantity" value="0" />
-                    <button type="submit" className="mt-2 text-xs uppercase tracking-widest text-taupe">
+                    <button type="submit" className="mt-2 text-sm text-taupe">
                       Remove
                     </button>
                   </ActionForm>
@@ -68,8 +68,8 @@ export default async function CartPage() {
             ))}
           </ul>
           <aside className="luxe-panel h-fit p-6">
-            <p className="text-xs uppercase tracking-[0.18em] text-taupe">Subtotal</p>
-            <p className="mt-2 font-serif text-3xl">
+            <p className="text-sm text-taupe">Subtotal</p>
+            <p className="mt-2 text-2xl font-semibold">
               <Price amountMinor={cart.subtotalMinor} currencyCode={cart.currencyCode} />
             </p>
             <p className="mt-3 text-sm text-taupe">

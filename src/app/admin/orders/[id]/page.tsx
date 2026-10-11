@@ -14,7 +14,7 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
   if (!order) notFound();
   return (
     <div className="max-w-2xl">
-      <h1 className="font-serif text-4xl">{order.orderNumber}</h1>
+      <h1 className="text-2xl font-semibold">{order.orderNumber}</h1>
       <div className="mt-3 flex flex-wrap items-center gap-2">
         <StatusPill value={order.paymentStatus} />
         <StatusPill value={order.fulfillmentStatus} />
@@ -23,23 +23,23 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
         <p className="mt-3 text-sm text-taupe">Reference {order.paystackReference}</p>
       ) : null}
       <section className="luxe-panel mt-8 p-6">
-        <p className="text-[11px] uppercase tracking-[0.18em] text-taupe">Customer</p>
-        <h2 className="mt-2 font-serif text-3xl">{order.fullName}</h2>
+        <p className="text-sm text-taupe">Customer</p>
+        <h2 className="mt-1 text-xl font-semibold">{order.fullName}</h2>
         <dl className="mt-4 space-y-3 text-sm">
           <div>
-            <dt className="text-[11px] uppercase tracking-[0.16em] text-taupe">WhatsApp</dt>
+            <dt className="text-sm text-taupe">WhatsApp</dt>
             <dd className="mt-1">
               <CustomerWhatsApp phone={order.phone} name={order.fullName} orderNumber={order.orderNumber} />
             </dd>
           </div>
           <div>
-            <dt className="text-[11px] uppercase tracking-[0.16em] text-taupe">Email</dt>
+            <dt className="text-sm text-taupe">Email</dt>
             <dd className="mt-1">
               <a href={`mailto:${order.email}`}>{order.email}</a>
             </dd>
           </div>
           <div>
-            <dt className="text-[11px] uppercase tracking-[0.16em] text-taupe">Deliver to</dt>
+            <dt className="text-sm text-taupe">Deliver to</dt>
             <dd className="mt-1">
               {order.addressLine}
               <br />
@@ -50,7 +50,7 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
           </div>
           {order.notes ? (
             <div>
-              <dt className="text-[11px] uppercase tracking-[0.16em] text-taupe">Notes</dt>
+              <dt className="text-sm text-taupe">Notes</dt>
               <dd className="mt-1">{order.notes}</dd>
             </div>
           ) : null}

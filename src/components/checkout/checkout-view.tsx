@@ -90,7 +90,7 @@ export function CheckoutView({
           <Input id="addressLine" name="addressLine" required />
         </div>
         <fieldset className="space-y-2">
-          <legend className="mb-1 text-xs uppercase tracking-[0.16em] text-taupe">Delivery</legend>
+          <legend className="mb-1 text-sm font-medium">Delivery</legend>
           {deliveryMethods.map((method) => (
             <label key={method.id} className="flex cursor-pointer items-start gap-3 border border-espresso/10 p-3">
               <input
@@ -118,7 +118,7 @@ export function CheckoutView({
         <Button type="submit">{payLabel}</Button>
       </ActionForm>
       <aside className="luxe-panel h-fit p-6">
-        <h2 className="font-serif text-2xl">Summary</h2>
+        <h2 className="text-lg font-semibold">Summary</h2>
         <ul className="mt-4 space-y-3 text-sm">
           {lines.map((line) => (
             <li key={line.variantId} className="flex justify-between gap-3">

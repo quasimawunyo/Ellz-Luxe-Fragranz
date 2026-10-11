@@ -44,7 +44,7 @@ export default async function BrandPage({ params }: { params: Promise<{ slug: st
           className="h-24 w-auto object-contain"
         />
         <div>
-          <h1 className="font-serif text-5xl">{brand.name}</h1>
+          <h1 className="font-serif text-4xl">{brand.name}</h1>
           <p className="mt-3 max-w-xl text-taupe">
             Demonstration catalog items currently tagged to this house. Live assortment is confirmed by the boutique.
           </p>

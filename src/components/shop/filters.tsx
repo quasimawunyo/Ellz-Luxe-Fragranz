@@ -68,16 +68,6 @@ export function ShopFilters({
           ))}
         </select>
       </div>
-      <div className="grid grid-cols-2 gap-2">
-        <div>
-          <Label htmlFor="min">Min (pesewas)</Label>
-          <Input id="min" name="min" type="number" min={0} defaultValue={filters.min ?? ""} />
-        </div>
-        <div>
-          <Label htmlFor="max">Max (pesewas)</Label>
-          <Input id="max" name="max" type="number" min={0} defaultValue={filters.max ?? ""} />
-        </div>
-      </div>
       <div>
         <Label htmlFor="sort">Sort</Label>
         <select
@@ -95,7 +85,7 @@ export function ShopFilters({
       <Button type="submit" className="w-full">
         Apply
       </Button>
-      <Link href="/shop" className="block text-center text-xs uppercase tracking-[0.16em] text-taupe">
+      <Link href="/shop" className="block text-center text-sm text-taupe">
         Reset
       </Link>
     </form>

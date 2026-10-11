@@ -20,7 +20,7 @@ export default async function CheckoutPage() {
   if (!cart.lines.length) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-16">
-        <EmptyState title="Nothing to check out">
+        <EmptyState title="Your cart is empty">
           <Link href="/shop">Return to the shop</Link>
         </EmptyState>
       </div>
@@ -36,7 +36,7 @@ export default async function CheckoutPage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
       <Breadcrumbs items={[{ href: "/", label: "Home" }, { href: "/cart", label: "Cart" }, { label: "Checkout" }]} />
-      <h1 className="mt-6 font-serif text-5xl">Checkout</h1>
+      <h1 className="mt-6 font-serif text-4xl">Checkout</h1>
       <p className="mt-3 max-w-xl text-sm text-taupe">{payCopy}</p>
       <CheckoutView
         fullName={auth.profile?.full_name ?? ""}

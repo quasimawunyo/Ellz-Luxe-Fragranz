@@ -22,8 +22,8 @@ export default async function LegalPage({ params }: { params: Promise<{ slug: st
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-16">
-      <p className="text-xs uppercase tracking-[0.2em] text-champagne">Owner review required</p>
-      <h1 className="mt-3 font-serif text-5xl">{page.title}</h1>
+      <p className="text-sm text-taupe">Draft — owner review required</p>
+      <h1 className="mt-2 font-serif text-4xl">{page.title}</h1>
       <p className="mt-8 leading-8">{settings[page.key]}</p>
     </div>
   );

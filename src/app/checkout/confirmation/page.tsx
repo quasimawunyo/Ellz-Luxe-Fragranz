@@ -57,8 +57,7 @@ export default async function ConfirmationPage({
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-16">
-      <p className="text-xs uppercase tracking-[0.2em] text-champagne">Thank you</p>
-      <h1 className="mt-3 font-serif text-5xl">Order {order.orderNumber}</h1>
+      <h1 className="font-serif text-4xl">Order {order.orderNumber}</h1>
       <p className="mt-4 leading-7 text-taupe">
         Payment status: <strong className="text-espresso">{order.paymentStatus}</strong>.
         {order.paymentStatus === "pending"
@@ -66,7 +65,7 @@ export default async function ConfirmationPage({
             ? " This order is not marked paid until Moolre confirms the transaction by callback or status check."
             : isPaystackConfigured()
               ? " This order is not marked paid. Payment is confirmed only after a verified Paystack webhook — never from this page load alone."
-              : " This order is not marked paid. Confirm payment with the house on WhatsApp."
+              : " This order is not marked paid. Confirm payment on WhatsApp."
           : " Payment was verified server-side."}
       </p>
       <ul className="mt-8 space-y-2 border border-espresso/10 bg-white p-6 text-sm">

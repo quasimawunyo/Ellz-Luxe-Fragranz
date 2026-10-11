@@ -18,35 +18,35 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
   return (
     <article className="group">
       <Link href={`/product/${product.slug}`} className="block">
-        <div className="relative aspect-[3/4] overflow-hidden bg-espresso/5 ring-1 ring-espresso/10 transition duration-500 group-hover:ring-champagne/60">
+        <div className="relative aspect-[3/4] overflow-hidden bg-espresso/5">
           {image ? (
             <Image
               src={image.url}
               alt={image.alt}
               fill
               sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-              className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+              className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
             />
           ) : null}
           {product.isDemonstration ? (
-            <span className="absolute left-3 top-3 bg-ivory/90 px-2 py-1 text-[10px] uppercase tracking-[0.18em] text-espresso">
-              Demonstration
+            <span className="absolute left-3 top-3 bg-white/95 px-2 py-1 text-xs text-espresso">
+              Tester
             </span>
           ) : null}
           {stock < 1 ? (
-            <span className="absolute right-3 top-3 bg-espresso px-2 py-1 text-[10px] uppercase tracking-[0.18em] text-ivory">
+            <span className="absolute right-3 top-3 bg-espresso px-2 py-1 text-xs text-ivory">
               Out of stock
             </span>
           ) : stock <= 5 ? (
-            <span className="absolute right-3 top-3 bg-ivory/90 px-2 py-1 text-[10px] uppercase tracking-[0.18em]">
+            <span className="absolute right-3 top-3 bg-white/95 px-2 py-1 text-xs">
               Low stock
             </span>
           ) : null}
         </div>
         <div className="mt-5 space-y-1.5">
-          <p className="text-[10px] uppercase tracking-[0.24em] text-taupe">{product.brand}</p>
-          <h3 className="font-serif text-2xl leading-tight group-hover:text-champagne">{product.name}</h3>
-          <Price amountMinor={price} compareAtMinor={compare} className="font-serif text-base" />
+          <p className="text-xs text-taupe">{product.brand}</p>
+          <h3 className="text-base font-medium leading-snug">{product.name}</h3>
+          <Price amountMinor={price} compareAtMinor={compare} className="text-sm" />
         </div>
       </Link>
       {defaultVariant ? <QuickAdd variantId={defaultVariant.id} disabled={stock < 1} /> : null}

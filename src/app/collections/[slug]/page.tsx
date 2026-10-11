@@ -18,7 +18,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
           { label: collection.name },
         ]}
       />
-      <h1 className="mt-6 font-serif text-5xl">{collection.name}</h1>
+      <h1 className="mt-6 font-serif text-4xl">{collection.name}</h1>
       <p className="mt-3 max-w-2xl text-taupe">{collection.description}</p>
       <div className="mt-12">
         {products.length ? (

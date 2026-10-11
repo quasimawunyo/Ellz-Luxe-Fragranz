@@ -53,10 +53,10 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         <ProductGallery images={product.images} name={product.name} />
         <div>
           {product.isDemonstration ? (
-            <p className="text-xs uppercase tracking-[0.2em] text-champagne">Demonstration fragrance</p>
+            <p className="text-sm text-taupe">Tester</p>
           ) : null}
-          <h1 className="mt-3 font-serif text-5xl md:text-6xl">{product.name}</h1>
-          <p className="mt-3 text-[11px] uppercase tracking-[0.22em] text-taupe">
+          <h1 className="mt-2 font-serif text-4xl">{product.name}</h1>
+          <p className="mt-2 text-sm text-taupe">
             {product.brand}
             {product.concentration ? ` · ${product.concentration}` : ""}
           </p>
@@ -64,15 +64,15 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           <PurchaseForm variants={product.variants} currencyCode={settings.currencyCode} />
           <dl className="mt-10 space-y-4 border-t border-espresso/10 pt-8 text-sm">
             <div>
-              <dt className="uppercase tracking-[0.16em] text-taupe">Top notes</dt>
+              <dt className="text-sm text-taupe">Top notes</dt>
               <dd>{product.notes.top.join(", ")}</dd>
             </div>
             <div>
-              <dt className="uppercase tracking-[0.16em] text-taupe">Heart notes</dt>
+              <dt className="text-sm text-taupe">Heart notes</dt>
               <dd>{product.notes.heart.join(", ")}</dd>
             </div>
             <div>
-              <dt className="uppercase tracking-[0.16em] text-taupe">Base notes</dt>
+              <dt className="text-sm text-taupe">Base notes</dt>
               <dd>{product.notes.base.join(", ")}</dd>
             </div>
           </dl>
@@ -84,7 +84,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       </div>
       {related.length ? (
         <section className="mt-20">
-          <h2 className="font-serif text-4xl">You may also like</h2>
+          <h2 className="font-serif text-3xl">You may also like</h2>
           <div className="mt-8">
             <ProductGrid products={related} />
           </div>

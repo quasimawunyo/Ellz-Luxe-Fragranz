@@ -14,7 +14,7 @@ export default async function AccountPage() {
 
   return (
     <div className="mx-auto max-w-xl px-4 py-16">
-      <h1 className="font-serif text-5xl">Account</h1>
+      <h1 className="font-serif text-4xl">Account</h1>
       <p className="mt-3 text-taupe">{auth.email}</p>
       <ActionForm action={updateProfileAction} className="mt-8 space-y-4">
         <div>

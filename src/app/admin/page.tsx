@@ -48,7 +48,7 @@ export default async function AdminDashboardPage() {
     {
       label: "Catalog",
       value: String(metrics.live.length),
-      hint: `${metrics.demonstration.length} demonstration · ${metrics.drafts.length} draft`,
+      hint: `${metrics.demonstration.length} testers · ${metrics.drafts.length} drafts`,
       icon: Layers,
     },
   ];
@@ -59,12 +59,12 @@ export default async function AdminDashboardPage() {
         {cards.map((card) => {
           const Icon = card.icon;
           return (
-          <article key={card.label} className="luxe-panel p-6">
+          <article key={card.label} className="border border-espresso/10 bg-white p-5">
             <div className="flex items-start justify-between gap-3">
-              <p className="text-[11px] uppercase tracking-[0.2em] text-taupe">{card.label}</p>
-              <Icon className="size-4 text-champagne" aria-hidden />
+              <p className="text-sm text-taupe">{card.label}</p>
+              <Icon className="size-4 text-taupe" aria-hidden />
             </div>
-            <p className="mt-4 font-serif text-3xl leading-none">{card.value}</p>
+            <p className="mt-3 text-2xl font-semibold leading-none">{card.value}</p>
             <p className="mt-2 text-sm text-taupe">{card.hint}</p>
           </article>
           );
@@ -72,13 +72,13 @@ export default async function AdminDashboardPage() {
       </section>
 
       <section className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
-        <article className="luxe-panel p-6">
+        <article className="border border-espresso/10 bg-white p-5">
           <div className="flex items-end justify-between gap-4">
             <div>
-              <h2 className="font-serif text-3xl">Last 7 days</h2>
+              <h2 className="text-lg font-semibold">Last 7 days</h2>
               <p className="mt-1 text-sm text-taupe">Paid only · Africa/Accra</p>
             </div>
-            <p className="font-serif text-2xl">{formatMoney(metrics.weekRevenue)}</p>
+            <p className="text-lg font-semibold">{formatMoney(metrics.weekRevenue)}</p>
           </div>
           <div className="mt-8 flex h-36 items-end gap-2">
             {metrics.weekSeries.map((point) => (
@@ -88,33 +88,33 @@ export default async function AdminDashboardPage() {
                   style={{ height: `${Math.max(6, (point.amountMinor / metrics.weekPeak) * 100)}%` }}
                   title={`${point.label}: ${formatMoney(point.amountMinor)}`}
                 />
-                <p className="mt-2 truncate text-center text-[10px] uppercase tracking-widest text-taupe">{point.label}</p>
+                <p className="mt-2 truncate text-center text-[10px] text-taupe">{point.label}</p>
               </div>
             ))}
           </div>
         </article>
 
-        <article className="luxe-panel p-6">
-          <h2 className="font-serif text-3xl">Quick actions</h2>
-          <ul className="mt-6 space-y-3 text-sm">
+        <article className="border border-espresso/10 bg-white p-5">
+          <h2 className="text-lg font-semibold">Quick actions</h2>
+          <ul className="mt-5 space-y-3 text-sm">
             <li>
               <Link href="/admin/products/new" className={cn(buttonVariants({ variant: "gold" }), "w-full")}>
-                Add a live bottle
+                Add product
               </Link>
             </li>
             <li>
               <Link href="/admin/orders?payment=pending" className={cn(buttonVariants({ variant: "outline" }), "w-full")}>
-                Review unpaid checkouts
+                Unpaid orders
               </Link>
             </li>
             <li>
               <Link href="/admin/inbox" className={cn(buttonVariants({ variant: "outline" }), "w-full")}>
-                Open inbox
+                Inbox
               </Link>
             </li>
             <li>
               <Link href="/admin/settings" className={cn(buttonVariants({ variant: "ghost" }), "w-full justify-start px-0")}>
-                Delivery fees and annex copy →
+                Settings
               </Link>
             </li>
           </ul>
@@ -125,10 +125,10 @@ export default async function AdminDashboardPage() {
       </section>
 
       <section className="grid gap-6 lg:grid-cols-2">
-        <article className="luxe-panel">
-          <div className="flex items-center justify-between border-b border-espresso/10 px-6 py-4">
-            <h2 className="font-serif text-3xl">Recent orders</h2>
-            <Link href="/admin/orders" className="text-xs uppercase tracking-[0.16em] text-taupe">
+        <article className="border border-espresso/10 bg-white">
+          <div className="flex items-center justify-between border-b border-espresso/10 px-5 py-3">
+            <h2 className="text-lg font-semibold">Recent orders</h2>
+            <Link href="/admin/orders" className="text-sm text-taupe hover:text-espresso">
               All orders
             </Link>
           </div>
@@ -160,20 +160,20 @@ export default async function AdminDashboardPage() {
                 </div>
               </li>
             ))}
-            {!orders.length ? <li className="px-6 py-10 text-sm text-taupe">No orders yet. New checkouts will land here.</li> : null}
+            {!orders.length ? <li className="px-6 py-10 text-sm text-taupe">No orders yet.</li> : null}
           </ul>
         </article>
 
-        <article className="luxe-panel">
-          <div className="flex items-center justify-between border-b border-espresso/10 px-6 py-4">
-            <h2 className="font-serif text-3xl">Needs attention</h2>
+        <article className="border border-espresso/10 bg-white">
+          <div className="flex items-center justify-between border-b border-espresso/10 px-5 py-3">
+            <h2 className="text-lg font-semibold">Needs attention</h2>
             {metrics.lowStock.length || metrics.outOfStock.length || metrics.toPack.length ? (
               <AlertTriangle className="size-4 text-champagne" aria-hidden />
             ) : null}
           </div>
           <div className="space-y-6 px-6 py-5 text-sm">
             <div>
-              <p className="text-[11px] uppercase tracking-[0.18em] text-taupe">Packing</p>
+              <p className="text-sm font-medium text-taupe">Packing</p>
               {metrics.toPack.length ? (
                 <ul className="mt-2 space-y-2">
                   {metrics.toPack.slice(0, 4).map((order) => (
@@ -195,7 +195,7 @@ export default async function AdminDashboardPage() {
               )}
             </div>
             <div>
-              <p className="text-[11px] uppercase tracking-[0.18em] text-taupe">Stock</p>
+              <p className="text-sm font-medium text-taupe">Stock</p>
               {metrics.lowStock.length || metrics.outOfStock.length ? (
                 <ul className="mt-2 space-y-2">
                   {metrics.outOfStock.slice(0, 3).map((product) => (
@@ -218,7 +218,7 @@ export default async function AdminDashboardPage() {
               )}
             </div>
             <div>
-              <p className="text-[11px] uppercase tracking-[0.18em] text-taupe">Best sellers (paid)</p>
+              <p className="text-sm font-medium text-taupe">Best sellers (paid)</p>
               {metrics.bestSellers.length ? (
                 <ul className="mt-2 space-y-2">
                   {metrics.bestSellers.map((item) => (
@@ -235,10 +235,10 @@ export default async function AdminDashboardPage() {
         </article>
       </section>
 
-      <section className="luxe-panel">
-        <div className="flex items-center justify-between border-b border-espresso/10 px-6 py-4">
-          <h2 className="font-serif text-3xl">Latest messages</h2>
-          <Link href="/admin/inbox" className="text-xs uppercase tracking-[0.16em] text-taupe">
+      <section className="border border-espresso/10 bg-white">
+        <div className="flex items-center justify-between border-b border-espresso/10 px-5 py-3">
+          <h2 className="text-lg font-semibold">Latest messages</h2>
+          <Link href="/admin/inbox" className="text-sm text-taupe hover:text-espresso">
             Inbox
           </Link>
         </div>
@@ -252,7 +252,7 @@ export default async function AdminDashboardPage() {
             </li>
           ))}
           {!messages.length ? (
-            <li className="px-6 py-10 text-sm text-taupe">Contact form notes appear here when the database is connected.</li>
+            <li className="px-6 py-10 text-sm text-taupe">No messages yet.</li>
           ) : null}
         </ul>
       </section>

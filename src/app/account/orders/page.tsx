@@ -14,7 +14,7 @@ export default async function AccountOrdersPage() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-16">
-      <h1 className="font-serif text-5xl">Your orders</h1>
+      <h1 className="font-serif text-4xl">Orders</h1>
       <div className="mt-10 space-y-4">
         {orders.length ? (
           orders.map((order) => (

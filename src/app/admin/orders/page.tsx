@@ -30,8 +30,7 @@ export default async function AdminOrdersPage({
 
   return (
     <div>
-      <p className="text-[11px] uppercase tracking-[0.22em] text-taupe">Sales</p>
-      <h1 className="mt-2 font-serif text-4xl">Orders</h1>
+      <h1 className="text-2xl font-semibold">Orders</h1>
       <form className="mt-8 flex flex-wrap gap-2" method="get">
         <Input name="q" defaultValue={q} placeholder="Search number, email, name, phone" className="max-w-sm" />
         <select name="payment" defaultValue={payment ?? ""} className="min-h-11 border border-espresso/12 bg-white/70 px-3 text-sm">
@@ -41,14 +40,14 @@ export default async function AdminOrdersPage({
           <option value="failed">Failed</option>
           <option value="refunded">Refunded</option>
         </select>
-        <button className="bg-espresso px-5 text-[11px] uppercase tracking-[0.22em] text-ivory" type="submit">
+        <button className="bg-espresso px-4 text-sm text-ivory" type="submit">
           Filter
         </button>
       </form>
       <div className="luxe-panel mt-8 overflow-x-auto">
         <table className="w-full min-w-[48rem] text-left text-sm">
           <thead>
-            <tr className="border-b border-espresso/10 text-[11px] uppercase tracking-[0.16em] text-taupe">
+            <tr className="border-b border-espresso/10 text-xs text-taupe">
               <th className="px-4 py-3">Order</th>
               <th>Customer</th>
               <th>WhatsApp</th>
@@ -91,16 +90,8 @@ export default async function AdminOrdersPage({
             ))}
             {!orders.length ? (
               <tr>
-                <td className="px-6 py-16 text-center" colSpan={6}>
-                  <div className="luxe-rule mx-auto mb-6 w-16" />
-                  <p className="font-serif text-3xl">
-                    {q || payment ? "Nothing matches" : "Awaiting first order"}
-                  </p>
-                  <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-taupe">
-                    {q || payment
-                      ? "No orders match this filter."
-                      : "When a customer checks out, their name, email, and WhatsApp number will appear here with the mark so you can text them."}
-                  </p>
+                <td className="px-6 py-12 text-center text-sm text-taupe" colSpan={6}>
+                  {q || payment ? "No orders match this filter." : "No orders yet."}
                 </td>
               </tr>
             ) : null}

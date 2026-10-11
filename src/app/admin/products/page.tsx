@@ -15,9 +15,8 @@ export default async function AdminProductsPage() {
     <div>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-[11px] uppercase tracking-[0.22em] text-taupe">Catalog</p>
-          <h1 className="mt-2 font-serif text-4xl">Products</h1>
-          <p className="mt-2 text-sm text-taupe">{products.length} records · uncheck demonstration when a bottle is live.</p>
+          <h1 className="text-2xl font-semibold">Products</h1>
+          <p className="mt-1 text-sm text-taupe">{products.length} products. Uncheck tester when a bottle is live stock.</p>
         </div>
         <Link href="/admin/products/new" className={cn(buttonVariants({ variant: "gold", size: "sm" }))}>
           New product
@@ -26,7 +25,7 @@ export default async function AdminProductsPage() {
       <div className="luxe-panel mt-8 overflow-x-auto">
         <table className="w-full min-w-[44rem] text-left text-sm">
           <thead>
-            <tr className="border-b border-espresso/10 text-[11px] uppercase tracking-[0.16em] text-taupe">
+            <tr className="border-b border-espresso/10 text-xs text-taupe">
               <th className="px-4 py-3">Bottle</th>
               <th>Status</th>
               <th>Kind</th>

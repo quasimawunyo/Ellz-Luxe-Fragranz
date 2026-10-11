@@ -11,8 +11,7 @@ export default async function AdminSettingsPage() {
   const settings = await getStoreSettings();
   return (
     <div className="max-w-2xl">
-      <p className="text-[11px] uppercase tracking-[0.22em] text-taupe">Annex</p>
-      <h1 className="mt-2 font-serif text-4xl">Store settings</h1>
+      <h1 className="text-2xl font-semibold">Store settings</h1>
       <p className="mt-2 text-sm text-taupe">Contact, delivery fees, and story copy shown on the shop.</p>
       <ActionForm action={saveSettingsAction} className="mt-8 space-y-4">
         <div>
@@ -71,7 +70,7 @@ export default async function AdminSettingsPage() {
           <Label htmlFor="returnsNote">Returns note</Label>
           <Textarea id="returnsNote" name="returnsNote" defaultValue={settings.returnsNote} />
         </div>
-        <h2 className="pt-4 font-serif text-2xl">Delivery fees (GH₵)</h2>
+        <h2 className="pt-4 text-lg font-semibold">Delivery fees (GH₵)</h2>
         <div>
           <Label htmlFor="deliveryAccraCedis">Greater Accra</Label>
           <Input

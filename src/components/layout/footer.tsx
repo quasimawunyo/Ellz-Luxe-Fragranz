@@ -6,20 +6,18 @@ import { StoreContact, StoreSocials } from "@/components/layout/store-details";
 
 export function Footer({ settings }: { settings: StoreSettings }) {
   return (
-    <footer className="mt-auto border-t border-espresso/10 bg-rich text-ivory">
-      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-16 md:grid-cols-4">
+    <footer className="mt-auto border-t border-white/10 bg-rich text-ivory">
+      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 md:grid-cols-4">
         <div>
           <BrandLogo className="w-32" size={256} />
-          <p className="mt-4 text-sm leading-7 text-ivory/70">
-            Accessible luxury fragrance for personality, confidence, and quiet elegance.
-          </p>
-          <p className="mt-6 text-xs uppercase tracking-[0.2em] text-champagne">Find us</p>
+          <p className="mt-4 text-sm leading-6 text-ivory/70">Perfume boutique at Ells Luxe Annex.</p>
+          <p className="mt-6 text-sm font-medium text-ivory">Visit</p>
           <StoreContact settings={settings} className="mt-3 space-y-2 text-sm text-ivory/80" />
-          <p className="mt-6 text-xs uppercase tracking-[0.2em] text-champagne">Social</p>
+          <p className="mt-6 text-sm font-medium text-ivory">Social</p>
           <StoreSocials settings={settings} />
         </div>
         <div>
-          <p className="text-xs uppercase tracking-[0.2em] text-champagne">Shop</p>
+          <p className="text-sm font-medium text-ivory">Shop</p>
           <ul className="mt-4 space-y-2 text-sm text-ivory/80">
             <li><Link href="/shop">All perfumes</Link></li>
             <li><Link href="/brands">Brands</Link></li>
@@ -30,9 +28,9 @@ export function Footer({ settings }: { settings: StoreSettings }) {
           </ul>
         </div>
         <div>
-          <p className="text-xs uppercase tracking-[0.2em] text-champagne">Customer</p>
+          <p className="text-sm font-medium text-ivory">Help</p>
           <ul className="mt-4 space-y-2 text-sm text-ivory/80">
-            <li><Link href="/account">My account</Link></li>
+            <li><Link href="/account">Account</Link></li>
             <li><Link href="/legal/shipping">Shipping</Link></li>
             <li><Link href="/legal/returns">Returns</Link></li>
             <li><Link href="/faq">FAQ</Link></li>
@@ -40,12 +38,12 @@ export function Footer({ settings }: { settings: StoreSettings }) {
           </ul>
         </div>
         <div>
-          <p className="text-xs uppercase tracking-[0.2em] text-champagne">Legal</p>
+          <p className="text-sm font-medium text-ivory">Legal</p>
           <ul className="mt-4 space-y-2 text-sm text-ivory/80">
             <li><Link href="/legal/privacy">Privacy</Link></li>
             <li><Link href="/legal/terms">Terms</Link></li>
           </ul>
-          <p className="mt-8 text-xs uppercase tracking-[0.2em] text-champagne">Stay close</p>
+          <p className="mt-8 text-sm font-medium text-ivory">Email updates</p>
           <NewsletterForm compact />
         </div>
       </div>

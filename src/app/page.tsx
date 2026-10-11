@@ -37,35 +37,29 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="px-4 py-20 text-center">
-        <p className="text-[11px] uppercase tracking-[0.42em] text-champagne">Ghana boutique</p>
-        <div className="luxe-rule mx-auto mt-5 w-16" />
-        <h1 className="mt-6 font-serif text-5xl leading-tight md:text-7xl">Welcome to EllzLuxe Fragranz</h1>
-        <h2 className="mx-auto mt-5 max-w-xl font-serif text-2xl italic font-normal text-taupe">
-          Fragrance as a private signature.
-        </h2>
-        <Link href="/shop" className={cn(buttonVariants({ variant: "gold" }), "mt-10 inline-flex")}>
+      <section className="px-4 py-16 text-center">
+        <h1 className="font-serif text-4xl md:text-5xl">EllzLuxe Fragranz</h1>
+        <p className="mx-auto mt-4 max-w-md text-taupe">Perfume boutique at Ells Luxe Annex, Ghana.</p>
+        <Link href="/shop" className={cn(buttonVariants({ variant: "gold" }), "mt-8 inline-flex")}>
           Shop now
         </Link>
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-8">
         <div className="flex items-end justify-between gap-4">
-          <h2 className="font-serif text-4xl underline decoration-champagne decoration-2 underline-offset-8">
-            New arrivals
-          </h2>
-          <Link href="/shop?sort=newest" className="text-xs uppercase tracking-[0.2em]">
+          <h2 className="font-serif text-3xl">New arrivals</h2>
+          <Link href="/shop?sort=newest" className="text-sm text-taupe hover:text-espresso">
             Shop all
           </Link>
         </div>
-        <div className="mt-10">
+        <div className="mt-8">
           <ProductGrid products={arrivals} />
         </div>
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-16">
-        <h2 className="text-center font-serif text-4xl">Shop by collection</h2>
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <h2 className="text-center font-serif text-3xl">Shop by collection</h2>
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {shopBy.map((collection) => (
             <Link
               key={collection.id}
@@ -76,10 +70,10 @@ export default async function HomePage() {
                 src={collection.imageUrl}
                 alt=""
                 fill
-                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-rich/45" />
-              <span className="absolute inset-x-4 bottom-5 text-center font-serif text-3xl text-ivory">
+              <div className="absolute inset-0 bg-rich/40" />
+              <span className="absolute inset-x-4 bottom-5 text-center font-serif text-2xl text-ivory">
                 {collection.name.replace(" fragrances", "")}
               </span>
             </Link>
@@ -90,9 +84,8 @@ export default async function HomePage() {
       <BrandGrid />
 
       <section className="mx-auto max-w-7xl px-4 py-16">
-        <h2 className="font-serif text-4xl">Best-selling</h2>
-        <p className="mt-2 text-sm text-taupe">Featured compositions from the current catalog.</p>
-        <div className="mt-10">
+        <h2 className="font-serif text-3xl">Best sellers</h2>
+        <div className="mt-8">
           <ProductGrid products={featured} />
         </div>
       </section>
@@ -102,20 +95,17 @@ export default async function HomePage() {
           <Image src="/images/story.jpg" alt="Warm still life of perfume bottles" fill className="object-cover" />
         </div>
         <div className="flex flex-col justify-center px-8 py-16 md:px-16">
-          <p className="text-xs uppercase tracking-[0.22em] text-champagne">Our story</p>
-          <h2 className="mt-3 font-serif text-4xl">A boutique for personal scent.</h2>
+          <h2 className="font-serif text-3xl">About</h2>
           <p className="mt-6 max-w-md leading-7 text-ivory/75">{settings.aboutStory}</p>
           <Link href="/about" className={cn(buttonVariants({ variant: "gold" }), "mt-8 w-fit")}>
-            Read the story
+            Read more
           </Link>
         </div>
       </section>
 
-      <section className="mx-auto my-16 max-w-3xl px-4 py-12 text-center">
-        <h2 className="font-serif text-4xl">Notes from the house</h2>
-        <p className="mt-4 text-taupe">
-          Occasional letters on new compositions and seasonal edits.
-        </p>
+      <section className="mx-auto my-16 max-w-3xl px-4 py-8 text-center">
+        <h2 className="font-serif text-3xl">Email updates</h2>
+        <p className="mt-3 text-taupe">New arrivals and restocks.</p>
         <NewsletterForm />
       </section>
     </>

@@ -18,11 +18,8 @@ export default async function ShopPage({
   return (
     <div className="mx-auto max-w-7xl px-4 py-10">
       <Breadcrumbs items={[{ href: "/", label: "Home" }, { label: "Shop" }]} />
-      <p className="mt-8 text-[11px] uppercase tracking-[0.36em] text-champagne">Ells Luxe Annex</p>
-      <h1 className="mt-3 font-serif text-5xl md:text-6xl">The catalog</h1>
-      <p className="mt-4 max-w-xl text-taupe">
-        House bottles available from Ells Luxe Annex. Demonstration pieces are tagged until a live SKU is confirmed.
-      </p>
+      <h1 className="mt-8 font-serif text-4xl">Shop</h1>
+      <p className="mt-3 max-w-xl text-taupe">Perfumes from Ells Luxe Annex. Testers are marked on each product.</p>
       <div className="mt-10 grid gap-10 lg:grid-cols-[16rem_1fr]">
         <aside>
           <ShopFilters
@@ -35,8 +32,8 @@ export default async function ShopPage({
           {result.items.length ? (
             <ProductGrid products={result.items} className="lg:grid-cols-3" />
           ) : (
-            <EmptyState title="No fragrances match">
-              <p>Adjust filters or reset the catalog.</p>
+            <EmptyState title="No products match">
+              <p>Try different filters or reset.</p>
             </EmptyState>
           )}
           {result.totalPages > 1 ? (
