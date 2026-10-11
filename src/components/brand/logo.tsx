@@ -17,7 +17,7 @@ export function BrandLogo({
 }) {
   const image = (
     <Image
-      src="/images/logo.png"
+      src="/images/logo.png?v=gold-2"
       alt={label}
       width={size}
       height={size}
