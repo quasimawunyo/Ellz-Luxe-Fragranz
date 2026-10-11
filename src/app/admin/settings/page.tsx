@@ -3,6 +3,7 @@ import { saveSettingsAction } from "@/app/actions/admin";
 import { ActionForm } from "@/components/forms/form-status";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/input";
+import { cedisInputFromMinor } from "@/lib/money";
 
 export const metadata = { title: "Settings · Admin" };
 
@@ -59,6 +60,63 @@ export default async function AdminSettingsPage() {
         <div>
           <Label htmlFor="aboutStory">About story</Label>
           <Textarea id="aboutStory" name="aboutStory" defaultValue={settings.aboutStory} />
+        </div>
+        <div>
+          <Label htmlFor="shippingNote">Shipping note (shown on product pages)</Label>
+          <Textarea id="shippingNote" name="shippingNote" defaultValue={settings.shippingNote} />
+        </div>
+        <div>
+          <Label htmlFor="returnsNote">Returns note</Label>
+          <Textarea id="returnsNote" name="returnsNote" defaultValue={settings.returnsNote} />
+        </div>
+        <h2 className="pt-4 font-serif text-2xl">Delivery fees (GH₵)</h2>
+        <div>
+          <Label htmlFor="deliveryAccraCedis">Greater Accra</Label>
+          <Input
+            id="deliveryAccraCedis"
+            name="deliveryAccraCedis"
+            type="number"
+            min="0"
+            step="0.01"
+            defaultValue={cedisInputFromMinor(settings.deliveryMethods.find((method) => method.id === "accra")?.amountMinor ?? 3000)}
+            required
+          />
+        </div>
+        <div>
+          <Label htmlFor="deliveryAccraNote">Greater Accra note</Label>
+          <Input
+            id="deliveryAccraNote"
+            name="deliveryAccraNote"
+            defaultValue={settings.deliveryMethods.find((method) => method.id === "accra")?.description ?? ""}
+          />
+        </div>
+        <div>
+          <Label htmlFor="deliveryNationalCedis">Rest of Ghana</Label>
+          <Input
+            id="deliveryNationalCedis"
+            name="deliveryNationalCedis"
+            type="number"
+            min="0"
+            step="0.01"
+            defaultValue={cedisInputFromMinor(settings.deliveryMethods.find((method) => method.id === "national")?.amountMinor ?? 5000)}
+            required
+          />
+        </div>
+        <div>
+          <Label htmlFor="deliveryNationalNote">Rest of Ghana note</Label>
+          <Input
+            id="deliveryNationalNote"
+            name="deliveryNationalNote"
+            defaultValue={settings.deliveryMethods.find((method) => method.id === "national")?.description ?? ""}
+          />
+        </div>
+        <div>
+          <Label htmlFor="deliveryPickupNote">Pickup note</Label>
+          <Input
+            id="deliveryPickupNote"
+            name="deliveryPickupNote"
+            defaultValue={settings.deliveryMethods.find((method) => method.id === "pickup")?.description ?? ""}
+          />
         </div>
         <Button type="submit">Save</Button>
       </ActionForm>

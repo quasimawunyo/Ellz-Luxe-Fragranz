@@ -12,7 +12,7 @@ export default async function CollectionsPage() {
       <Breadcrumbs items={[{ href: "/", label: "Home" }, { label: "Collections" }]} />
       <h1 className="mt-6 font-serif text-5xl">Collections</h1>
       <p className="mt-3 max-w-xl text-taupe">
-        Families drawn from the demonstration catalog. Empty families are not shown as live merchandise.
+        Shop by family — citrus, floral, woody, oud — then open a bottle for notes and sizes.
       </p>
       <div className="mt-12 grid gap-6 md:grid-cols-2">
         {collections.map((collection) => (

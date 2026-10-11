@@ -4,9 +4,16 @@ import { useActionState, useState } from "react";
 import { addToCartAction } from "@/app/actions/cart";
 import { QuantitySelector } from "@/components/product/quantity-selector";
 import { Button } from "@/components/ui/button";
+import { Price } from "@/components/ui/price";
 import type { ProductVariant } from "@/lib/catalog/types";
 
-export function PurchaseForm({ variants }: { variants: ProductVariant[] }) {
+export function PurchaseForm({
+  variants,
+  currencyCode = "GHS",
+}: {
+  variants: ProductVariant[];
+  currencyCode?: string;
+}) {
   const [variantId, setVariantId] = useState(variants[0]?.id ?? "");
   const [state, formAction] = useActionState(addToCartAction, null);
   const selected = variants.find((variant) => variant.id === variantId) ?? variants[0];
@@ -15,6 +22,14 @@ export function PurchaseForm({ variants }: { variants: ProductVariant[] }) {
 
   return (
     <form action={formAction} className="mt-8 space-y-5">
+      {selected ? (
+        <Price
+          className="text-xl"
+          amountMinor={selected.priceMinor}
+          compareAtMinor={selected.compareAtMinor}
+          currencyCode={currencyCode}
+        />
+      ) : null}
       <fieldset>
         <legend className="mb-2 text-xs uppercase tracking-[0.16em] text-taupe">Size</legend>
         <div className="flex flex-wrap gap-2">
@@ -37,7 +52,7 @@ export function PurchaseForm({ variants }: { variants: ProductVariant[] }) {
                   onChange={() => setVariantId(variant.id)}
                   className="sr-only"
                 />
-                {variant.label} · {Math.trunc(variant.priceMinor / 100)} GHS
+                {variant.label}
                 {variant.stock < 1 ? " (sold out)" : ""}
               </label>
             );

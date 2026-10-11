@@ -65,6 +65,9 @@ export const productInputSchema = z.object({
   topNotes: z.string().trim().max(240).optional(),
   heartNotes: z.string().trim().max(240).optional(),
   baseNotes: z.string().trim().max(240).optional(),
+  isDemonstration: z.boolean().default(true),
+  imageUrl: z.string().trim().max(500).optional(),
+  imageAlt: z.string().trim().max(200).optional(),
 });
 
 export const variantInputSchema = z.object({

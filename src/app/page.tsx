@@ -40,11 +40,11 @@ export default async function HomePage() {
       <section className="px-4 py-12 text-center">
         <p className="text-xs uppercase tracking-[0.28em] text-champagne">Ghana boutique</p>
         <h1 className="mt-3 font-serif text-4xl leading-tight md:text-6xl">Welcome to EllzLuxe Fragranz</h1>
-        <p className="mx-auto mt-4 max-w-xl font-serif text-xl italic text-taupe">
+        <h2 className="mx-auto mt-4 max-w-xl font-serif text-xl italic font-normal text-taupe">
           Fragrance as a private signature.
-        </p>
+        </h2>
         <Link href="/shop" className={cn(buttonVariants({ variant: "gold" }), "mt-8 inline-flex rounded-full")}>
-          View all perfumes
+          Shop now
         </Link>
       </section>
 

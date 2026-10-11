@@ -49,3 +49,17 @@ export function formatMoney(
   if (currencyCode === "GHS") return `GH₵${amount}`;
   return `${currencyCode} ${amount}`;
 }
+
+export function cedisInputFromMinor(amountMinor: number) {
+  assertMinorAmount(amountMinor);
+  return `${Math.trunc(amountMinor / MINOR_UNITS)}.${String(amountMinor % MINOR_UNITS).padStart(2, "0")}`;
+}
+
+export function minorFromCedisInput(value: unknown) {
+  if (value === "" || value == null) return null;
+  const raw = String(value).trim().replace(/,/g, "");
+  if (!raw) return null;
+  const parsed = Number.parseFloat(raw);
+  if (!Number.isFinite(parsed) || parsed < 0) return null;
+  return Math.round(parsed * MINOR_UNITS);
+}

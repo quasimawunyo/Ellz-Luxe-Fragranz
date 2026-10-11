@@ -20,7 +20,7 @@ export default async function ShopPage({
       <Breadcrumbs items={[{ href: "/", label: "Home" }, { label: "Shop" }]} />
       <h1 className="mt-6 font-serif text-5xl">The catalog</h1>
       <p className="mt-3 max-w-xl text-taupe">
-        Demonstration fragrances for this storefront. Filters operate on live catalog records.
+        House bottles available from Ells Luxe Annex. Demonstration pieces are tagged until a live SKU is confirmed.
       </p>
       <div className="mt-10 grid gap-10 lg:grid-cols-[16rem_1fr]">
         <aside>

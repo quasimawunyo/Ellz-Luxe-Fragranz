@@ -22,7 +22,7 @@ export default async function AdminProductsPage() {
           <tr className="border-b text-xs uppercase tracking-widest text-taupe">
             <th className="py-3">Name</th>
             <th>Status</th>
-            <th>Featured</th>
+            <th>Live / demo</th>
             <th>From</th>
           </tr>
         </thead>
@@ -33,7 +33,7 @@ export default async function AdminProductsPage() {
                 <Link href={`/admin/products/${product.id}`}>{product.name}</Link>
               </td>
               <td>{product.status}</td>
-              <td>{product.featured ? "Yes" : "No"}</td>
+              <td>{product.isDemonstration ? "Demonstration" : "Live"}</td>
               <td>{formatMoney(lowestPrice(product))}</td>
             </tr>
           ))}

@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { createServiceClient } from "@/lib/supabase/admin";
 import { isSupabaseAdminConfigured } from "@/lib/env";
@@ -9,6 +10,8 @@ import { updateFulfillment } from "@/lib/orders/store";
 import { fulfillmentStatuses, type FulfillmentStatus } from "@/lib/orders/transitions";
 import { refundPaystackTransaction } from "@/lib/payments/paystack";
 import { getOrderById } from "@/lib/orders/store";
+import { minorFromCedisInput } from "@/lib/money";
+import type { DeliveryMethod } from "@/lib/catalog/types";
 
 function needDb() {
   if (!isSupabaseAdminConfigured()) {
@@ -35,11 +38,41 @@ export async function saveSettingsAction(_prev: { error?: string; ok?: boolean; 
     ["bank_name", formData.get("bankName")],
     ["bank_account", formData.get("bankAccount")],
     ["about_story", formData.get("aboutStory")],
+    ["shipping_note", formData.get("shippingNote")],
+    ["returns_note", formData.get("returnsNote")],
   ] as const;
   for (const [key, value] of entries) {
     await admin.from("store_settings").upsert({ key, value: String(value ?? "") });
   }
+  const accra = minorFromCedisInput(formData.get("deliveryAccraCedis"));
+  const national = minorFromCedisInput(formData.get("deliveryNationalCedis"));
+  if (accra === null || national === null) {
+    return { error: "Enter delivery fees in Ghana cedis (for example 30.00)." };
+  }
+  const deliveryMethods: DeliveryMethod[] = [
+    {
+      id: "accra",
+      label: "Greater Accra delivery",
+      amountMinor: accra,
+      description: String(formData.get("deliveryAccraNote") ?? "").trim() || "Delivery within Greater Accra.",
+    },
+    {
+      id: "national",
+      label: "Rest of Ghana",
+      amountMinor: national,
+      description: String(formData.get("deliveryNationalNote") ?? "").trim() || "Nationwide dispatch.",
+    },
+    {
+      id: "pickup",
+      label: "Pickup at Ells Luxe Annex",
+      amountMinor: 0,
+      description: String(formData.get("deliveryPickupNote") ?? "").trim() || "Collect your order at Ells Luxe Annex.",
+    },
+  ];
+  await admin.from("store_settings").upsert({ key: "delivery_methods", value: deliveryMethods });
   revalidatePath("/");
+  revalidatePath("/checkout");
+  revalidatePath("/admin/settings");
   return { ok: true as const, message: "Settings saved." };
 }
 
@@ -58,8 +91,12 @@ export async function saveProductAction(_prev: { error?: string; ok?: boolean; m
     topNotes: String(formData.get("topNotes") ?? ""),
     heartNotes: String(formData.get("heartNotes") ?? ""),
     baseNotes: String(formData.get("baseNotes") ?? ""),
+    isDemonstration: formData.get("isDemonstration") === "on",
+    imageUrl: String(formData.get("imageUrl") ?? "").trim() || undefined,
+    imageAlt: String(formData.get("imageAlt") ?? "").trim() || undefined,
   });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message };
+  const creating = !String(formData.get("id") || "");
   const id = String(formData.get("id") || crypto.randomUUID());
   const { error } = await admin.from("products").upsert({
     id,
@@ -71,35 +108,68 @@ export async function saveProductAction(_prev: { error?: string; ok?: boolean; m
     category_id: parsed.data.categoryId,
     featured: parsed.data.featured,
     status: parsed.data.status,
-    is_demonstration: true,
+    is_demonstration: parsed.data.isDemonstration,
     top_notes: parsed.data.topNotes?.split(",").map((n) => n.trim()).filter(Boolean) ?? [],
     heart_notes: parsed.data.heartNotes?.split(",").map((n) => n.trim()).filter(Boolean) ?? [],
     base_notes: parsed.data.baseNotes?.split(",").map((n) => n.trim()).filter(Boolean) ?? [],
   });
   if (error) return { error: error.message };
 
+  const priceMinor = minorFromCedisInput(formData.get("priceCedis"));
+  const compareAtMinor = minorFromCedisInput(formData.get("compareAtCedis"));
+  if (priceMinor === null) return { error: "Enter a price in Ghana cedis (for example 280.00)." };
   const variantParsed = variantInputSchema.safeParse({
     sku: formData.get("sku"),
     label: formData.get("label"),
     sizeMl: formData.get("sizeMl") || undefined,
-    priceMinor: formData.get("priceMinor"),
-    compareAtMinor: formData.get("compareAtMinor") || undefined,
+    priceMinor,
+    compareAtMinor: compareAtMinor ?? undefined,
     stock: formData.get("stock"),
   });
-  if (variantParsed.success) {
-    const variantId = String(formData.get("variantId") || crypto.randomUUID());
-    await admin.from("product_variants").upsert({
-      id: variantId,
+  if (!variantParsed.success) return { error: variantParsed.error.issues[0]?.message ?? "Check the size, SKU, and stock." };
+  const variantId = String(formData.get("variantId") || crypto.randomUUID());
+  await admin.from("product_variants").upsert({
+    id: variantId,
+    product_id: id,
+    sku: variantParsed.data.sku,
+    label: variantParsed.data.label,
+    size_ml: variantParsed.data.sizeMl ?? null,
+    price_minor: variantParsed.data.priceMinor,
+    compare_at_minor: variantParsed.data.compareAtMinor ?? null,
+    stock: variantParsed.data.stock,
+  });
+
+  let imageUrl = parsed.data.imageUrl;
+  const file = formData.get("imageFile");
+  if (file instanceof File && file.size > 0) {
+    if (file.size > 2_000_000) return { error: "Product photos must be 2 MB or smaller." };
+    const allowed = ["image/jpeg", "image/png", "image/webp"];
+    if (!allowed.includes(file.type)) return { error: "Use a JPEG, PNG, or WebP photo." };
+    const extension = file.type === "image/png" ? "png" : file.type === "image/webp" ? "webp" : "jpg";
+    const path = `${id}/${crypto.randomUUID()}.${extension}`;
+    const upload = await admin.storage.from("product-images").upload(path, file, {
+      contentType: file.type,
+      upsert: true,
+    });
+    if (upload.error) return { error: upload.error.message };
+    imageUrl = admin.storage.from("product-images").getPublicUrl(path).data.publicUrl;
+  }
+  if (imageUrl) {
+    const imageId = String(formData.get("imageId") || `img-${id}`);
+    await admin.from("product_images").upsert({
+      id: imageId,
       product_id: id,
-      sku: variantParsed.data.sku,
-      label: variantParsed.data.label,
-      size_ml: variantParsed.data.sizeMl ?? null,
-      price_minor: variantParsed.data.priceMinor,
-      compare_at_minor: variantParsed.data.compareAtMinor ?? null,
-      stock: variantParsed.data.stock,
+      url: imageUrl,
+      alt: parsed.data.imageAlt || parsed.data.name,
+      position: 0,
     });
   }
+
   revalidatePath("/admin/products");
+  revalidatePath("/shop");
+  revalidatePath(`/product/${parsed.data.slug}`);
+  revalidatePath("/");
+  if (creating) redirect(`/admin/products/${id}`);
   return { ok: true as const, message: "Product saved.", id };
 }
 

@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { addMinor, cartTotals, formatMoney, lineTotalMinor, orderGrandTotal } from "@/lib/money";
+import {
+  addMinor,
+  cartTotals,
+  cedisInputFromMinor,
+  formatMoney,
+  lineTotalMinor,
+  minorFromCedisInput,
+  orderGrandTotal,
+} from "@/lib/money";
 
 describe("money", () => {
   it("adds integer minor units", () => {
@@ -23,5 +31,14 @@ describe("money", () => {
 
   it("formats GHS", () => {
     expect(formatMoney(42000, "GHS")).toBe("GH₵420.00");
+  });
+});
+
+describe("cedis input", () => {
+  it("round-trips GH₵ amounts to pesewas", () => {
+    expect(minorFromCedisInput("280.00")).toBe(28000);
+    expect(minorFromCedisInput("15.21")).toBe(1521);
+    expect(cedisInputFromMinor(3000)).toBe("30.00");
+    expect(minorFromCedisInput("")).toBeNull();
   });
 });

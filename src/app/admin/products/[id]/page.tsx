@@ -1,8 +1,10 @@
+import Image from "next/image";
 import { getCategories, getProductById } from "@/lib/catalog/queries";
 import { saveProductAction } from "@/app/actions/admin";
 import { ActionForm } from "@/components/forms/form-status";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/input";
+import { cedisInputFromMinor } from "@/lib/money";
 import { notFound } from "next/navigation";
 
 export default async function AdminProductPage({ params }: { params: Promise<{ id: string }> }) {
@@ -12,16 +14,18 @@ export default async function AdminProductPage({ params }: { params: Promise<{ i
   if (!isNew && !product) notFound();
   const categories = await getCategories();
   const variant = product?.variants[0];
+  const image = product?.images[0];
 
   return (
     <div className="max-w-2xl">
       <h1 className="font-serif text-4xl">{isNew ? "New product" : product?.name}</h1>
       <p className="mt-2 text-sm text-taupe">
-        Saving requires a Supabase service role. Catalog demonstration data is read-only without it.
+        Prices are Ghana cedis. Saving requires a Supabase service role. Uncheck demonstration when this is a live bottle.
       </p>
-      <ActionForm action={saveProductAction} className="mt-8 space-y-4">
+      <ActionForm action={saveProductAction} encType="multipart/form-data" className="mt-8 space-y-4">
         <input type="hidden" name="id" value={product?.id ?? ""} />
         <input type="hidden" name="variantId" value={variant?.id ?? ""} />
+        <input type="hidden" name="imageId" value={image?.id ?? ""} />
         <div>
           <Label htmlFor="name">Name</Label>
           <Input id="name" name="name" defaultValue={product?.name} required />
@@ -67,6 +71,10 @@ export default async function AdminProductPage({ params }: { params: Promise<{ i
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" name="featured" defaultChecked={product?.featured} /> Featured
         </label>
+        <label className="flex items-center gap-2 text-sm">
+          <input type="checkbox" name="isDemonstration" defaultChecked={product?.isDemonstration ?? true} />
+          Demonstration piece (not a confirmed live SKU)
+        </label>
         <div>
           <Label htmlFor="status">Status</Label>
           <select id="status" name="status" defaultValue={product?.status ?? "draft"} className="min-h-11 w-full border border-espresso/15 bg-white px-3 text-sm">
@@ -74,6 +82,24 @@ export default async function AdminProductPage({ params }: { params: Promise<{ i
             <option value="published">Published</option>
             <option value="archived">Archived</option>
           </select>
+        </div>
+        <h2 className="pt-4 font-serif text-2xl">Photo</h2>
+        {image ? (
+          <div className="relative h-40 w-32 overflow-hidden bg-espresso/5">
+            <Image src={image.url} alt={image.alt} fill className="object-cover" sizes="128px" />
+          </div>
+        ) : null}
+        <div>
+          <Label htmlFor="imageFile">Upload photo</Label>
+          <Input id="imageFile" name="imageFile" type="file" accept="image/jpeg,image/png,image/webp" />
+        </div>
+        <div>
+          <Label htmlFor="imageUrl">Or image URL</Label>
+          <Input id="imageUrl" name="imageUrl" defaultValue={image?.url ?? ""} />
+        </div>
+        <div>
+          <Label htmlFor="imageAlt">Image description</Label>
+          <Input id="imageAlt" name="imageAlt" defaultValue={image?.alt ?? ""} />
         </div>
         <h2 className="pt-4 font-serif text-2xl">Primary variant</h2>
         <div>
@@ -89,12 +115,27 @@ export default async function AdminProductPage({ params }: { params: Promise<{ i
           <Input id="sizeMl" name="sizeMl" type="number" defaultValue={variant?.sizeMl ?? ""} />
         </div>
         <div>
-          <Label htmlFor="priceMinor">Price (pesewas)</Label>
-          <Input id="priceMinor" name="priceMinor" type="number" defaultValue={variant?.priceMinor ?? 0} />
+          <Label htmlFor="priceCedis">Price (GH₵)</Label>
+          <Input
+            id="priceCedis"
+            name="priceCedis"
+            type="number"
+            min="0"
+            step="0.01"
+            defaultValue={variant ? cedisInputFromMinor(variant.priceMinor) : "0.00"}
+            required
+          />
         </div>
         <div>
-          <Label htmlFor="compareAtMinor">Compare-at (pesewas)</Label>
-          <Input id="compareAtMinor" name="compareAtMinor" type="number" defaultValue={variant?.compareAtMinor ?? ""} />
+          <Label htmlFor="compareAtCedis">Compare-at (GH₵)</Label>
+          <Input
+            id="compareAtCedis"
+            name="compareAtCedis"
+            type="number"
+            min="0"
+            step="0.01"
+            defaultValue={variant?.compareAtMinor != null ? cedisInputFromMinor(variant.compareAtMinor) : ""}
+          />
         </div>
         <div>
           <Label htmlFor="stock">Stock</Label>

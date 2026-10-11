@@ -4,7 +4,6 @@ import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { ProductGallery } from "@/components/product/gallery";
 import { ProductGrid } from "@/components/product/product-card";
 import { PurchaseForm } from "@/components/product/purchase-form";
-import { Price } from "@/components/ui/price";
 import { getProductBySlug, getRelated, getStoreSettings } from "@/lib/catalog/queries";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
@@ -23,7 +22,6 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const product = await getProductBySlug(slug);
   if (!product) notFound();
   const [related, settings] = await Promise.all([getRelated(product), getStoreSettings()]);
-  const defaultVariant = product.variants[0];
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -62,16 +60,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             {product.brand}
             {product.concentration ? ` · ${product.concentration}` : ""}
           </p>
-          {defaultVariant ? (
-            <Price
-              className="mt-6 text-xl"
-              amountMinor={defaultVariant.priceMinor}
-              compareAtMinor={defaultVariant.compareAtMinor}
-              currencyCode={settings.currencyCode}
-            />
-          ) : null}
           <p className="mt-6 max-w-lg leading-7 text-espresso/80">{product.description}</p>
-          <PurchaseForm variants={product.variants} />
+          <PurchaseForm variants={product.variants} currencyCode={settings.currencyCode} />
           <dl className="mt-10 space-y-4 border-t border-espresso/10 pt-8 text-sm">
             <div>
               <dt className="uppercase tracking-[0.16em] text-taupe">Top notes</dt>
