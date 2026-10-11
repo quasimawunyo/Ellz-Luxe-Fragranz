@@ -7,6 +7,7 @@ import { buildDashboardMetrics } from "@/lib/admin/metrics";
 import { formatMoney } from "@/lib/money";
 import { totalStock } from "@/lib/catalog/helpers";
 import { StatusPill } from "@/components/admin/status-pill";
+import { CustomerWhatsApp } from "@/components/admin/customer-whatsapp";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -133,13 +134,21 @@ export default async function AdminDashboardPage() {
           </div>
           <ul className="divide-y divide-espresso/10">
             {orders.slice(0, 8).map((order) => (
-              <li key={order.id}>
-                <Link href={`/admin/orders/${order.id}`} className="flex items-center justify-between gap-4 px-6 py-4 hover:bg-ivory">
+              <li key={order.id} className="px-6 py-4">
+                <div className="flex items-start justify-between gap-4">
                   <div>
-                    <p className="font-medium">{order.orderNumber}</p>
+                    <Link href={`/admin/orders/${order.id}`} className="font-medium hover:text-champagne">
+                      {order.orderNumber}
+                    </Link>
                     <p className="mt-1 text-sm text-taupe">
                       {order.fullName} · {order.locality}
                     </p>
+                    <CustomerWhatsApp
+                      className="mt-2"
+                      phone={order.phone}
+                      name={order.fullName}
+                      orderNumber={order.orderNumber}
+                    />
                   </div>
                   <div className="text-right">
                     <p className="text-sm">{formatMoney(order.totalMinor, order.currencyCode)}</p>
@@ -148,7 +157,7 @@ export default async function AdminDashboardPage() {
                       <StatusPill value={order.fulfillmentStatus} />
                     </div>
                   </div>
-                </Link>
+                </div>
               </li>
             ))}
             {!orders.length ? <li className="px-6 py-10 text-sm text-taupe">No orders yet. New checkouts will land here.</li> : null}
@@ -172,6 +181,12 @@ export default async function AdminDashboardPage() {
                       <Link href={`/admin/orders/${order.id}`} className="hover:text-champagne">
                         {order.orderNumber} · {order.fullName}
                       </Link>
+                      <CustomerWhatsApp
+                        className="mt-1"
+                        phone={order.phone}
+                        name={order.fullName}
+                        orderNumber={order.orderNumber}
+                      />
                     </li>
                   ))}
                 </ul>

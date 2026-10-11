@@ -15,6 +15,18 @@ export function whatsappHref(phone: string, message?: string) {
   return `https://wa.me/${digits}${text}`;
 }
 
+export function formatGhanaPhone(phone: string) {
+  const digits = ghanaWaDigits(phone);
+  if (digits.startsWith("233") && digits.length === 12) {
+    return `0${digits.slice(3, 5)} ${digits.slice(5, 8)} ${digits.slice(8)}`;
+  }
+  return phone.trim();
+}
+
+export function customerOrderWhatsAppMessage(order: { orderNumber: string; fullName: string }) {
+  return `Hello ${order.fullName}, this is Ells Luxe Annex about order ${order.orderNumber}.`;
+}
+
 export type AnnexOrderNotice = {
   orderNumber: string;
   fullName: string;

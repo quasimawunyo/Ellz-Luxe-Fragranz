@@ -3,6 +3,7 @@ import { listOrders } from "@/lib/orders/store";
 import { formatMoney } from "@/lib/money";
 import { Input } from "@/components/ui/input";
 import { StatusPill } from "@/components/admin/status-pill";
+import { CustomerWhatsApp } from "@/components/admin/customer-whatsapp";
 
 export const metadata = { title: "Orders · Admin" };
 
@@ -50,6 +51,7 @@ export default async function AdminOrdersPage({
             <tr className="border-b border-espresso/10 text-[11px] uppercase tracking-[0.16em] text-taupe">
               <th className="px-4 py-3">Order</th>
               <th>Customer</th>
+              <th>WhatsApp</th>
               <th>Payment</th>
               <th>Fulfillment</th>
               <th>Total</th>
@@ -70,7 +72,13 @@ export default async function AdminOrdersPage({
                 </td>
                 <td>
                   <p>{order.fullName}</p>
-                  <p className="text-taupe">{order.locality}</p>
+                  <p className="text-taupe">{order.email}</p>
+                  <p className="text-taupe">
+                    {order.locality}, {order.region}
+                  </p>
+                </td>
+                <td>
+                  <CustomerWhatsApp phone={order.phone} name={order.fullName} orderNumber={order.orderNumber} />
                 </td>
                 <td>
                   <StatusPill value={order.paymentStatus} />
@@ -83,8 +91,10 @@ export default async function AdminOrdersPage({
             ))}
             {!orders.length ? (
               <tr>
-                <td className="px-4 py-10 text-taupe" colSpan={5}>
-                  No orders match this filter.
+                <td className="px-4 py-10 text-taupe" colSpan={6}>
+                  {q || payment
+                    ? "No orders match this filter."
+                    : "No customer orders yet. WhatsApp numbers from checkout will show here with the mark so you can text them."}
                 </td>
               </tr>
             ) : null}

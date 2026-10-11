@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { annexOrderNotice, annexOrderWhatsAppHref, whatsappHref } from "@/lib/whatsapp";
+import {
+  annexOrderNotice,
+  annexOrderWhatsAppHref,
+  customerOrderWhatsAppMessage,
+  formatGhanaPhone,
+  whatsappHref,
+} from "@/lib/whatsapp";
 
 describe("whatsappHref", () => {
   it("builds a wa.me link from a Ghana number", () => {
@@ -33,5 +39,10 @@ describe("whatsappHref", () => {
     expect(annexOrderNotice(order)).toContain("ELF-TEST");
     expect(annexOrderNotice(order)).toContain("GH₵730.00");
     expect(annexOrderWhatsAppHref("0593634512", order)).toMatch(/^https:\/\/wa\.me\/233593634512\?text=/);
+  });
+
+  it("formats a Ghana WhatsApp number for display", () => {
+    expect(formatGhanaPhone("0241234567")).toBe("024 123 4567");
+    expect(customerOrderWhatsAppMessage({ orderNumber: "ELF-1", fullName: "Ama Mensah" })).toContain("ELF-1");
   });
 });
