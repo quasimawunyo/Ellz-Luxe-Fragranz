@@ -48,7 +48,7 @@ export function Header({
         >
           {open ? <X /> : <Menu />}
         </button>
-        <BrandLogo priority />
+        <BrandLogo className="w-[4.5rem] sm:w-24 md:w-28" size={224} priority />
         <nav className="hidden items-center gap-7 text-sm lg:flex">
           {NAV.map((item) =>
             item.label === "Shop" ? (

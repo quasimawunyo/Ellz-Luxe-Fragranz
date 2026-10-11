@@ -9,7 +9,7 @@ export function Footer({ settings }: { settings: StoreSettings }) {
     <footer className="mt-auto border-t border-white/10 bg-rich text-ivory">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 md:grid-cols-4">
         <div>
-          <BrandLogo onDark />
+          <BrandLogo className="w-32" size={256} />
           <p className="mt-4 text-sm leading-6 text-ivory/70">Perfume boutique at Ells Luxe Annex.</p>
           <p className="mt-6 text-sm font-medium text-ivory">Visit</p>
           <StoreContact settings={settings} className="mt-3 space-y-2 text-sm text-ivory/80" />
