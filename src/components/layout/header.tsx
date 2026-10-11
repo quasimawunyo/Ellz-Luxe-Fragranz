@@ -25,9 +25,11 @@ const SHOP = [
 export function Header({
   cartCount,
   signedIn,
+  isAdmin = false,
 }: {
   cartCount: number;
   signedIn: boolean;
+  isAdmin?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const [shopOpen, setShopOpen] = useState(false);
@@ -78,6 +80,11 @@ export function Header({
               </Link>
             ),
           )}
+          {isAdmin ? (
+            <Link href="/admin" className="hover:text-champagne">
+              Admin
+            </Link>
+          ) : null}
           <Link href={signedIn ? "/account" : "/login"} className="hover:text-champagne">
             {signedIn ? "Account" : "Login / Register"}
           </Link>
@@ -135,6 +142,15 @@ export function Header({
               {link.label}
             </Link>
           ))}
+          {isAdmin ? (
+            <Link
+              href="/admin"
+              className="mt-2 block py-3 text-sm uppercase tracking-[0.18em]"
+              onClick={() => setOpen(false)}
+            >
+              Admin
+            </Link>
+          ) : null}
           <Link
             href={signedIn ? "/account" : "/login"}
             className="mt-2 flex items-center gap-2 py-3 text-sm uppercase tracking-[0.18em]"

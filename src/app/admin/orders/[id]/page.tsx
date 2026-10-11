@@ -2,14 +2,17 @@ import { notFound } from "next/navigation";
 import { getOrderById } from "@/lib/orders/store";
 import { refundOrderAction, updateFulfillmentAction } from "@/app/actions/admin";
 import { ActionForm } from "@/components/forms/form-status";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
 import { Price } from "@/components/ui/price";
+import { annexOrderNotice, whatsappHref } from "@/lib/whatsapp";
+import { cn } from "@/lib/utils";
 
 export default async function AdminOrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const order = await getOrderById(id);
   if (!order) notFound();
+  const customerWhatsApp = whatsappHref(order.phone, annexOrderNotice(order));
 
   return (
     <div className="max-w-2xl">
@@ -23,6 +26,13 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
         <br />
         {order.addressLine}, {order.locality}, {order.region}
       </p>
+      {customerWhatsApp ? (
+        <p className="mt-4">
+          <a href={customerWhatsApp} className={cn(buttonVariants({ variant: "gold", size: "sm" }), "inline-flex")} target="_blank" rel="noreferrer">
+            WhatsApp this customer
+          </a>
+        </p>
+      ) : null}
       <ul className="mt-6 space-y-2 text-sm">
         {order.items.map((item) => (
           <li key={item.sku}>

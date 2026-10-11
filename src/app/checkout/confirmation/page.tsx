@@ -6,6 +6,10 @@ import { Price } from "@/components/ui/price";
 import { EmptyState } from "@/components/ui/states";
 import { getAuthContext } from "@/lib/auth/session";
 import { canViewOrder } from "@/lib/auth/roles";
+import { getStoreSettings } from "@/lib/catalog/queries";
+import { annexOrderWhatsAppHref } from "@/lib/whatsapp";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export const metadata = { title: "Order confirmation" };
 
@@ -17,7 +21,7 @@ export default async function ConfirmationPage({
   const { order: orderId } = await searchParams;
   let order = orderId ? await getOrderById(orderId) : null;
   if (order) order = await confirmMoolreIfPaid(order);
-  const auth = await getAuthContext();
+  const [auth, settings] = await Promise.all([getAuthContext(), getStoreSettings()]);
 
   if (!order) {
     return (
@@ -48,6 +52,8 @@ export default async function ConfirmationPage({
       </div>
     );
   }
+
+  const annexWhatsApp = annexOrderWhatsAppHref(settings.contactPhone, order);
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-16">
@@ -84,6 +90,16 @@ export default async function ConfirmationPage({
       <p className="mt-6 text-sm text-taupe">
         Delivering to {order.fullName}, {order.addressLine}, {order.locality}, {order.region}.
       </p>
+      {annexWhatsApp ? (
+        <p className="mt-8">
+          <a href={annexWhatsApp} className={cn(buttonVariants({ variant: "gold" }), "inline-flex")} target="_blank" rel="noreferrer">
+            Send this order on WhatsApp
+          </a>
+          <span className="mt-3 block text-sm text-taupe">
+            Opens WhatsApp to {settings.contactPhone} with the order details so the annex can confirm it.
+          </span>
+        </p>
+      ) : null}
     </div>
   );
 }
