@@ -5,25 +5,25 @@ const PROMISES = [
   {
     icon: Truck,
     title: "Ghana delivery",
-    body: "Quoted for your location on WhatsApp. Pickup at Ells Luxe Annex is free.",
+    body: "Quoted from your location on WhatsApp. Pickup at Ells Luxe Annex, Pantang is free.",
   },
   {
     icon: Headset,
-    title: "WhatsApp the annex",
+    title: "WhatsApp the Annex",
     body: (phone: string) =>
       phone
         ? `Message ${formatGhanaPhone(phone)} about a bottle, an order, or a quote.`
-        : "Message the annex about a bottle, an order, or a quote.",
+        : "Message the Annex about a bottle, an order, or a quote.",
   },
   {
     icon: CreditCard,
     title: "Confirmed payment",
-    body: "An order is not paid until Moolre, Paystack, or a WhatsApp receipt confirms it.",
+    body: "An order is not paid until a WhatsApp receipt or hosted checkout confirms it.",
   },
   {
     icon: ClipboardCheck,
     title: "Testers marked",
-    body: "Demonstration bottles say Tester. Confirm the bottle before you pay.",
+    body: "Tester bottles are labelled Tester. Confirm the bottle before you pay.",
   },
 ] as const;
 
