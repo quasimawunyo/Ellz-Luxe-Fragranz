@@ -43,36 +43,25 @@ export function AcceptedPayMarks() {
           />
         </svg>
       </Mark>
-      <Mark label="Vodafone Cash">
+      <Mark label="Telecel Cash">
         <svg viewBox="0 0 92 32" className="h-8 w-[5.8rem]" aria-hidden>
-          <rect width="92" height="32" rx="4" fill="#E60000" />
+          <rect width="92" height="32" rx="4" fill="#E20074" />
           <text x="46" y="13" textAnchor="middle" fill="#fff" fontSize="8" fontWeight="700" fontFamily="ui-sans-serif, system-ui, sans-serif">
-            Vodafone
+            Telecel
           </text>
           <text x="46" y="24" textAnchor="middle" fill="#fff" fontSize="8" fontFamily="ui-sans-serif, system-ui, sans-serif">
             Cash
           </text>
         </svg>
       </Mark>
-      <Mark label="AirtelTigo Money">
+      <Mark label="AT Money">
         <svg viewBox="0 0 72 32" className="h-8 w-[4.6rem]" aria-hidden>
-          <rect width="72" height="32" rx="4" fill="#ED1C24" />
-          <text x="36" y="13" textAnchor="middle" fill="#fff" fontSize="8" fontWeight="700" fontFamily="ui-sans-serif, system-ui, sans-serif">
-            airtel
-          </text>
-          <text x="36" y="24" textAnchor="middle" fill="#fff" fontSize="7" fontFamily="ui-sans-serif, system-ui, sans-serif">
-            Money
-          </text>
-        </svg>
-      </Mark>
-      <Mark label="Tigo Cash">
-        <svg viewBox="0 0 72 32" className="h-8 w-[4.6rem]" aria-hidden>
-          <rect width="72" height="32" rx="4" fill="#00A650" />
-          <text x="36" y="13" textAnchor="middle" fill="#fff" fontSize="9" fontWeight="700" fontFamily="ui-sans-serif, system-ui, sans-serif">
-            tigo
+          <rect width="72" height="32" rx="4" fill="#1A237E" />
+          <text x="36" y="13" textAnchor="middle" fill="#fff" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif, system-ui, sans-serif">
+            AT
           </text>
           <text x="36" y="24" textAnchor="middle" fill="#fff" fontSize="8" fontFamily="ui-sans-serif, system-ui, sans-serif">
-            Cash
+            Money
           </text>
         </svg>
       </Mark>
