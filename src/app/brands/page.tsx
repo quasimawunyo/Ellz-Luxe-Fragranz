@@ -14,7 +14,7 @@ export default function BrandsPage() {
       <ul className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-5">
         {HOUSE_BRANDS.map((brand) => (
           <li key={brand.slug}>
-            <Link href={`/brands/${brand.slug}`} className="flex flex-col items-center gap-3 border border-espresso/10 bg-white px-4 py-8">
+            <Link href={`/brands/${brand.slug}`} className="flex flex-col items-center gap-3 border border-espresso/10 bg-ivory px-4 py-8">
               <Image
                 src={brand.logo}
                 alt={brand.name}

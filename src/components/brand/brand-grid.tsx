@@ -6,7 +6,7 @@ const LOOP = [...HOUSE_BRANDS, ...HOUSE_BRANDS];
 
 export function BrandGrid() {
   return (
-    <section className="border-y border-espresso/10 bg-white" aria-label="Brands">
+    <section className="border-y border-espresso/10 bg-ivory" aria-label="Brands">
       <div className="flex items-stretch">
         <p className="hidden shrink-0 items-center border-r border-espresso/10 px-5 text-sm text-espresso sm:flex">
           Brands

@@ -5,16 +5,16 @@ export type HouseBrand = {
 };
 
 export const HOUSE_BRANDS: HouseBrand[] = [
-  { slug: "amaran", name: "Amaran", logo: "/images/brands/amaran.png" },
-  { slug: "armaf", name: "Armaf", logo: "/images/brands/armaf.png" },
-  { slug: "fragrance-world", name: "Fragrance World", logo: "/images/brands/fragrance-world.png" },
-  { slug: "giorgio-armani", name: "Giorgio Armani", logo: "/images/brands/giorgio-armani.png" },
-  { slug: "khadlaj", name: "Khadlaj", logo: "/images/brands/khadlaj.png" },
-  { slug: "laffair", name: "L'affair", logo: "/images/brands/laffair.png" },
-  { slug: "lattafa", name: "Lattafa", logo: "/images/brands/lattafa.png" },
-  { slug: "maison-alhambra", name: "Maison Alhambra", logo: "/images/brands/maison-alhambra.png" },
-  { slug: "parfum-de-mirage", name: "Parfum De Mirage", logo: "/images/brands/parfum-de-mirage.png" },
-  { slug: "versace", name: "Versace", logo: "/images/brands/versace.png" },
+  { slug: "amaran", name: "Amaran", logo: "/images/brands/amaran.png?v=ivory" },
+  { slug: "armaf", name: "Armaf", logo: "/images/brands/armaf.png?v=ivory" },
+  { slug: "fragrance-world", name: "Fragrance World", logo: "/images/brands/fragrance-world.png?v=ivory" },
+  { slug: "giorgio-armani", name: "Giorgio Armani", logo: "/images/brands/giorgio-armani.png?v=ivory" },
+  { slug: "khadlaj", name: "Khadlaj", logo: "/images/brands/khadlaj.png?v=ivory" },
+  { slug: "laffair", name: "L'affair", logo: "/images/brands/laffair.png?v=ivory" },
+  { slug: "lattafa", name: "Lattafa", logo: "/images/brands/lattafa.png?v=ivory" },
+  { slug: "maison-alhambra", name: "Maison Alhambra", logo: "/images/brands/maison-alhambra.png?v=ivory" },
+  { slug: "parfum-de-mirage", name: "Parfum De Mirage", logo: "/images/brands/parfum-de-mirage.png?v=ivory" },
+  { slug: "versace", name: "Versace", logo: "/images/brands/versace.png?v=ivory" },
 ];
 
 export function getHouseBrand(slugOrName: string | undefined) {
