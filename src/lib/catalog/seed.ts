@@ -331,8 +331,8 @@ export const DEMO_PRODUCTS: CatalogProduct[] = [
 ];
 
 export const DEMO_SETTINGS: StoreSettings = {
-  announcement: "Ells Luxe Annex · Call or WhatsApp 0593634512",
-  contactEmail: "",
+  announcement: "Ells Luxe Annex · WhatsApp 0593634512 · Confirm the bottle before you pay",
+  contactEmail: "ellzluxefragranz@gmail.com",
   contactPhone: "0593634512",
   location: "Ells Luxe Annex",
   instagramUrl: "https://www.instagram.com/ellzLuxe_fragranz.gh/",
@@ -346,11 +346,11 @@ export const DEMO_SETTINGS: StoreSettings = {
   shippingNote:
     "Delivery is available across Ghana. Pickup is at Ells Luxe Annex. Call or WhatsApp 0593634512 to confirm timing and rates for your area.",
   returnsNote:
-    "Returns and refunds are not yet defined. Do not treat this page as an operational policy until the owner approves the final text.",
+    "Message WhatsApp 0593634512 before returning anything. We replace or make right a bottle we sent in error or that arrived damaged. Opened fragrance is not refunded except for a packing or sending error on our side. Pickup and delivery disputes are handled from Ells Luxe Annex.",
   privacyNote:
-    "This privacy page is a structural placeholder. Replace it with counsel-reviewed language before collecting customer data in production.",
+    "EllzLuxe Fragranz at Ells Luxe Annex uses your name, email, phone, delivery area, and order contents to fulfill orders, answer messages, and send restock or email updates you asked for. Payment confirmation is by WhatsApp, or by Moolre when card checkout is on. We do not sell your details. Email ellzluxefragranz@gmail.com or WhatsApp 0593634512 to ask what we hold.",
   termsNote:
-    "These terms are a structural placeholder and are not a binding commercial contract. The owner must review and publish approved terms before launch.",
+    "Prices are in Ghana cedis. An order is a request to buy. It is not paid until we confirm payment. Delivery, pickup, and fees are on the Shipping page. Testers are marked Tester. Ghana law applies. Questions: WhatsApp 0593634512 or ellzluxefragranz@gmail.com.",
   aboutStory:
     "EllzLuxe Fragranz is a Ghana-based fragrance boutique at Ells Luxe Annex. We carry houses including Lattafa, Armaf, Maison Alhambra, and others listed on the Brands page.",
   deliveryMethods: [
@@ -401,14 +401,14 @@ export const DEMO_FAQS: FaqItem[] = [
     id: "faq-select",
     question: "How should I choose a fragrance?",
     answer:
-      "Use collections by family — citrus, floral, woody, oud — then read the listed notes. Discovery sets are useful when you want to sample before a full bottle. Notes in this catalog describe demonstration formulas.",
+      "Read the notes on each bottle. Collections group citrus, floral, woody, and oud. WhatsApp 0593634512 if you want help choosing at the annex.",
     requiresOwnerReview: false,
   },
   {
     id: "faq-returns",
     question: "What is the returns policy?",
     answer:
-      "A returns policy has not been approved yet. The Returns page is a placeholder until the owner publishes final terms.",
-    requiresOwnerReview: true,
+      "Message WhatsApp 0593634512 before returning anything. Wrong or damaged bottles from us will be made right. Opened fragrance is not refunded except for a packing error on our side.",
+    requiresOwnerReview: false,
   },
 ];

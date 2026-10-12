@@ -83,6 +83,14 @@ export default async function AdminSettingsPage() {
           <Label htmlFor="returnsNote">Returns note</Label>
           <Textarea id="returnsNote" name="returnsNote" defaultValue={settings.returnsNote} />
         </div>
+        <div>
+          <Label htmlFor="privacyNote">Privacy</Label>
+          <Textarea id="privacyNote" name="privacyNote" defaultValue={settings.privacyNote} />
+        </div>
+        <div>
+          <Label htmlFor="termsNote">Terms</Label>
+          <Textarea id="termsNote" name="termsNote" defaultValue={settings.termsNote} />
+        </div>
         <h2 className="pt-4 text-lg font-semibold">Delivery fees (GH₵)</h2>
         <div>
           <Label htmlFor="deliveryAccraCedis">Greater Accra</Label>

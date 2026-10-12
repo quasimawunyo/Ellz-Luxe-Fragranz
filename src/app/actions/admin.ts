@@ -40,6 +40,8 @@ export async function saveSettingsAction(_prev: { error?: string; ok?: boolean; 
     ["about_story", formData.get("aboutStory")],
     ["shipping_note", formData.get("shippingNote")],
     ["returns_note", formData.get("returnsNote")],
+    ["privacy_note", formData.get("privacyNote")],
+    ["terms_note", formData.get("termsNote")],
   ] as const;
   for (const [key, value] of entries) {
     await admin.from("store_settings").upsert({ key, value: String(value ?? "") });
@@ -72,6 +74,11 @@ export async function saveSettingsAction(_prev: { error?: string; ok?: boolean; 
   await admin.from("store_settings").upsert({ key: "delivery_methods", value: deliveryMethods });
   revalidatePath("/");
   revalidatePath("/checkout");
+  revalidatePath("/faq");
+  revalidatePath("/legal/privacy");
+  revalidatePath("/legal/terms");
+  revalidatePath("/legal/shipping");
+  revalidatePath("/legal/returns");
   revalidatePath("/admin/settings");
   return { ok: true as const, message: "Settings saved." };
 }
