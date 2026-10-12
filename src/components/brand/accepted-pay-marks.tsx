@@ -10,7 +10,12 @@ function Mark({
   className?: string;
 }) {
   return (
-    <span className={`inline-flex h-10 items-center justify-center ${className ?? ""}`} title={label} role="img" aria-label={label}>
+    <span
+      className={`inline-flex h-9 items-center justify-center ${className ?? ""}`}
+      title={label}
+      role="img"
+      aria-label={label}
+    >
       {children}
     </span>
   );
@@ -18,13 +23,13 @@ function Mark({
 
 export function AcceptedPayMarks() {
   return (
-    <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
+    <div className="flex flex-wrap items-center justify-center gap-5 sm:gap-7">
       <Mark label="Visa">
-        <svg viewBox="0 0 60 20" className="h-7 w-[4.2rem]" aria-hidden>
-          <rect width="60" height="20" rx="3" fill="#1A1F71" />
-          <text x="30" y="14.5" textAnchor="middle" fill="#fff" fontSize="11" fontWeight="700" fontFamily="ui-sans-serif, system-ui, sans-serif" letterSpacing="1">
-            VISA
-          </text>
+        <svg viewBox="0 0 24 24" className="h-7 w-[4rem]" aria-hidden>
+          <path
+            fill="#1A1F71"
+            d="M9.112 8.262L5.97 15.758H3.92L2.374 9.775c-.094-.368-.175-.503-.461-.658C1.447 8.864.677 8.627 0 8.479l.046-.217h3.3a.904.904 0 01.894.764l.817 4.338 2.018-5.102zm8.033 5.049c.008-1.979-2.736-2.088-2.717-2.972.006-.269.262-.555.822-.628a3.66 3.66 0 011.913.336l.34-1.59a5.207 5.207 0 00-1.814-.333c-1.917 0-3.266 1.02-3.278 2.479-.012 1.079.963 1.68 1.698 2.04.756.367 1.01.603 1.006.931-.005.504-.602.725-1.16.734-.975.015-1.54-.263-1.992-.473l-.351 1.642c.453.208 1.289.39 2.156.398 2.037 0 3.37-1.006 3.377-2.564m5.061 2.447H24l-1.565-7.496h-1.656a.883.883 0 00-.826.55l-2.909 6.946h2.036l.405-1.12h2.488zm-2.163-2.656l1.02-2.815.588 2.815zm-8.16-4.84l-1.603 7.496H8.34l1.605-7.496z"
+          />
         </svg>
       </Mark>
       <Mark label="Mastercard">
@@ -35,35 +40,52 @@ export function AcceptedPayMarks() {
         </svg>
       </Mark>
       <Mark label="MTN Mobile Money">
-        <svg viewBox="0 0 567 284" className="h-8 w-16" aria-hidden>
-          <path
-            fill="#F8C000"
-            fillRule="evenodd"
-            d="M283.46,0C126.91,0,0,63.46,0,141.73S126.91,283.46,283.46,283.46,566.93,220,566.93,141.73,440,0,283.46,0Zm0,261.09c-144.19,0-261.08-53.44-261.08-119.36S139.27,22.38,283.46,22.38,544.55,75.81,544.55,141.73,427.66,261.09,283.46,261.09ZM247.72,116.87V94.49h80v22.38h-28.8V189H276.51V116.87Zm176.5-22.38V189H401.84l-40.59-56.25V189H338.88V94.49h22.37l40.59,56.25V94.49ZM142.05,189V94.49h22.38l24.86,38.24,24.86-38.24h22.38V189H214.15V135.53l-17,26.09H181.4l-17-26.09V189Z"
-          />
+        <svg viewBox="0 0 56 32" className="h-8 w-14" aria-hidden>
+          <rect width="56" height="32" rx="6" fill="#FFCB05" />
+          <text
+            x="28"
+            y="21.5"
+            textAnchor="middle"
+            fill="#202020"
+            fontSize="15"
+            fontWeight="800"
+            fontFamily="ui-sans-serif, system-ui, sans-serif"
+            letterSpacing="-0.6"
+          >
+            mtn
+          </text>
         </svg>
       </Mark>
       <Mark label="Telecel Cash">
-        <svg viewBox="0 0 92 32" className="h-8 w-[5.8rem]" aria-hidden>
-          <rect width="92" height="32" rx="4" fill="#E20074" />
-          <text x="46" y="13" textAnchor="middle" fill="#fff" fontSize="8" fontWeight="700" fontFamily="ui-sans-serif, system-ui, sans-serif">
-            Telecel
+        <svg viewBox="0 0 118 32" className="h-8 w-[7.4rem]" aria-hidden>
+          <circle cx="16" cy="16" r="14" fill="#E32526" />
+          <text
+            x="16"
+            y="22"
+            textAnchor="middle"
+            fill="#fff"
+            fontSize="18"
+            fontWeight="700"
+            fontFamily="ui-rounded, ui-sans-serif, system-ui, sans-serif"
+          >
+            t
           </text>
-          <text x="46" y="24" textAnchor="middle" fill="#fff" fontSize="8" fontFamily="ui-sans-serif, system-ui, sans-serif">
-            Cash
+          <text
+            x="74"
+            y="21"
+            textAnchor="middle"
+            fill="#E32526"
+            fontSize="13"
+            fontWeight="700"
+            fontFamily="ui-sans-serif, system-ui, sans-serif"
+          >
+            telecel cash
           </text>
         </svg>
       </Mark>
-      <Mark label="AT Money">
-        <svg viewBox="0 0 72 32" className="h-8 w-[4.6rem]" aria-hidden>
-          <rect width="72" height="32" rx="4" fill="#1A237E" />
-          <text x="36" y="13" textAnchor="middle" fill="#fff" fontSize="10" fontWeight="700" fontFamily="ui-sans-serif, system-ui, sans-serif">
-            AT
-          </text>
-          <text x="36" y="24" textAnchor="middle" fill="#fff" fontSize="8" fontFamily="ui-sans-serif, system-ui, sans-serif">
-            Money
-          </text>
-        </svg>
+      <Mark label="AT Money" className="gap-1.5">
+        <img src="/images/pay/at.png" alt="" className="h-7 w-auto" />
+        <span className="text-[13px] font-semibold tracking-tight text-[#00377B]">Money</span>
       </Mark>
     </div>
   );
