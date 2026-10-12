@@ -62,6 +62,27 @@ async function webhookAnnex(notice: AnnexOrderNotice, body: string) {
   await postJson(env.orderNotifyWebhookUrl, { text: body, order: notice });
 }
 
+async function ntfyAnnex(body: string, orderNumber: string) {
+  if (!env.orderNtfyTopic) return;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 4000);
+  try {
+    await fetch(`https://ntfy.sh/${encodeURIComponent(env.orderNtfyTopic)}`, {
+      method: "POST",
+      headers: {
+        title: `EllzLuxe order ${orderNumber}`,
+        click: `${env.siteUrl.replace(/\/$/, "")}/admin/orders`,
+        priority: "high",
+        tags: "package",
+      },
+      body,
+      signal: controller.signal,
+    });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function callMeBot(phone: string, body: string) {
   if (!env.callMeBotApiKey) return;
   const digits = ghanaWaDigits(phone);
@@ -83,6 +104,7 @@ export async function notifyAnnexOfOrder(order: StoreOrder) {
     emailAnnex(settings.contactEmail, body, order.orderNumber),
     webhookAnnex(notice, body),
     callMeBot(settings.contactPhone, body),
+    ntfyAnnex(body, order.orderNumber),
   ];
   await Promise.allSettled(jobs);
 }

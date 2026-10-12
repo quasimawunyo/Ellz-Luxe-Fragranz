@@ -16,5 +16,7 @@ export function getLaunchStatus() {
     checkout: isMoolreConfigured() ? "Moolre" : isPaystackConfigured() ? "Paystack" : "WhatsApp",
     orderEmail: Boolean(env.resendApiKey),
     orderWhatsAppApi: Boolean(env.callMeBotApiKey),
+    orderPush: Boolean(env.orderNtfyTopic),
+    orderPushUrl: env.orderNtfyTopic ? `https://ntfy.sh/${env.orderNtfyTopic}` : null,
   };
 }

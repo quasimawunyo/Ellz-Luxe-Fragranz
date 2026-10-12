@@ -23,7 +23,16 @@ export default async function AdminSettingsPage() {
           <li>Paystack: {launch.paystack ? "Ready" : "Not set"}</li>
           <li>Order email ping: {launch.orderEmail ? "Ready" : "Not set"}</li>
           <li>Order WhatsApp ping: {launch.orderWhatsAppApi ? "Ready" : "Customer WhatsApp opens to the annex"}</li>
+          <li>Order phone ping: {launch.orderPush ? "Ready" : "Not set"}</li>
         </ul>
+        {launch.orderPushUrl ? (
+          <p className="mt-4">
+            Open this on your phone once, then allow notifications:{" "}
+            <a href={launch.orderPushUrl} className="break-all underline underline-offset-4" target="_blank" rel="noreferrer">
+              {launch.orderPushUrl}
+            </a>
+          </p>
+        ) : null}
         <p className="mt-4 text-taupe">Moolre callback</p>
         <p className="mt-1 break-all">{launch.moolreWebhook}</p>
       </section>

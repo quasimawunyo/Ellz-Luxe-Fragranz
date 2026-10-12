@@ -26,6 +26,7 @@ export const env = {
   orderNotifyFrom: present(process.env.ORDER_NOTIFY_FROM) ?? "EllzLuxe Fragranz <onboarding@resend.dev>",
   orderNotifyWebhookUrl: present(process.env.ORDER_NOTIFY_WEBHOOK_URL),
   callMeBotApiKey: present(process.env.CALLMEBOT_API_KEY),
+  orderNtfyTopic: present(process.env.ORDER_NTFY_TOPIC),
 };
 
 export function isSupabaseConfigured() {
