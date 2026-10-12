@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import type { StoreSettings } from "@/lib/catalog/types";
 import { AnnouncementBar } from "@/components/layout/announcement-bar";
 import { Footer } from "@/components/layout/footer";
+import { AnnexPromises } from "@/components/layout/annex-promises";
 import { TrustAndPay } from "@/components/layout/trust-and-pay";
 
 export function SiteChrome({
@@ -26,6 +27,7 @@ export function SiteChrome({
       <AnnouncementBar message={settings.announcement} />
       {header}
       <main className="flex-1">{children}</main>
+      <AnnexPromises phone={settings.contactPhone} />
       <TrustAndPay phone={settings.contactPhone} />
       <Footer settings={settings} />
     </>
