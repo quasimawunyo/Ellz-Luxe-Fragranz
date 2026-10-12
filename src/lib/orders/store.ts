@@ -21,6 +21,7 @@ import {
 } from "@/lib/payments/moolre";
 import { isPaystackConfigured } from "@/lib/payments/paystack";
 import { rememberPlacedOrderId } from "@/lib/orders/placed-cookie";
+import { normalizeOrderNumber } from "@/lib/orders/lookup";
 
 const ORDERS_COOKIE = "elf_orders";
 
@@ -242,8 +243,17 @@ export async function getOrderByPaymentReference(reference: string) {
 }
 
 export async function getOrderByNumber(orderNumber: string) {
-  const orders = await listOrders();
-  return orders.find((order) => order.orderNumber === orderNumber) ?? null;
+  const needle = normalizeOrderNumber(orderNumber);
+  if (!needle) return null;
+  if (isSupabaseAdminConfigured()) {
+    const admin = createServiceClient();
+    if (admin) {
+      const { data: row } = await admin.from("orders").select("id").eq("order_number", needle).maybeSingle();
+      if (!row) return null;
+      return getOrderById(row.id);
+    }
+  }
+  return (await demoOrders()).find((order) => normalizeOrderNumber(order.orderNumber) === needle) ?? null;
 }
 
 export async function listOrders(filter?: { userId?: string; email?: string }) {

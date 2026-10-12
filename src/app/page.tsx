@@ -47,8 +47,8 @@ export default async function HomePage() {
       <section className="mx-auto max-w-7xl px-4 py-8">
         <div className="flex items-end justify-between gap-4">
           <h2 className="font-serif text-3xl">In the shop</h2>
-          <Link href="/shop" className="text-sm text-taupe hover:text-espresso">
-            All bottles
+          <Link href="/new" className="text-sm text-taupe hover:text-espresso">
+            New arrivals
           </Link>
         </div>
         <div className="mt-8">

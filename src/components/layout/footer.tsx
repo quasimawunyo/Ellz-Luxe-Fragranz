@@ -20,6 +20,7 @@ export function Footer({ settings }: { settings: StoreSettings }) {
           <p className="text-sm font-medium text-ivory">Shop</p>
           <ul className="mt-4 space-y-2 text-sm text-ivory/80">
             <li><Link href="/shop">All perfumes</Link></li>
+            <li><Link href="/new">New arrivals</Link></li>
             <li><Link href="/brands">Brands</Link></li>
             <li><Link href="/collections/womens-fragrances">Women</Link></li>
             <li><Link href="/collections/mens-fragrances">Men</Link></li>
@@ -31,6 +32,7 @@ export function Footer({ settings }: { settings: StoreSettings }) {
           <p className="text-sm font-medium text-ivory">Help</p>
           <ul className="mt-4 space-y-2 text-sm text-ivory/80">
             <li><Link href="/account">Account</Link></li>
+            <li><Link href="/track">Track order</Link></li>
             <li><Link href="/legal/shipping">Shipping</Link></li>
             <li><Link href="/legal/returns">Returns</Link></li>
             <li><Link href="/faq">FAQ</Link></li>

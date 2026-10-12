@@ -11,6 +11,9 @@ import { getStoreSettings } from "@/lib/catalog/queries";
 import { orderShippingIsQuoted } from "@/lib/catalog/helpers";
 import { annexOrderWhatsAppHref } from "@/lib/whatsapp";
 import { OpenAnnexWhatsApp } from "@/components/checkout/open-annex-whatsapp";
+import { resumePaymentAction } from "@/app/actions/orders";
+import { ActionForm } from "@/components/forms/form-status";
+import { Button } from "@/components/ui/button";
 
 export const metadata = { title: "Order confirmation" };
 
@@ -47,6 +50,8 @@ export default async function ConfirmationPage({
     return (
       <div className="mx-auto max-w-3xl px-4 py-16">
         <EmptyState title="This confirmation is private">
+          <Link href="/track">Track with order number and email</Link>
+          {" · "}
           <Link href="/login">Sign in</Link>
         </EmptyState>
       </div>
@@ -54,6 +59,8 @@ export default async function ConfirmationPage({
   }
 
   const annexWhatsApp = annexOrderWhatsAppHref(settings.contactPhone, order);
+  const canResumeHostedPay =
+    order.paymentStatus === "pending" && (isMoolreConfigured() || isPaystackConfigured());
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-16">
@@ -95,6 +102,14 @@ export default async function ConfirmationPage({
       <p className="mt-6 text-sm text-taupe">
         Delivering to {order.fullName}, {order.addressLine}, {order.locality}, {order.region}.
       </p>
+      {canResumeHostedPay ? (
+        <ActionForm action={resumePaymentAction} className="mt-6">
+          <input type="hidden" name="orderId" value={order.id} />
+          <Button type="submit" variant="shop">
+            Pay now
+          </Button>
+        </ActionForm>
+      ) : null}
       {annexWhatsApp ? (
         <OpenAnnexWhatsApp
           href={annexWhatsApp}

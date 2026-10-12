@@ -29,6 +29,8 @@ export default async function AccountPage() {
       </ActionForm>
       <p className="mt-8">
         <Link href="/account/orders">Order history</Link>
+        {" · "}
+        <Link href="/track">Track an order</Link>
       </p>
       {auth.role === "admin" || auth.role === "super_admin" ? (
         <p className="mt-2">
