@@ -346,7 +346,7 @@ export const DEMO_SETTINGS: StoreSettings = {
   announcement: "Ells Luxe Annex · WhatsApp 0593634512 · Confirm the bottle before you pay",
   contactEmail: "ellzluxefragranz@gmail.com",
   contactPhone: "0593634512",
-  location: "Ells Luxe Annex",
+  location: "Ells Luxe Annex, Pantang, Ghana",
   instagramUrl: "https://www.instagram.com/ellzLuxe_fragranz.gh/",
   tiktokUrl: "https://www.tiktok.com/@ellzluxefragranz.gh",
   snapchatHandle: "ama_candy90",
@@ -364,7 +364,7 @@ export const DEMO_SETTINGS: StoreSettings = {
   termsNote:
     "Prices are in Ghana cedis. An order is a request to buy. It is not paid until we confirm payment. Delivery, pickup, and fees are on the Shipping page. Testers are marked Tester. Ghana law applies. Questions: WhatsApp 0593634512 or ellzluxefragranz@gmail.com.",
   aboutStory:
-    "EllzLuxe Fragranz is a Ghana-based fragrance boutique at Ells Luxe Annex. We carry houses including Lattafa, Armaf, Maison Alhambra, and others listed on the Brands page.",
+    "EllzLuxe Fragranz is a Ghana-based fragrance boutique at Ells Luxe Annex, Pantang. We carry houses including Lattafa, Armaf, Maison Alhambra, and others listed on the Brands page.",
   deliveryMethods: [
     {
       id: "accra",

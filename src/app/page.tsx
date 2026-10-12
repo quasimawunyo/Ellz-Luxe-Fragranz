@@ -37,8 +37,11 @@ export default async function HomePage() {
       </section>
 
       <section className="px-4 py-16 text-center">
-        <h1 className="font-serif text-4xl md:text-5xl">EllzLuxe Fragranz</h1>
-        <p className="mx-auto mt-4 max-w-md text-taupe">Perfume boutique at Ells Luxe Annex, Ghana.</p>
+        <p className="text-sm tracking-[0.28em] text-taupe uppercase">Welcome to</p>
+        <h1 className="mt-3 font-serif text-4xl md:text-5xl">EllzLuxe Fragranz</h1>
+        <p className="mx-auto mt-4 max-w-md text-taupe">
+          Perfume boutique at {settings.location}.
+        </p>
         <Link href="/shop" className={cn(buttonVariants({ variant: "gold" }), "mt-8 inline-flex")}>
           Shop
         </Link>

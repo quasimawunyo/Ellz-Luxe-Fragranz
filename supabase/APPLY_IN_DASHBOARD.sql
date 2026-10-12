@@ -527,7 +527,7 @@ insert into public.store_settings (key, value) values
   ('announcement', '"Ells Luxe Annex · Call or WhatsApp 0593634512"'),
   ('contact_email', '""'),
   ('contact_phone', '"0593634512"'),
-  ('location', '"Ells Luxe Annex"'),
+  ('location', '"Ells Luxe Annex, Pantang, Ghana"'),
   ('instagram_url', '"https://www.instagram.com/ellzLuxe_fragranz.gh/"'),
   ('tiktok_url', '"https://www.tiktok.com/@ellzluxefragranz.gh"'),
   ('snapchat_handle', '"ama_candy90"'),

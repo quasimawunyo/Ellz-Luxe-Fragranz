@@ -14,7 +14,7 @@ export default async function AboutPage() {
       <div className="mt-10">
         <p>{settings.aboutStory}</p>
         <p className="mt-6 text-taupe">
-          Ells Luxe Annex · {settings.contactPhone || "WhatsApp"} · {settings.contactEmail}
+          {settings.location} · {settings.contactPhone || "WhatsApp"} · {settings.contactEmail}
         </p>
       </div>
     </div>

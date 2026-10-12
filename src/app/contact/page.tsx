@@ -13,7 +13,7 @@ export default async function ContactPage() {
     <div className="mx-auto grid max-w-6xl gap-12 px-4 py-16 lg:grid-cols-2">
       <div>
         <h1 className="font-serif text-4xl">Contact</h1>
-        <p className="mt-4 text-taupe">Visit Ells Luxe Annex, call, or send a WhatsApp message.</p>
+        <p className="mt-4 text-taupe">Visit {settings.location}, call, or send a WhatsApp message.</p>
         <StoreContact settings={settings} className="mt-8 space-y-2 text-sm" />
         <h2 className="mt-10 text-lg font-semibold">Social</h2>
         <StoreSocials settings={settings} />

@@ -51,7 +51,7 @@ export async function getStoreSettings(): Promise<StoreSettings> {
     announcement: String(map.announcement ?? DEMO_SETTINGS.announcement),
     contactEmail: String(map.contact_email ?? DEMO_SETTINGS.contactEmail),
     contactPhone: String(map.contact_phone ?? DEMO_SETTINGS.contactPhone),
-    location: String(map.location ?? DEMO_SETTINGS.location),
+    location: String(map.location ?? DEMO_SETTINGS.location).trim(),
     instagramUrl: String(map.instagram_url ?? DEMO_SETTINGS.instagramUrl),
     tiktokUrl: String(map.tiktok_url ?? DEMO_SETTINGS.tiktokUrl),
     snapchatHandle: String(map.snapchat_handle ?? DEMO_SETTINGS.snapchatHandle),
