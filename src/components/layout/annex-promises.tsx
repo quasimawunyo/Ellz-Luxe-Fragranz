@@ -5,7 +5,7 @@ const PROMISES = [
   {
     icon: Truck,
     title: "Delivery.",
-    body: "Quoted on WhatsApp. Pickup is free!",
+    body: "Delivery is between 24-72 hours!",
   },
   {
     icon: Headset,
