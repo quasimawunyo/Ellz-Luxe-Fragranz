@@ -12,7 +12,7 @@ const buttonVariants = cva(
         outline: "border border-espresso/20 text-espresso hover:border-espresso px-5 py-2.5 bg-transparent",
         ghost: "text-espresso hover:text-champagne px-3 py-2",
         danger: "bg-red-900 text-ivory hover:bg-red-800 px-5 py-2.5",
-        shop: "bg-leaf text-white hover:bg-leaf/90 px-5 py-2.5",
+        shop: "rounded-full bg-leaf px-5 py-2.5 text-white shadow-[0_1px_0_rgba(255,255,255,0.18)_inset] hover:bg-leaf/90",
       },
       size: {
         default: "min-h-11",

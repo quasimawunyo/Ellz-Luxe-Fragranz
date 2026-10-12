@@ -39,14 +39,20 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
       </h3>
       {product.isDemonstration ? <p className="mt-1 text-xs text-taupe">Tester</p> : null}
       <Price amountMinor={price} compareAtMinor={compare} className="mt-2 text-sm text-leaf" />
-      {soldOut ? <p className="mt-1 text-sm text-taupe">Out of stock</p> : null}
-      <div className="mt-4 flex flex-wrap items-center gap-3">
+      <p className="mt-1 text-sm text-taupe">{soldOut ? "Out of stock" : "In stock"}</p>
+      <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
         {soldOut ? (
           <WaitlistButton productId={product.id} />
         ) : defaultVariant ? (
           <QuickAdd variantId={defaultVariant.id} />
         ) : null}
-        <LikeButton productId={product.id} name={product.name} />
+        <Link
+          href={`/product/${product.slug}`}
+          className="text-sm text-espresso underline-offset-4 hover:underline"
+        >
+          Details
+        </Link>
+        <LikeButton productId={product.id} name={product.name} className="size-9" />
       </div>
     </article>
   );
