@@ -28,7 +28,7 @@ export function SiteChrome({
       {header}
       <main className="flex-1">{children}</main>
       <AnnexPromises phone={settings.contactPhone} />
-      <TrustAndPay phone={settings.contactPhone} />
+      <TrustAndPay phone={settings.contactPhone} location={settings.location} />
       <Footer settings={settings} />
     </>
   );

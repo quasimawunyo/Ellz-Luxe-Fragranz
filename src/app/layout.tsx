@@ -29,10 +29,10 @@ export const metadata: Metadata = {
     default: "EllzLuxe Fragranz",
     template: "%s · EllzLuxe Fragranz",
   },
-  description: "Perfume boutique at Ells Luxe Annex, Pantang, Ghana. Shop Lattafa, Armaf, Maison Alhambra, and more.",
+  description: "Perfume boutique at Ells Luxe Annex, Pantang. Shop Lattafa, Armaf, Maison Alhambra, and more.",
   openGraph: {
     title: "EllzLuxe Fragranz",
-    description: "Perfume boutique at Ells Luxe Annex, Pantang, Ghana.",
+    description: "Perfume boutique at Ells Luxe Annex, Pantang.",
     type: "website",
   },
 };

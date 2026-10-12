@@ -346,7 +346,7 @@ export const DEMO_SETTINGS: StoreSettings = {
   announcement: "Ells Luxe Annex · WhatsApp 0593634512 · Confirm the bottle before you pay",
   contactEmail: "ellzluxefragranz@gmail.com",
   contactPhone: "0593634512",
-  location: "Ells Luxe Annex, Pantang, Ghana",
+  location: "Ells Luxe Annex, Pantang",
   instagramUrl: "https://www.instagram.com/ellzLuxe_fragranz.gh/",
   tiktokUrl: "https://www.tiktok.com/@ellzluxefragranz.gh",
   snapchatHandle: "ama_candy90",

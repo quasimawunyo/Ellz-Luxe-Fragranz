@@ -20,8 +20,8 @@ const PROMISES = [
   },
   {
     icon: ClipboardCheck,
-    title: "Testers Marked.",
-    body: "Testers labelled. Confirm before you pay!",
+    title: "Genuine Products.",
+    body: "Authentic, Original & Safe!",
   },
 ] as const;
 
