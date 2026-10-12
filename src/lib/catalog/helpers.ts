@@ -4,6 +4,14 @@ import type { CatalogProduct as Product } from "@/lib/catalog/types";
 
 export const PAGE_SIZE = 9;
 
+export function deliveryIsQuoted(method: { id: string; amountMinor: number }) {
+  return method.id !== "pickup" && method.amountMinor === 0;
+}
+
+export function orderShippingIsQuoted(order: { shippingMinor: number; deliveryMethod: string }) {
+  return order.shippingMinor === 0 && !/pickup/i.test(order.deliveryMethod);
+}
+
 export function lowestPrice(product: Product) {
   return Math.min(...product.variants.map((variant) => variant.priceMinor));
 }

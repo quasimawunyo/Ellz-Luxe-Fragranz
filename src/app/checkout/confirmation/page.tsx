@@ -7,6 +7,7 @@ import { EmptyState } from "@/components/ui/states";
 import { getAuthContext } from "@/lib/auth/session";
 import { canViewOrder } from "@/lib/auth/roles";
 import { getStoreSettings } from "@/lib/catalog/queries";
+import { orderShippingIsQuoted } from "@/lib/catalog/helpers";
 import { annexOrderWhatsAppHref } from "@/lib/whatsapp";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -78,11 +79,17 @@ export default async function ConfirmationPage({
           </li>
         ))}
         <li className="flex justify-between border-t border-espresso/10 pt-3">
-          <span>Shipping</span>
-          <Price amountMinor={order.shippingMinor} currencyCode={order.currencyCode} />
+          <span>Delivery</span>
+          {orderShippingIsQuoted(order) ? (
+            <span>Quoted for {order.locality}, {order.region}</span>
+          ) : /pickup/i.test(order.deliveryMethod) ? (
+            <span>Free</span>
+          ) : (
+            <Price amountMinor={order.shippingMinor} currencyCode={order.currencyCode} />
+          )}
         </li>
         <li className="flex justify-between font-medium">
-          <span>Total</span>
+          <span>{orderShippingIsQuoted(order) ? "Goods total" : "Total"}</span>
           <Price amountMinor={order.totalMinor} currencyCode={order.currencyCode} />
         </li>
       </ul>

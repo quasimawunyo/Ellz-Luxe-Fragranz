@@ -28,10 +28,10 @@ export default async function CheckoutPage() {
   }
 
   const payCopy = isMoolreConfigured()
-    ? " Place the order to pay on Moolre (mobile money and cards). The order is marked paid only after Moolre confirms the payment."
+    ? " Place the order to pay on Moolre (mobile money and cards). Delivery is quoted from your location on WhatsApp. The order is marked paid only after Moolre confirms the payment."
     : isPaystackConfigured()
-      ? " Place the order to pay with Paystack. The order is marked paid only after a verified webhook."
-      : ` Place the order, then confirm payment on WhatsApp${settings.contactPhone ? ` ${settings.contactPhone}` : ""}.`;
+      ? " Place the order to pay with Paystack. Delivery is quoted from your location on WhatsApp. The order is marked paid only after a verified webhook."
+      : ` Place the order, then confirm payment and the delivery fee on WhatsApp${settings.contactPhone ? ` ${settings.contactPhone}` : ""}.`;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">

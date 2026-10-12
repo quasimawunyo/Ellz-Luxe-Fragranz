@@ -37,7 +37,8 @@ describe("whatsappHref", () => {
       items: [{ productName: "Citrus Veil", variantLabel: "50 ml", quantity: 1 }],
     };
     expect(annexOrderNotice(order)).toContain("ELF-TEST");
-    expect(annexOrderNotice(order)).toContain("GH₵730.00");
+    expect(annexOrderNotice(order)).toContain("Goods total: GH₵730.00");
+    expect(annexOrderNotice(order)).toContain("quote for Labone");
     expect(annexOrderWhatsAppHref("0593634512", order)).toMatch(/^https:\/\/wa\.me\/233593634512\?text=/);
   });
 

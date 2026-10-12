@@ -1,12 +1,13 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { placeOrderAction } from "@/app/actions/checkout";
 import { ActionForm } from "@/components/forms/form-status";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/input";
 import { Price } from "@/components/ui/price";
 import { GHANA_REGIONS } from "@/lib/ghana";
+import { deliveryIsQuoted } from "@/lib/catalog/helpers";
 import { orderGrandTotal } from "@/lib/money";
 import type { DeliveryMethod } from "@/lib/catalog/types";
 
@@ -37,10 +38,9 @@ export function CheckoutView({
 }) {
   const [region, setRegion] = useState<(typeof GHANA_REGIONS)[number]>("Greater Accra");
   const [deliveryMethodId, setDeliveryMethodId] = useState(deliveryMethods[0]?.id ?? "accra");
-  const shipping = useMemo(
-    () => deliveryMethods.find((method) => method.id === deliveryMethodId)?.amountMinor ?? 0,
-    [deliveryMethodId, deliveryMethods],
-  );
+  const selectedMethod = deliveryMethods.find((method) => method.id === deliveryMethodId);
+  const shipping = selectedMethod?.amountMinor ?? 0;
+  const quoted = selectedMethod ? deliveryIsQuoted(selectedMethod) : false;
   const totalMinor = orderGrandTotal(subtotalMinor, shipping);
 
   return (
@@ -105,7 +105,13 @@ export function CheckoutView({
                 <span className="block font-medium">{method.label}</span>
                 <span className="text-sm text-taupe">{method.description}</span>
                 <span className="mt-1 block text-sm">
-                  <Price amountMinor={method.amountMinor} currencyCode={currencyCode} />
+                  {deliveryIsQuoted(method) ? (
+                    "Quoted for your location"
+                  ) : method.id === "pickup" ? (
+                    "Free"
+                  ) : (
+                    <Price amountMinor={method.amountMinor} currencyCode={currencyCode} />
+                  )}
                 </span>
               </span>
             </label>
@@ -135,10 +141,12 @@ export function CheckoutView({
         </p>
         <p className="mt-2 flex justify-between text-sm">
           <span>Delivery</span>
-          <Price amountMinor={shipping} currencyCode={currencyCode} />
+          <span>
+            {quoted ? "Quoted for your location" : deliveryMethodId === "pickup" ? "Free" : <Price amountMinor={shipping} currencyCode={currencyCode} />}
+          </span>
         </p>
         <p className="mt-4 flex justify-between border-t border-espresso/10 pt-4 font-medium">
-          <span>Total</span>
+          <span>{quoted ? "Goods total" : "Total"}</span>
           <Price amountMinor={totalMinor} currencyCode={currencyCode} />
         </p>
       </aside>

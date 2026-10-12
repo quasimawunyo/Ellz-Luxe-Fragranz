@@ -40,21 +40,28 @@ export type AnnexOrderNotice = {
   notes: string | null;
   currencyCode: string;
   totalMinor: number;
+  shippingMinor?: number;
   items: { productName: string; variantLabel: string; quantity: number }[];
 };
 
 export function annexOrderNotice(order: AnnexOrderNotice) {
+  const quoted = (order.shippingMinor ?? 0) === 0 && !/pickup/i.test(order.deliveryMethod);
   const lines = [
     `New EllzLuxe order ${order.orderNumber}`,
     `Payment: ${order.paymentStatus}`,
-    `Total: ${formatMoney(order.totalMinor, order.currencyCode)}`,
+    quoted
+      ? `Goods total: ${formatMoney(order.totalMinor, order.currencyCode)}`
+      : `Total: ${formatMoney(order.totalMinor, order.currencyCode)}`,
     `Customer: ${order.fullName}`,
     `Phone: ${order.phone}`,
     `Email: ${order.email}`,
     `Deliver: ${order.deliveryMethod}`,
     `${order.addressLine}, ${order.locality}, ${order.region}`,
-    ...order.items.map((item) => `- ${item.productName} (${item.variantLabel}) × ${item.quantity}`),
   ];
+  if (quoted) {
+    lines.push(`Delivery fee: quote for ${order.locality}, ${order.region}`);
+  }
+  lines.push(...order.items.map((item) => `- ${item.productName} (${item.variantLabel}) × ${item.quantity}`));
   if (order.notes) lines.push(`Notes: ${order.notes}`);
   return lines.join("\n");
 }

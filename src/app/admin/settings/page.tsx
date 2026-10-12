@@ -3,7 +3,6 @@ import { saveSettingsAction } from "@/app/actions/admin";
 import { ActionForm } from "@/components/forms/form-status";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/input";
-import { cedisInputFromMinor } from "@/lib/money";
 import { getLaunchStatus } from "@/lib/launch/status";
 
 export const metadata = { title: "Settings · Admin" };
@@ -91,37 +90,17 @@ export default async function AdminSettingsPage() {
           <Label htmlFor="termsNote">Terms</Label>
           <Textarea id="termsNote" name="termsNote" defaultValue={settings.termsNote} />
         </div>
-        <h2 className="pt-4 text-lg font-semibold">Delivery fees (GH₵)</h2>
-        <div>
-          <Label htmlFor="deliveryAccraCedis">Greater Accra</Label>
-          <Input
-            id="deliveryAccraCedis"
-            name="deliveryAccraCedis"
-            type="number"
-            min="0"
-            step="0.01"
-            defaultValue={cedisInputFromMinor(settings.deliveryMethods.find((method) => method.id === "accra")?.amountMinor ?? 3000)}
-            required
-          />
-        </div>
+        <h2 className="pt-4 text-lg font-semibold">Delivery</h2>
+        <p className="text-sm text-taupe">
+          Delivery is not a fixed price. The annex quotes the fee from the customer’s region and locality on WhatsApp.
+          Pickup at Ells Luxe Annex is free.
+        </p>
         <div>
           <Label htmlFor="deliveryAccraNote">Greater Accra note</Label>
           <Input
             id="deliveryAccraNote"
             name="deliveryAccraNote"
             defaultValue={settings.deliveryMethods.find((method) => method.id === "accra")?.description ?? ""}
-          />
-        </div>
-        <div>
-          <Label htmlFor="deliveryNationalCedis">Rest of Ghana</Label>
-          <Input
-            id="deliveryNationalCedis"
-            name="deliveryNationalCedis"
-            type="number"
-            min="0"
-            step="0.01"
-            defaultValue={cedisInputFromMinor(settings.deliveryMethods.find((method) => method.id === "national")?.amountMinor ?? 5000)}
-            required
           />
         </div>
         <div>

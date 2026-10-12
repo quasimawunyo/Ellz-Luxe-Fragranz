@@ -2,6 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import { getAuthContext } from "@/lib/auth/session";
 import { canViewOrder } from "@/lib/auth/roles";
 import { getOrderById } from "@/lib/orders/store";
+import { orderShippingIsQuoted } from "@/lib/catalog/helpers";
 import { Price } from "@/components/ui/price";
 
 export default async function AccountOrderPage({ params }: { params: Promise<{ id: string }> }) {
@@ -39,8 +40,14 @@ export default async function AccountOrderPage({ params }: { params: Promise<{ i
         ))}
       </ul>
       <p className="mt-6">
-        Total <Price amountMinor={order.totalMinor} currencyCode={order.currencyCode} />
+        {orderShippingIsQuoted(order) ? "Goods total" : "Total"}{" "}
+        <Price amountMinor={order.totalMinor} currencyCode={order.currencyCode} />
       </p>
+      {orderShippingIsQuoted(order) ? (
+        <p className="mt-2 text-sm text-taupe">
+          Delivery will be quoted for {order.locality}, {order.region}.
+        </p>
+      ) : null}
     </div>
   );
 }

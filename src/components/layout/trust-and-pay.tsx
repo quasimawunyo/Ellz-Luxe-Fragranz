@@ -6,7 +6,7 @@ export function TrustAndPay({ phone }: { phone: string }) {
       <div className="mx-auto max-w-7xl px-4">
         <AcceptedPayMarks />
         <p className="mt-4 text-center text-sm text-taupe">
-          Ghana delivery and pickup at Ells Luxe Annex
+          Ghana delivery is quoted from your location. Pickup at Ells Luxe Annex
           {phone ? ` · ${phone}` : ""}. Payment is confirmed after checkout.
         </p>
       </div>

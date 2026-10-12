@@ -46,23 +46,22 @@ export async function saveSettingsAction(_prev: { error?: string; ok?: boolean; 
   for (const [key, value] of entries) {
     await admin.from("store_settings").upsert({ key, value: String(value ?? "") });
   }
-  const accra = minorFromCedisInput(formData.get("deliveryAccraCedis"));
-  const national = minorFromCedisInput(formData.get("deliveryNationalCedis"));
-  if (accra === null || national === null) {
-    return { error: "Enter delivery fees in Ghana cedis (for example 30.00)." };
-  }
   const deliveryMethods: DeliveryMethod[] = [
     {
       id: "accra",
       label: "Greater Accra delivery",
-      amountMinor: accra,
-      description: String(formData.get("deliveryAccraNote") ?? "").trim() || "Delivery within Greater Accra.",
+      amountMinor: 0,
+      description:
+        String(formData.get("deliveryAccraNote") ?? "").trim() ||
+        "Fee depends on your locality. We quote it on WhatsApp after you place the order.",
     },
     {
       id: "national",
       label: "Rest of Ghana",
-      amountMinor: national,
-      description: String(formData.get("deliveryNationalNote") ?? "").trim() || "Nationwide dispatch.",
+      amountMinor: 0,
+      description:
+        String(formData.get("deliveryNationalNote") ?? "").trim() ||
+        "Fee depends on your town. We quote it on WhatsApp after you place the order.",
     },
     {
       id: "pickup",

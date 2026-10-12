@@ -344,7 +344,7 @@ export const DEMO_SETTINGS: StoreSettings = {
   bankAccount: "2400454612819",
   currencyCode: "GHS",
   shippingNote:
-    "Delivery is available across Ghana. Pickup is at Ells Luxe Annex. Call or WhatsApp 0593634512 to confirm timing and rates for your area.",
+    "We deliver across Ghana and offer pickup at Ells Luxe Annex. Delivery is quoted from your region and locality on WhatsApp 0593634512. It is not a fixed checkout price. Pickup is free.",
   returnsNote:
     "Message WhatsApp 0593634512 before returning anything. We replace or make right a bottle we sent in error or that arrived damaged. Opened fragrance is not refunded except for a packing or sending error on our side. Pickup and delivery disputes are handled from Ells Luxe Annex.",
   privacyNote:
@@ -357,14 +357,14 @@ export const DEMO_SETTINGS: StoreSettings = {
     {
       id: "accra",
       label: "Greater Accra delivery",
-      amountMinor: 3000,
-      description: "Delivery within Greater Accra. Confirm timing on WhatsApp 0593634512.",
+      amountMinor: 0,
+      description: "Fee depends on your locality in Greater Accra. Quoted on WhatsApp after you order.",
     },
     {
       id: "national",
       label: "Rest of Ghana",
-      amountMinor: 5000,
-      description: "Nationwide dispatch. Confirm carrier and timeline on WhatsApp 0593634512.",
+      amountMinor: 0,
+      description: "Fee depends on your town. Quoted on WhatsApp after you order.",
     },
     {
       id: "pickup",
@@ -387,7 +387,7 @@ export const DEMO_FAQS: FaqItem[] = [
     id: "faq-delivery",
     question: "Where do you deliver?",
     answer:
-      "We deliver across Ghana and offer pickup at Ells Luxe Annex. Message 0593634512 to confirm timing for your area.",
+      "We deliver across Ghana and offer pickup at Ells Luxe Annex. Delivery is quoted from your location on WhatsApp 0593634512.",
     requiresOwnerReview: false,
   },
   {

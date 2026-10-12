@@ -4,6 +4,7 @@ import { refundOrderAction, updateFulfillmentAction } from "@/app/actions/admin"
 import { ActionForm } from "@/components/forms/form-status";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
+import { orderShippingIsQuoted } from "@/lib/catalog/helpers";
 import { Price } from "@/components/ui/price";
 import { StatusPill } from "@/components/admin/status-pill";
 import { CustomerWhatsApp } from "@/components/admin/customer-whatsapp";
@@ -63,6 +64,18 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
             <Price amountMinor={item.unitPriceMinor * item.quantity} currencyCode={order.currencyCode} />
           </li>
         ))}
+        <li>
+          Delivery ·{" "}
+          {orderShippingIsQuoted(order)
+            ? `Quoted for ${order.locality}, ${order.region}`
+            : /pickup/i.test(order.deliveryMethod)
+              ? "Free"
+              : <Price amountMinor={order.shippingMinor} currencyCode={order.currencyCode} />}
+        </li>
+        <li>
+          {orderShippingIsQuoted(order) ? "Goods total" : "Total"} ·{" "}
+          <Price amountMinor={order.totalMinor} currencyCode={order.currencyCode} />
+        </li>
       </ul>
       <ActionForm action={updateFulfillmentAction} className="mt-8 space-y-3">
         <input type="hidden" name="orderId" value={order.id} />
