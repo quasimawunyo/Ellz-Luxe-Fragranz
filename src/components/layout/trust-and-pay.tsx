@@ -13,7 +13,7 @@ export function TrustAndPay({
         <AcceptedPayMarks />
         <p className="mt-4 text-center text-sm text-taupe">
           Ghana delivery is quoted from your location. Pickup at {location.trim()}
-          {phone ? ` · ${phone}` : ""}. Payment is confirmed after checkout.
+          {phone ? ` · ${phone}` : ""}. Payment is secure.
         </p>
       </div>
     </section>
