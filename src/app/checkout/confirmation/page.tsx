@@ -9,8 +9,7 @@ import { canViewOrder } from "@/lib/auth/roles";
 import { getStoreSettings } from "@/lib/catalog/queries";
 import { orderShippingIsQuoted } from "@/lib/catalog/helpers";
 import { annexOrderWhatsAppHref } from "@/lib/whatsapp";
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { OpenAnnexWhatsApp } from "@/components/checkout/open-annex-whatsapp";
 
 export const metadata = { title: "Order confirmation" };
 
@@ -97,14 +96,12 @@ export default async function ConfirmationPage({
         Delivering to {order.fullName}, {order.addressLine}, {order.locality}, {order.region}.
       </p>
       {annexWhatsApp ? (
-        <p className="mt-8">
-          <a href={annexWhatsApp} className={cn(buttonVariants({ variant: "gold" }), "inline-flex")} target="_blank" rel="noreferrer">
-            Send this order on WhatsApp
-          </a>
-          <span className="mt-3 block text-sm text-taupe">
-            Opens WhatsApp to {settings.contactPhone} with the order details so the annex can confirm it.
-          </span>
-        </p>
+        <OpenAnnexWhatsApp
+          href={annexWhatsApp}
+          phone={settings.contactPhone}
+          orderNumber={order.orderNumber}
+          auto={order.paymentStatus === "pending"}
+        />
       ) : null}
     </div>
   );

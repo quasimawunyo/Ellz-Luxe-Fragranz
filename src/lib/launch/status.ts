@@ -14,5 +14,7 @@ export function getLaunchStatus() {
     moolre: isMoolreConfigured(),
     paystack: isPaystackConfigured(),
     checkout: isMoolreConfigured() ? "Moolre" : isPaystackConfigured() ? "Paystack" : "WhatsApp",
+    orderEmail: Boolean(env.resendApiKey),
+    orderWhatsAppApi: Boolean(env.callMeBotApiKey),
   };
 }

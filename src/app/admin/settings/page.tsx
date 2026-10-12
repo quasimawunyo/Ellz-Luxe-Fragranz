@@ -21,6 +21,8 @@ export default async function AdminSettingsPage() {
           <li>Checkout: {launch.checkout}</li>
           <li>Moolre: {launch.moolre ? "Ready" : "Not set"}</li>
           <li>Paystack: {launch.paystack ? "Ready" : "Not set"}</li>
+          <li>Order email ping: {launch.orderEmail ? "Ready" : "Not set"}</li>
+          <li>Order WhatsApp ping: {launch.orderWhatsAppApi ? "Ready" : "Customer WhatsApp opens to the annex"}</li>
         </ul>
         <p className="mt-4 text-taupe">Moolre callback</p>
         <p className="mt-1 break-all">{launch.moolreWebhook}</p>

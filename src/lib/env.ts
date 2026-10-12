@@ -22,6 +22,10 @@ export const env = {
   moolreAccountNumber: present(process.env.MOOLRE_ACCOUNT_NUMBER),
   moolreCallbackSecret: present(process.env.MOOLRE_CALLBACK_SECRET),
   moolreBusinessEmail: present(process.env.MOOLRE_BUSINESS_EMAIL),
+  resendApiKey: present(process.env.RESEND_API_KEY),
+  orderNotifyFrom: present(process.env.ORDER_NOTIFY_FROM) ?? "EllzLuxe Fragranz <onboarding@resend.dev>",
+  orderNotifyWebhookUrl: present(process.env.ORDER_NOTIFY_WEBHOOK_URL),
+  callMeBotApiKey: present(process.env.CALLMEBOT_API_KEY),
 };
 
 export function isSupabaseConfigured() {

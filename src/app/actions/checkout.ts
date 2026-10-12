@@ -7,6 +7,7 @@ import { getAuthContext } from "@/lib/auth/session";
 import { generateMoolrePaymentLink, isMoolreConfigured } from "@/lib/payments/moolre";
 import { initializePaystackTransaction, isPaystackConfigured } from "@/lib/payments/paystack";
 import { env } from "@/lib/env";
+import { notifyAnnexOfOrder } from "@/lib/notify/order";
 
 export async function placeOrderAction(_prev: { error?: string } | null, formData: FormData) {
   const parsed = checkoutSchema.safeParse({
@@ -26,6 +27,11 @@ export async function placeOrderAction(_prev: { error?: string } | null, formDat
   try {
     const auth = await getAuthContext();
     const order = await createPendingOrder(parsed.data, auth.user?.id ?? null);
+    try {
+      await notifyAnnexOfOrder(order);
+    } catch {
+      /* Annex ping must not block checkout. */
+    }
     const confirmationUrl = `${env.siteUrl}/checkout/confirmation?order=${order.id}`;
     if (isMoolreConfigured() && order.paystackReference) {
       const payment = await generateMoolrePaymentLink({
