@@ -20,19 +20,28 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
 
   return (
     <article>
-      <Link href={`/product/${product.slug}`} className="block">
-        <div className="relative aspect-[4/5] overflow-hidden bg-espresso/5">
-          {image ? (
-            <Image
-              src={image.url}
-              alt={image.alt}
-              fill
-              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-              className="object-cover"
-            />
+      <div className="relative">
+        <Link href={`/product/${product.slug}`} className="block">
+          <div className="relative aspect-[4/5] overflow-hidden rounded-3xl bg-espresso/5">
+            {image ? (
+              <Image
+                src={image.url}
+                alt={image.alt}
+                fill
+                sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                className="object-cover"
+              />
+            ) : null}
+          </div>
+        </Link>
+        <div className="absolute inset-x-4 bottom-4">
+          {soldOut ? (
+            <WaitlistButton productId={product.id} wide />
+          ) : defaultVariant ? (
+            <QuickAdd variantId={defaultVariant.id} wide />
           ) : null}
         </div>
-      </Link>
+      </div>
       <p className="mt-4 text-xs text-taupe">{product.brand}</p>
       <h3 className="mt-1 text-base font-medium leading-snug">
         <Link href={`/product/${product.slug}`}>{product.name}</Link>

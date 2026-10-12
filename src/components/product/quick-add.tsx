@@ -8,20 +8,22 @@ import { cn } from "@/lib/utils";
 export function QuickAdd({
   variantId,
   disabled,
+  wide,
 }: {
   variantId: string;
   disabled?: boolean;
+  wide?: boolean;
 }) {
   const [state, formAction] = useActionState(addToCartAction, null);
 
   return (
-    <form action={formAction}>
+    <form action={formAction} className={wide ? "w-full" : undefined}>
       <input type="hidden" name="variantId" value={variantId} />
       <input type="hidden" name="quantity" value="1" />
       <button
         type="submit"
         disabled={disabled}
-        className={cn(buttonVariants({ variant: "shop", size: "sm" }))}
+        className={cn(buttonVariants({ variant: "shop", size: "sm" }), wide && "w-full")}
       >
         Add to cart
       </button>

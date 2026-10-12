@@ -6,7 +6,7 @@ import { useSavedLists } from "@/lib/saved/use-saved-lists";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-export function WaitlistButton({ productId }: { productId: string }) {
+export function WaitlistButton({ productId, wide }: { productId: string; wide?: boolean }) {
   const { isWaiting, addWaiting } = useSavedLists();
   const waiting = isWaiting(productId);
   const [open, setOpen] = useState(false);
@@ -22,7 +22,7 @@ export function WaitlistButton({ productId }: { productId: string }) {
 
   if (!open) {
     return (
-      <button type="button" className={cn(buttonVariants({ variant: "shop", size: "sm" }))} onClick={() => setOpen(true)}>
+      <button type="button" className={cn(buttonVariants({ variant: "shop", size: "sm" }), wide && "w-full")} onClick={() => setOpen(true)}>
         Notify me
       </button>
     );
