@@ -21,7 +21,7 @@ export default function BrandsPage() {
                 width={180}
                 height={72}
                 unoptimized
-                className="h-12 w-auto max-w-40 object-contain"
+                className="h-16 w-auto max-w-52 object-contain"
               />
               <span className="text-sm">{brand.name}</span>
             </Link>

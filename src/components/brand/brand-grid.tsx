@@ -13,21 +13,21 @@ export function BrandGrid() {
         </p>
         <div className="min-w-0 flex-1 overflow-hidden">
           <p className="px-4 pt-3 text-center text-sm sm:hidden">Brands</p>
-          <div className="brand-marquee-track flex w-max items-center py-4">
+          <div className="brand-marquee-track flex w-max items-center py-6">
             {LOOP.map((brand, index) => (
               <Link
                 key={`${brand.slug}-${index}`}
                 href={`/brands/${brand.slug}`}
                 aria-label={brand.name}
-                className="mx-8 flex h-12 shrink-0 items-center justify-center sm:mx-10"
+                className="mx-10 flex h-16 shrink-0 items-center justify-center sm:mx-12 sm:h-20"
               >
                 <Image
                   src={brand.logo}
                   alt={brand.name}
-                  width={180}
-                  height={72}
+                  width={240}
+                  height={96}
                   unoptimized
-                  className="h-10 w-auto max-w-40 object-contain sm:h-12"
+                  className="h-14 w-auto max-w-52 object-contain sm:h-16"
                 />
               </Link>
             ))}
