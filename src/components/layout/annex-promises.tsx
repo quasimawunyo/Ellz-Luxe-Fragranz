@@ -16,7 +16,7 @@ const PROMISES = [
   {
     icon: CreditCard,
     title: "Secure Payments.",
-    body: "Fast, Safe & Secure!",
+    body: "Fast, Safe & reliable!",
   },
   {
     icon: ClipboardCheck,
