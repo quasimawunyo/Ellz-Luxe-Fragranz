@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { createUserSupabase } from "@/lib/supabase/server";
 import { env, isSupabaseConfigured } from "@/lib/env";
 import { profileSchema, signInSchema, signUpSchema } from "@/lib/validations";
+import { safeInternalPath } from "@/lib/security/paths";
 
 export async function signInAction(_prev: { error?: string } | null, formData: FormData) {
   if (!isSupabaseConfigured()) {
@@ -17,7 +18,7 @@ export async function signInAction(_prev: { error?: string } | null, formData: F
   const supabase = await createUserSupabase();
   const { error } = await supabase!.auth.signInWithPassword(parsed.data);
   if (error) return { error: error.message };
-  redirect((formData.get("next") as string) || "/account");
+  redirect(safeInternalPath(formData.get("next")));
 }
 
 export async function signUpAction(_prev: { error?: string; ok?: boolean; message?: string } | null, formData: FormData) {

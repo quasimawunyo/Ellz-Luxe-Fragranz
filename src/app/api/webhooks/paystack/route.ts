@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { env } from "@/lib/env";
 import { verifyPaystackSignature } from "@/lib/payments/signature";
-import { markOrderPaid } from "@/lib/orders/store";
+import { getOrderByPaymentReference, markOrderPaid } from "@/lib/orders/store";
 
 export async function POST(request: Request) {
   const rawBody = await request.text();
@@ -13,11 +13,25 @@ export async function POST(request: Request) {
 
   const event = JSON.parse(rawBody) as {
     event?: string;
-    data?: { reference?: string; id?: number };
+    data?: { reference?: string; id?: number; amount?: number; currency?: string };
   };
 
   if (event.event === "charge.success" && event.data?.reference) {
-    await markOrderPaid(event.data.reference, String(event.data.id ?? event.data.reference));
+    const order = await getOrderByPaymentReference(event.data.reference);
+    if (!order) {
+      return NextResponse.json({ received: true, paid: false });
+    }
+    if (event.data.currency && event.data.currency !== order.currencyCode) {
+      return NextResponse.json({ error: "Currency mismatch" }, { status: 400 });
+    }
+    if (typeof event.data.amount === "number" && event.data.amount !== order.totalMinor) {
+      return NextResponse.json({ error: "Amount mismatch" }, { status: 400 });
+    }
+    await markOrderPaid(
+      event.data.reference,
+      String(event.data.id ?? event.data.reference),
+      order.totalMinor,
+    );
   }
 
   return NextResponse.json({ received: true });

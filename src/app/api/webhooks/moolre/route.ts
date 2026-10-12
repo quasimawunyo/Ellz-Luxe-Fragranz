@@ -45,15 +45,19 @@ export async function POST(request: Request) {
     if (!order) {
       return NextResponse.json({ received: true, paid: false });
     }
-    const amountSource = data.amount ?? (await getMoolrePaymentStatus(data.externalref))?.amount;
+    const live = await getMoolrePaymentStatus(data.externalref);
+    if (!live || !moolrePaymentSucceeded(live)) {
+      return NextResponse.json({ received: true, paid: false });
+    }
+    const amountSource = live.amount ?? live.value ?? data.amount;
     if (!moolreAmountMatches(amountSource, order.totalMinor)) {
       return NextResponse.json({ error: "Amount mismatch" }, { status: 400 });
     }
-    const live = await getMoolrePaymentStatus(data.externalref);
-    if (live && !moolrePaymentSucceeded(live)) {
-      return NextResponse.json({ received: true, paid: false });
-    }
-    await markOrderPaid(data.externalref, String(data.transactionid ?? data.externalref));
+    await markOrderPaid(
+      data.externalref,
+      String(data.transactionid ?? data.externalref),
+      order.totalMinor,
+    );
   }
 
   return NextResponse.json({ received: true });

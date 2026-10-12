@@ -4,6 +4,7 @@ import { ActionForm } from "@/components/forms/form-status";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
 import { isSupabaseConfigured } from "@/lib/env";
+import { safeInternalPath } from "@/lib/security/paths";
 
 export const metadata = { title: "Sign in" };
 
@@ -22,7 +23,7 @@ export default async function LoginPage({
         </p>
       ) : null}
       <ActionForm action={signInAction} className="mt-8 space-y-4">
-        <input type="hidden" name="next" value={next ?? "/account"} />
+        <input type="hidden" name="next" value={safeInternalPath(next)} />
         <div>
           <Label htmlFor="email">Email</Label>
           <Input id="email" name="email" type="email" required />

@@ -2,11 +2,12 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { env, isSupabaseConfigured } from "@/lib/env";
+import { safeInternalPath } from "@/lib/security/paths";
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  const next = searchParams.get("next") ?? "/account";
+  const next = safeInternalPath(searchParams.get("next"));
   if (!code || !isSupabaseConfigured()) {
     return NextResponse.redirect(`${origin}/login`);
   }

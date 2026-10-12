@@ -114,7 +114,9 @@ export async function updateCartQuantity(variantId: string, quantity: number) {
   }
   assertPurchasableQuantity(quantity);
   const match = await getVariantById(variantId);
-  if (!match) throw new Error("Unknown variant.");
+  if (!match || match.product.status !== "published") {
+    throw new Error("That product is unavailable.");
+  }
   if (quantity > match.variant.stock) {
     throw new Error("Not enough stock for that quantity.");
   }

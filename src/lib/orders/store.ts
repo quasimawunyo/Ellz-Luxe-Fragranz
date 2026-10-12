@@ -20,6 +20,7 @@ import {
   moolrePaymentSucceeded,
 } from "@/lib/payments/moolre";
 import { isPaystackConfigured } from "@/lib/payments/paystack";
+import { rememberPlacedOrderId } from "@/lib/orders/placed-cookie";
 
 const ORDERS_COOKIE = "elf_orders";
 
@@ -143,6 +144,7 @@ export async function createPendingOrder(input: CheckoutInput, userId: string | 
     await clearCart();
     const order = await getOrderById(orderId);
     if (!order) throw new Error("Order could not be loaded.");
+    await rememberPlacedOrderId(order.id);
     return order;
   }
 
@@ -189,6 +191,7 @@ export async function createPendingOrder(input: CheckoutInput, userId: string | 
   orders.unshift(order);
   await saveDemoOrders(orders);
   await clearCart();
+  await rememberPlacedOrderId(order.id);
   return order;
 }
 
@@ -263,7 +266,11 @@ export async function listOrders(filter?: { userId?: string; email?: string }) {
   return orders;
 }
 
-export async function markOrderPaid(reference: string, eventId: string) {
+export async function markOrderPaid(
+  reference: string,
+  eventId: string,
+  expectedAmountMinor?: number,
+) {
   if (isSupabaseAdminConfigured()) {
     const admin = createServiceClient();
     if (!admin) return null;
@@ -273,6 +280,12 @@ export async function markOrderPaid(reference: string, eventId: string) {
       .eq("provider_reference", reference)
       .maybeSingle();
     if (!payment) return null;
+    if (
+      typeof expectedAmountMinor === "number" &&
+      payment.amount_minor !== expectedAmountMinor
+    ) {
+      return null;
+    }
     if (payment.status === "paid") return payment.order_id;
     await admin
       .from("payments")
@@ -288,6 +301,9 @@ export async function markOrderPaid(reference: string, eventId: string) {
   const orders = await demoOrders();
   const order = orders.find((item) => item.paystackReference === reference);
   if (!order) return null;
+  if (typeof expectedAmountMinor === "number" && order.totalMinor !== expectedAmountMinor) {
+    return null;
+  }
   order.paymentStatus = "paid";
   order.orderStatus = "completed";
   await saveDemoOrders(orders);

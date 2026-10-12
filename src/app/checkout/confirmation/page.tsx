@@ -6,6 +6,7 @@ import { Price } from "@/components/ui/price";
 import { EmptyState } from "@/components/ui/states";
 import { getAuthContext } from "@/lib/auth/session";
 import { canViewOrder } from "@/lib/auth/roles";
+import { browserPlacedThisOrder } from "@/lib/orders/placed-cookie";
 import { getStoreSettings } from "@/lib/catalog/queries";
 import { orderShippingIsQuoted } from "@/lib/catalog/helpers";
 import { annexOrderWhatsAppHref } from "@/lib/whatsapp";
@@ -40,8 +41,7 @@ export default async function ConfirmationPage({
       actorUserId: auth.user?.id ?? null,
       actorEmail: auth.email,
       actorRole: auth.role,
-    }) ||
-    (!order.userId && !auth.user);
+    }) || (await browserPlacedThisOrder(order.id));
 
   if (!allowed) {
     return (
