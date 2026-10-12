@@ -4,7 +4,7 @@ import { formatGhanaPhone } from "@/lib/whatsapp";
 const PROMISES = [
   {
     icon: Truck,
-    title: "Ghana Delivery.",
+    title: "Delivery.",
     body: "Quoted on WhatsApp. Pickup is free!",
   },
   {
@@ -15,8 +15,8 @@ const PROMISES = [
   },
   {
     icon: CreditCard,
-    title: "Confirmed Payments.",
-    body: "Paid only after we confirm it!",
+    title: "Secure Payments.",
+    body: "Fast, Safe & Secure!",
   },
   {
     icon: ClipboardCheck,
