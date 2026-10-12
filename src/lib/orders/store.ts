@@ -52,7 +52,7 @@ function mapOrder(row: {
   fulfillment_status: FulfillmentStatus;
   tracking_number: string | null;
   created_at: string;
-}, items: StoreOrder["items"], paystackReference: string | null): StoreOrder {
+}, items: StoreOrder["items"], paystackReference: string | null, paymentProvider: string | null = null): StoreOrder {
   return {
     id: row.id,
     orderNumber: row.order_number,
@@ -76,6 +76,7 @@ function mapOrder(row: {
     createdAt: row.created_at,
     items,
     paystackReference,
+    paymentProvider,
   };
 }
 
@@ -182,6 +183,7 @@ export async function createPendingOrder(input: CheckoutInput, userId: string | 
       variantId: line.variantId,
     })),
     paystackReference: reference,
+    paymentProvider: provider,
   };
   const orders = await demoOrders();
   orders.unshift(order);
@@ -199,7 +201,7 @@ export async function getOrderById(id: string) {
       const { data: items } = await admin.from("order_items").select("*").eq("order_id", id);
       const { data: payment } = await admin
         .from("payments")
-        .select("provider_reference")
+        .select("provider_reference, provider")
         .eq("order_id", id)
         .maybeSingle();
       return mapOrder(
@@ -214,6 +216,7 @@ export async function getOrderById(id: string) {
           variantId: item.variant_id,
         })),
         payment?.provider_reference ?? null,
+        payment?.provider ?? null,
       );
     }
   }
@@ -300,6 +303,45 @@ export async function confirmMoolreIfPaid(order: StoreOrder) {
   if (!moolreAmountMatches(live.amount ?? live.value, order.totalMinor)) return order;
   await markOrderPaid(order.paystackReference, String(live.transactionid ?? order.paystackReference));
   return (await getOrderById(order.id)) ?? order;
+}
+
+export async function markWhatsAppOrderPaid(orderId: string, actorId: string) {
+  const order = await getOrderById(orderId);
+  if (!order) throw new Error("Order not found.");
+  if (order.paymentStatus === "paid") return order;
+  if (order.paymentStatus !== "pending") {
+    throw new Error(`Cannot mark this order paid from ${order.paymentStatus}.`);
+  }
+  const provider = order.paymentProvider ?? "manual";
+  if (provider === "moolre" || provider === "paystack") {
+    throw new Error("This order waits for Moolre or Paystack to confirm payment. Do not mark it paid by hand.");
+  }
+
+  if (isSupabaseAdminConfigured()) {
+    const admin = createServiceClient();
+    if (!admin) throw new Error("Database is not ready.");
+    await admin
+      .from("payments")
+      .update({ status: "paid", raw_event_id: `whatsapp:${actorId}` })
+      .eq("order_id", orderId)
+      .eq("status", "pending");
+    await admin
+      .from("orders")
+      .update({ payment_status: "paid", order_status: "completed" })
+      .eq("id", orderId)
+      .eq("payment_status", "pending");
+    const updated = await getOrderById(orderId);
+    if (!updated) throw new Error("Order could not be loaded.");
+    return updated;
+  }
+
+  const orders = await demoOrders();
+  const next = orders.find((item) => item.id === orderId);
+  if (!next) throw new Error("Order not found.");
+  next.paymentStatus = "paid";
+  next.orderStatus = "completed";
+  await saveDemoOrders(orders);
+  return next;
 }
 
 export async function updateFulfillment(

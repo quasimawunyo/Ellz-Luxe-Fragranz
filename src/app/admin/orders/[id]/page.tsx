@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getOrderById } from "@/lib/orders/store";
-import { refundOrderAction, updateFulfillmentAction } from "@/app/actions/admin";
+import { markOrderPaidAction, refundOrderAction, updateFulfillmentAction } from "@/app/actions/admin";
 import { ActionForm } from "@/components/forms/form-status";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
@@ -77,6 +77,15 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
           <Price amountMinor={order.totalMinor} currencyCode={order.currencyCode} />
         </li>
       </ul>
+      {order.paymentStatus === "pending" ? (
+        <ActionForm action={markOrderPaidAction} className="mt-8">
+          <input type="hidden" name="orderId" value={order.id} />
+          <Button type="submit">Mark paid</Button>
+          <p className="mt-2 text-sm text-taupe">
+            Use this after you have received MoMo or cash on WhatsApp. Card payments wait for Moolre.
+          </p>
+        </ActionForm>
+      ) : null}
       <ActionForm action={updateFulfillmentAction} className="mt-8 space-y-3">
         <input type="hidden" name="orderId" value={order.id} />
         <div>
@@ -95,15 +104,15 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
         </div>
         <Button type="submit">Update fulfillment</Button>
       </ActionForm>
-      <ActionForm action={refundOrderAction} className="mt-6">
-        <input type="hidden" name="orderId" value={order.id} />
-        <Button type="submit" variant="danger">
-          Request Paystack refund
-        </Button>
-      </ActionForm>
-      <p className="mt-3 text-xs text-taupe">
-        Refunds go through Paystack. This screen cannot mark an order paid.
-      </p>
+      {order.paymentProvider === "paystack" ? (
+        <ActionForm action={refundOrderAction} className="mt-6">
+          <input type="hidden" name="orderId" value={order.id} />
+          <Button type="submit" variant="danger">
+            Request Paystack refund
+          </Button>
+          <p className="mt-3 text-xs text-taupe">Refunds go through Paystack.</p>
+        </ActionForm>
+      ) : null}
     </div>
   );
 }

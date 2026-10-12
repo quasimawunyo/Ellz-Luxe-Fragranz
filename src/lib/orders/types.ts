@@ -33,4 +33,5 @@ export type StoreOrder = {
   createdAt: string;
   items: OrderItemSnapshot[];
   paystackReference: string | null;
+  paymentProvider?: string | null;
 };

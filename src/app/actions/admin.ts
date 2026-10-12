@@ -6,7 +6,7 @@ import { requireAdmin } from "@/lib/auth/require-admin";
 import { createServiceClient } from "@/lib/supabase/admin";
 import { isSupabaseAdminConfigured } from "@/lib/env";
 import { productInputSchema, variantInputSchema } from "@/lib/validations";
-import { updateFulfillment } from "@/lib/orders/store";
+import { markWhatsAppOrderPaid, updateFulfillment } from "@/lib/orders/store";
 import { fulfillmentStatuses, type FulfillmentStatus } from "@/lib/orders/transitions";
 import { refundPaystackTransaction } from "@/lib/payments/paystack";
 import { getOrderById } from "@/lib/orders/store";
@@ -191,6 +191,20 @@ export async function updateFulfillmentAction(_prev: { error?: string; ok?: bool
     return { ok: true as const, message: "Fulfillment updated." };
   } catch (error) {
     return { error: error instanceof Error ? error.message : "Update failed." };
+  }
+}
+
+export async function markOrderPaidAction(_prev: { error?: string; ok?: boolean; message?: string } | null, formData: FormData) {
+  const auth = await requireAdmin();
+  const orderId = String(formData.get("orderId"));
+  try {
+    await markWhatsAppOrderPaid(orderId, auth.user?.id ?? "admin");
+    revalidatePath("/admin/orders");
+    revalidatePath(`/admin/orders/${orderId}`);
+    revalidatePath("/admin");
+    return { ok: true as const, message: "Marked paid. This records that you received payment on WhatsApp." };
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : "Could not mark paid." };
   }
 }
 

@@ -31,6 +31,7 @@ export default async function AdminOrdersPage({
   return (
     <div>
       <h1 className="text-2xl font-semibold">Orders</h1>
+      <p className="mt-2 text-sm text-taupe">Open an order to mark WhatsApp payment received.</p>
       <form className="mt-8 flex flex-wrap gap-2" method="get">
         <Input name="q" defaultValue={q} placeholder="Search number, email, name, phone" className="max-w-sm" />
         <select name="payment" defaultValue={payment ?? ""} className="min-h-11 border border-espresso/12 bg-white/70 px-3 text-sm">
