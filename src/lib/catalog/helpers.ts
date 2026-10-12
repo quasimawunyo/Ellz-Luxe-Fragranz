@@ -27,6 +27,7 @@ export function primaryImage(product: Product) {
 const NEW_MS = 21 * 24 * 60 * 60 * 1000;
 
 export function isNewProduct(product: Product, now = Date.now()) {
+  if (product.newArrival) return true;
   const created = new Date(product.createdAt).getTime();
   return Number.isFinite(created) && now - created < NEW_MS;
 }
@@ -75,6 +76,9 @@ export function filterProducts(
   }
   if (filters.max !== undefined) {
     result = result.filter((product) => lowestPrice(product) <= filters.max!);
+  }
+  if (filters.arrival === "1") {
+    result = result.filter((product) => isNewProduct(product));
   }
 
   switch (filters.sort) {

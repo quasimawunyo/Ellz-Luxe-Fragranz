@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getAllProductsForAdmin } from "@/lib/catalog/queries";
 import { formatMoney } from "@/lib/money";
-import { lowestPrice, primaryImage, totalStock } from "@/lib/catalog/helpers";
+import { isNewProduct, lowestPrice, primaryImage, totalStock } from "@/lib/catalog/helpers";
 import { StatusPill } from "@/components/admin/status-pill";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -29,6 +29,7 @@ export default async function AdminProductsPage() {
               <th className="px-4 py-3">Bottle</th>
               <th>Status</th>
               <th>Kind</th>
+              <th>Arrival</th>
               <th>Stock</th>
               <th>From</th>
             </tr>
@@ -57,6 +58,7 @@ export default async function AdminProductsPage() {
                   <td>
                     <StatusPill value={product.isDemonstration ? "demonstration" : "live"} />
                   </td>
+                  <td>{isNewProduct(product) ? "New arrival" : "—"}</td>
                   <td>{totalStock(product)}</td>
                   <td>{formatMoney(lowestPrice(product))}</td>
                 </tr>

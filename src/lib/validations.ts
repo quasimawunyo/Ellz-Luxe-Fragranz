@@ -66,6 +66,7 @@ export const productInputSchema = z.object({
   concentration: z.string().trim().max(80).optional(),
   categoryId: z.string().min(1),
   featured: z.boolean().default(false),
+  newArrival: z.boolean().default(false),
   status: z.enum(["draft", "published", "archived"]),
   topNotes: z.string().trim().max(240).optional(),
   heartNotes: z.string().trim().max(240).optional(),
@@ -91,6 +92,7 @@ export const shopFilterSchema = z.object({
   brand: z.string().trim().max(120).optional(),
   min: z.coerce.number().int().min(0).optional(),
   max: z.coerce.number().int().min(0).optional(),
+  arrival: z.enum(["1"]).optional(),
   sort: z
     .enum(["featured", "newest", "price-asc", "price-desc"])
     .default("featured"),

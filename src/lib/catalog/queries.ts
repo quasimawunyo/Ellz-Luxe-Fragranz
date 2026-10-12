@@ -140,6 +140,7 @@ async function loadAllProducts(): Promise<CatalogProduct[]> {
       .filter((link) => link.product_id === product.id)
       .map((link) => link.collection_id),
     featured: product.featured,
+    newArrival: Boolean(product.new_arrival),
     status: product.status,
     isDemonstration: product.is_demonstration,
     notes: {
@@ -206,7 +207,11 @@ export async function getFeaturedProducts() {
 export async function getNewArrivals() {
   const products = await getPublishedProducts();
   return [...products]
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .sort((a, b) => {
+      const flagged = Number(b.newArrival) - Number(a.newArrival);
+      if (flagged) return flagged;
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    })
     .slice(0, 8);
 }
 
@@ -223,6 +228,7 @@ export async function queryShop(raw: Record<string, string | string[] | undefine
     min: Array.isArray(raw.min) ? raw.min[0] : raw.min,
     max: Array.isArray(raw.max) ? raw.max[0] : raw.max,
     sort: Array.isArray(raw.sort) ? raw.sort[0] : raw.sort,
+    arrival: Array.isArray(raw.arrival) ? raw.arrival[0] : raw.arrival,
     page: Array.isArray(raw.page) ? raw.page[0] : raw.page,
   });
   const filters: ShopFilters = parsed.success

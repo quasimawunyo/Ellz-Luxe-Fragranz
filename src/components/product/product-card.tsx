@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { CatalogProduct } from "@/lib/catalog/types";
-import { lowestPrice, primaryImage, totalStock } from "@/lib/catalog/helpers";
+import { isNewProduct, lowestPrice, primaryImage, totalStock } from "@/lib/catalog/helpers";
 import { Price } from "@/components/ui/price";
 import { QuickAdd } from "@/components/product/quick-add";
 import { LikeButton } from "@/components/product/like-button";
@@ -37,7 +37,12 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
       <h3 className="mt-1 text-base font-medium leading-snug">
         <Link href={`/product/${product.slug}`}>{product.name}</Link>
       </h3>
-      {product.isDemonstration ? <p className="mt-1 text-xs text-taupe">Tester</p> : null}
+      {product.isDemonstration || isNewProduct(product) ? (
+        <p className="mt-1 flex flex-wrap gap-x-3 text-xs text-taupe">
+          {product.isDemonstration ? <span>Tester</span> : null}
+          {isNewProduct(product) ? <span className="text-leaf">New arrival</span> : null}
+        </p>
+      ) : null}
       <Price amountMinor={price} compareAtMinor={compare} className="mt-2 text-sm text-leaf" />
       <p className="mt-1 text-sm text-taupe">{soldOut ? "Out of stock" : "In stock"}</p>
       <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">

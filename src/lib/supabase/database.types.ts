@@ -56,6 +56,7 @@ export type Database = {
           concentration: string | null;
           category_id: string;
           featured: boolean;
+          new_arrival: boolean;
           status: "draft" | "published" | "archived";
           is_demonstration: boolean;
           top_notes: string[];

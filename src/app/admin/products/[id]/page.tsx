@@ -72,6 +72,14 @@ export default async function AdminProductPage({ params }: { params: Promise<{ i
           <input type="checkbox" name="featured" defaultChecked={product?.featured} /> Featured
         </label>
         <label className="flex items-center gap-2 text-sm">
+          <input
+            type="checkbox"
+            name="newArrival"
+            defaultChecked={isNew ? true : product?.newArrival}
+          />{" "}
+          New arrival
+        </label>
+        <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" name="isDemonstration" defaultChecked={product?.isDemonstration ?? false} />
           Tester (not for sale)
         </label>

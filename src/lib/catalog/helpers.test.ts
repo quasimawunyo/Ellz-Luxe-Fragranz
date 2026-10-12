@@ -18,6 +18,15 @@ describe("catalog filters", () => {
   it("treats recent products as new", () => {
     expect(isNewProduct({ ...DEMO_PRODUCTS[0], createdAt: new Date().toISOString() })).toBe(true);
     expect(isNewProduct({ ...DEMO_PRODUCTS[0], createdAt: "2020-01-01T00:00:00.000Z" })).toBe(false);
+    expect(
+      isNewProduct({ ...DEMO_PRODUCTS[0], createdAt: "2020-01-01T00:00:00.000Z", newArrival: true }),
+    ).toBe(true);
+  });
+
+  it("filters shop to new arrivals", () => {
+    const result = filterProducts(DEMO_PRODUCTS, { arrival: "1", sort: "featured", page: 1 });
+    expect(result.length).toBeGreaterThan(0);
+    expect(result.every((product) => product.newArrival || isNewProduct(product))).toBe(true);
   });
 
   it("sorts by price ascending", () => {

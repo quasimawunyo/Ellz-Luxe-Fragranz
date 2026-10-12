@@ -38,6 +38,7 @@ create table public.products (
   concentration text,
   category_id text not null references public.categories(id),
   featured boolean not null default false,
+  new_arrival boolean not null default false,
   status text not null default 'draft' check (status in ('draft', 'published', 'archived')),
   is_demonstration boolean not null default true,
   top_notes text[] not null default '{}',

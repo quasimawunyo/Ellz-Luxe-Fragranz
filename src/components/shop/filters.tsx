@@ -68,6 +68,10 @@ export function ShopFilters({
           ))}
         </select>
       </div>
+      <label className="flex items-center gap-2 text-sm">
+        <input type="checkbox" name="arrival" value="1" defaultChecked={filters.arrival === "1"} />
+        New arrivals
+      </label>
       <div>
         <Label htmlFor="sort">Sort</Label>
         <select

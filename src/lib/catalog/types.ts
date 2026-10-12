@@ -34,6 +34,7 @@ export type CatalogProduct = {
   categoryName?: string;
   collectionIds: string[];
   featured: boolean;
+  newArrival: boolean;
   status: ProductStatus;
   isDemonstration: boolean;
   notes: FragranceNotes;
