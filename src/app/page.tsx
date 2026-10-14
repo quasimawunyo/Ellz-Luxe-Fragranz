@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, MapPin, MessageCircle, PackageCheck } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { BrandGrid } from "@/components/brand/brand-grid";
 import { FactTicker } from "@/components/home/fact-ticker";
 import { HomeHero } from "@/components/home/home-hero";
@@ -10,6 +10,7 @@ import { ProductGrid } from "@/components/product/product-card";
 import { buttonVariants } from "@/components/ui/button";
 import { getCollections, getFeaturedProducts, getNewArrivals, getStoreSettings } from "@/lib/catalog/queries";
 import { cn } from "@/lib/utils";
+import { formatGhanaPhone } from "@/lib/whatsapp";
 
 export default async function HomePage() {
   const [featured, arrivals, collections, settings] = await Promise.all([
@@ -90,39 +91,22 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="bg-ivory px-4 py-20">
-        <div className="mx-auto max-w-6xl">
-          <p className="text-center text-[11px] uppercase tracking-[0.42em] text-taupe">Why EllzLuxe</p>
-          <h2 className="mt-4 text-center font-serif text-4xl md:text-5xl">The boutique standard</h2>
-          <div className="mt-12 grid gap-4 md:grid-cols-3">
-            {[
-              {
-                icon: MapPin,
-                title: "Pickup at Pantang",
-                body: `Visit ${settings.location}. Pickup is free.`,
-              },
-              {
-                icon: MessageCircle,
-                title: "Quoted on WhatsApp",
-                body: "Delivery is between 24-72 hours. The fee is quoted from your location.",
-              },
-              {
-                icon: PackageCheck,
-                title: "Genuine products",
-                body: "Authentic, original and safe.",
-              },
-            ].map((item) => {
-              const Icon = item.icon;
-              return (
-                <div key={item.title} className="rounded-[1.75rem] bg-white px-7 py-8">
-                  <span className="grid size-12 place-items-center rounded-2xl bg-ivory text-espresso">
-                    <Icon className="size-5" strokeWidth={1.5} aria-hidden />
-                  </span>
-                  <h3 className="mt-6 text-lg font-semibold">{item.title}</h3>
-                  <p className="mt-3 text-sm leading-6 text-taupe">{item.body}</p>
-                </div>
-              );
-            })}
+      <section className="border-y border-espresso/10 bg-white px-4 py-16">
+        <h2 className="sr-only">Pickup, delivery, and WhatsApp</h2>
+        <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-3 md:gap-0 md:divide-x md:divide-espresso/10">
+          <div className="md:px-10">
+            <p className="font-serif text-2xl">Pickup</p>
+            <p className="mt-3 text-sm leading-6 text-taupe">Free at {settings.location.trim()}.</p>
+          </div>
+          <div className="md:px-10">
+            <p className="font-serif text-2xl">Delivery</p>
+            <p className="mt-3 text-sm leading-6 text-taupe">24–72 hours. Quoted on WhatsApp from your location.</p>
+          </div>
+          <div className="md:px-10">
+            <p className="font-serif text-2xl">WhatsApp</p>
+            <p className="mt-3 text-sm leading-6 text-taupe">
+              {settings.contactPhone ? formatGhanaPhone(settings.contactPhone) : "Message us."}
+            </p>
           </div>
         </div>
       </section>
