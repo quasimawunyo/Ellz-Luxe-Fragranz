@@ -1,20 +1,10 @@
 import { AcceptedPayMarks } from "@/components/brand/accepted-pay-marks";
 
-export function TrustAndPay({
-  phone,
-  location = "Ells Luxe Annex, Pantang",
-}: {
-  phone: string;
-  location?: string;
-}) {
+export function TrustAndPay() {
   return (
     <section className="border-t border-espresso/10 bg-white py-8" aria-label="Payment methods">
       <div className="mx-auto max-w-7xl px-4">
         <AcceptedPayMarks />
-        <p className="mt-4 text-center text-sm text-taupe">
-          Ghana delivery is quoted from your location. Pickup at {location.trim()}
-          {phone ? ` · ${phone}` : ""}. Delivery is fast, reliable and secured.
-        </p>
       </div>
     </section>
   );
