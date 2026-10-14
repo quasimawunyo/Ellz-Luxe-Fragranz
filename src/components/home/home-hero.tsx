@@ -35,7 +35,7 @@ const SLIDES = [
     eyebrow: "Houses we carry",
     title: "Bottles worth",
     accent: "trying",
-    body: () => "Testers are marked Tester. Confirm the bottle before you pay.",
+    body: () => "Shop Lattafa, Armaf, Maison Alhambra, and the other houses on the Brands page.",
     primary: { href: "/brands", label: "Shop brands" },
     secondary: { href: "/new", label: "New arrivals" },
   },

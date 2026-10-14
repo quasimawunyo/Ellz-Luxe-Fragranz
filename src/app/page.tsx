@@ -78,7 +78,7 @@ export default async function HomePage() {
           <div className="mt-4 flex items-end justify-between gap-4">
             <div>
               <h2 className="font-serif text-4xl md:text-5xl">Featured products</h2>
-              <p className="mt-3 max-w-md text-taupe">Top picks from the boutique. Testers are marked Tester.</p>
+              <p className="mt-3 max-w-md text-taupe">Top picks from the boutique.</p>
             </div>
             <Link href="/shop" className="hidden text-sm text-taupe hover:text-espresso sm:inline">
               View all products
@@ -99,17 +99,17 @@ export default async function HomePage() {
               {
                 icon: MapPin,
                 title: "Pickup at Pantang",
-                body: `Visit ${settings.location}. Pickup is free. Confirm the bottle before you pay.`,
+                body: `Visit ${settings.location}. Pickup is free.`,
               },
               {
                 icon: MessageCircle,
                 title: "Quoted on WhatsApp",
-                body: "Delivery is between 24-72 hours. The fee is quoted from your location — not a fake checkout price.",
+                body: "Delivery is between 24-72 hours. The fee is quoted from your location.",
               },
               {
                 icon: PackageCheck,
-                title: "Marked as they are",
-                body: "Testers are marked Tester. Genuine products, authentic, original and safe.",
+                title: "Genuine products",
+                body: "Authentic, original and safe.",
               },
             ].map((item) => {
               const Icon = item.icon;

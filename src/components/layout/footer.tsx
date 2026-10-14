@@ -9,7 +9,7 @@ export function Footer({ settings }: { settings: StoreSettings }) {
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-16 md:grid-cols-4">
         <div>
           <BrandLogo className="w-32" size={256} />
-          <p className="mt-4 text-sm leading-6 text-taupe">Perfume boutique · Testers marked Tester</p>
+          <p className="mt-4 text-sm leading-6 text-taupe">Perfume boutique</p>
           <p className="mt-2 text-sm text-taupe">{settings.location}</p>
           <StoreContact settings={settings} className="mt-5 space-y-2 text-sm text-taupe" />
           <StoreSocials settings={settings} />

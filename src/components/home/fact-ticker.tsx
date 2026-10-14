@@ -1,8 +1,6 @@
 const FACTS = [
   "Delivery is between 24-72 hours",
   "Pickup at Ells Luxe Annex, Pantang",
-  "Testers are marked Tester",
-  "Confirm the bottle before you pay",
   "Secure mobile money and card payments",
 ];
 
