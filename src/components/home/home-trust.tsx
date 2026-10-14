@@ -7,7 +7,7 @@ export function HomeTrust({ phone }: { phone: string }) {
     {
       icon: Headset,
       title: "WhatsApp",
-      body: phone ? `Message ${formatGhanaPhone(phone)}.` : "Message the annex.",
+      body: phone ? `Message ${formatGhanaPhone(phone)}.` : "Message us.",
     },
     { icon: CreditCard, title: "Secure payments", body: "Fast, safe and reliable." },
     { icon: ClipboardCheck, title: "Genuine products", body: "Authentic, original and safe." },

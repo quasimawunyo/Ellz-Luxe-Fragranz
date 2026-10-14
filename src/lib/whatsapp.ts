@@ -24,7 +24,7 @@ export function formatGhanaPhone(phone: string) {
 }
 
 export function customerOrderWhatsAppMessage(order: { orderNumber: string; fullName: string }) {
-  return `Hello ${order.fullName}, this is Ells Luxe Annex about order ${order.orderNumber}.`;
+  return `Hello ${order.fullName}, this is EllzLuxe Fragranz about order ${order.orderNumber}.`;
 }
 
 export type AnnexOrderNotice = {

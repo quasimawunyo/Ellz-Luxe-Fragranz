@@ -7,7 +7,7 @@ export default async function FaqPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-16">
       <h1 className="font-serif text-4xl">FAQ</h1>
-      <p className="mt-4 text-taupe">Payment, delivery, and returns for Ells Luxe Annex.</p>
+      <p className="mt-4 text-taupe">Payment, delivery, and returns for EllzLuxe Fragranz.</p>
       <div className="mt-10 space-y-4">
         {faqs
           .filter((item) => !item.requiresOwnerReview)

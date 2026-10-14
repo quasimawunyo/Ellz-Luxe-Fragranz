@@ -343,7 +343,7 @@ export const DEMO_PRODUCTS: CatalogProduct[] = [
 ];
 
 export const DEMO_SETTINGS: StoreSettings = {
-  announcement: "Ells Luxe Annex · WhatsApp 0593634512 · Confirm the bottle before you pay",
+  announcement: "EllzLuxe Fragranz · WhatsApp 0593634512 · Confirm the bottle before you pay",
   contactEmail: "ellzluxefragranz@gmail.com",
   contactPhone: "0593634512",
   location: "Ells Luxe Annex, Pantang",
@@ -413,7 +413,7 @@ export const DEMO_FAQS: FaqItem[] = [
     id: "faq-select",
     question: "How should I choose a fragrance?",
     answer:
-      "Read the notes on each bottle. Collections group citrus, floral, woody, and oud. WhatsApp 0593634512 if you want help choosing at the annex.",
+      "Read the notes on each bottle. Collections group citrus, floral, woody, and oud. WhatsApp 0593634512 if you want help choosing a bottle.",
     requiresOwnerReview: false,
   },
   {

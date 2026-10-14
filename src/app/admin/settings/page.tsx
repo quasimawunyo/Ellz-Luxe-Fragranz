@@ -22,7 +22,7 @@ export default async function AdminSettingsPage() {
           <li>Moolre: {launch.moolre ? "Ready" : "Not set"}</li>
           <li>Paystack: {launch.paystack ? "Ready" : "Not set"}</li>
           <li>Order email ping: {launch.orderEmail ? "Ready" : "Not set"}</li>
-          <li>Order WhatsApp ping: {launch.orderWhatsAppApi ? "Ready" : "Customer WhatsApp opens to the annex"}</li>
+          <li>Order WhatsApp ping: {launch.orderWhatsAppApi ? "Ready" : "Customer WhatsApp opens"}</li>
           <li>Order phone ping: {launch.orderPush ? "Ready" : "Not set"}</li>
         </ul>
         {launch.orderPushUrl ? (
@@ -103,7 +103,7 @@ export default async function AdminSettingsPage() {
         </div>
         <h2 className="pt-4 text-lg font-semibold">Delivery</h2>
         <p className="text-sm text-taupe">
-          Delivery is not a fixed price. The annex quotes the fee from the customer’s region and locality on WhatsApp.
+          Delivery is not a fixed price. We quote the fee from the customer’s region and locality on WhatsApp.
           Pickup at Ells Luxe Annex is free.
         </p>
         <div>

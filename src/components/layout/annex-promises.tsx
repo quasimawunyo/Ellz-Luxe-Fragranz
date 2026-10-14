@@ -11,7 +11,7 @@ const PROMISES = [
     icon: Headset,
     title: "WhatsApp Support.",
     body: (phone: string) =>
-      phone ? `Message ${formatGhanaPhone(phone)}. Get help now!` : "Message the Annex. Get help now!",
+      phone ? `Message ${formatGhanaPhone(phone)}. Get help now!` : "Message us. Get help now!",
   },
   {
     icon: CreditCard,
@@ -27,7 +27,7 @@ const PROMISES = [
 
 export function AnnexPromises({ phone }: { phone: string }) {
   return (
-    <section className="bg-rich py-12 text-ivory sm:py-14" aria-label="Shopping with Ells Luxe Annex">
+    <section className="bg-rich py-12 text-ivory sm:py-14" aria-label="Shopping with EllzLuxe Fragranz">
       <div className="mx-auto grid max-w-6xl grid-cols-2 gap-y-10 px-4 lg:grid-cols-4 lg:gap-y-0">
         {PROMISES.map((item) => {
           const Icon = item.icon;
