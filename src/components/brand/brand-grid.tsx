@@ -2,37 +2,36 @@ import Image from "next/image";
 import Link from "next/link";
 import { HOUSE_BRANDS } from "@/lib/catalog/brands";
 
-const LOOP = [...HOUSE_BRANDS, ...HOUSE_BRANDS];
-
 export function BrandGrid() {
   return (
-    <section className="border-y border-espresso/10 bg-ivory" aria-label="Brands">
-      <div className="flex items-stretch">
-        <p className="hidden shrink-0 items-center border-r border-espresso/10 px-5 text-sm text-espresso sm:flex">
-          Brands
-        </p>
-        <div className="min-w-0 flex-1 overflow-hidden">
-          <p className="px-4 pt-3 text-center text-sm sm:hidden">Brands</p>
-          <div className="brand-marquee-track flex w-max items-center py-7">
-            {LOOP.map((brand, index) => (
+    <section className="bg-ivory px-4 py-20" aria-label="Brands">
+      <div className="mx-auto max-w-7xl">
+        <div className="flex items-end justify-between gap-4">
+          <h2 className="font-serif text-4xl md:text-5xl">Brands</h2>
+          <Link href="/brands" className="text-sm text-taupe hover:text-espresso">
+            View all
+          </Link>
+        </div>
+        <ul className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+          {HOUSE_BRANDS.map((brand) => (
+            <li key={brand.slug}>
               <Link
-                key={`${brand.slug}-${index}`}
                 href={`/brands/${brand.slug}`}
-                aria-label={brand.name}
-                className="mx-10 flex h-20 shrink-0 items-center justify-center sm:mx-14 sm:h-24"
+                className="flex h-full flex-col items-center justify-center gap-4 bg-white px-4 py-10 transition-colors hover:bg-white/70"
               >
                 <Image
                   src={brand.logo}
-                  alt={brand.name}
-                  width={280}
-                  height={112}
+                  alt=""
+                  width={200}
+                  height={80}
                   unoptimized
-                  className="h-16 w-auto max-w-56 object-contain sm:h-20"
+                  className="h-14 w-auto max-w-[9rem] object-contain sm:h-16"
                 />
+                <span className="text-center text-sm">{brand.name}</span>
               </Link>
-            ))}
-          </div>
-        </div>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );
