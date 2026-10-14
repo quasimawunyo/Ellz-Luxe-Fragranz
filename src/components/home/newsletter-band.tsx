@@ -8,7 +8,7 @@ export function NewsletterBand() {
           <p className="text-[11px] uppercase tracking-[0.32em] text-ivory/60">Stay in the loop</p>
           <h2 className="mt-4 font-serif text-4xl md:text-5xl">Join the list</h2>
           <p className="mt-6 max-w-sm leading-7 text-ivory/70">
-            New bottles, restocks, and shop notes. No fake discounts. Unsubscribe anytime.
+            New arrivals, restocks, sales date/discounts and shop notes. Unsubscribe anytime.
           </p>
         </div>
         <div className="flex flex-col justify-center px-8 py-14 md:px-12">
