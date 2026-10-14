@@ -26,6 +26,7 @@ export default async function HomePage() {
     <>
       <HomeHero location={settings.location} />
       <FactTicker />
+      <BrandGrid />
 
       <section className="bg-white px-4 py-20">
         <div className="mx-auto max-w-7xl">
@@ -53,8 +54,6 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
-
-      <BrandGrid />
 
       <section className="bg-ivory px-4 py-20">
         <div className="mx-auto max-w-7xl">
