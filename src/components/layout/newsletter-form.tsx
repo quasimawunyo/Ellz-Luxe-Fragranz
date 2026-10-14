@@ -22,8 +22,8 @@ export function NewsletterForm({ compact = false }: { compact?: boolean }) {
           placeholder="Email address"
           className={compact ? "bg-ivory text-espresso" : "flex-1"}
         />
-        <Button type="submit" variant={compact ? "gold" : "primary"} className={compact ? "w-full" : ""}>
-          Subscribe
+        <Button type="submit" variant={compact ? "gold" : "primary"} className={compact ? "w-full" : "uppercase tracking-[0.18em]"}>
+          {compact ? "Subscribe" : "Join the list"}
         </Button>
       </div>
       {state?.error ? (

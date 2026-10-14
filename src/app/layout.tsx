@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { connection } from "next/server";
-import { Cormorant_Garamond, Outfit } from "next/font/google";
+import { Outfit, Playfair_Display } from "next/font/google";
 import { Toaster } from "@/components/ui/toaster";
 import { SiteShell } from "@/components/layout/site-shell";
 import { resolveSiteUrl } from "@/lib/site-url";
@@ -11,10 +11,11 @@ const outfit = Outfit({
   variable: "--font-outfit",
 });
 
-const cormorant = Cormorant_Garamond({
+const playfair = Playfair_Display({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
-  variable: "--font-cormorant",
+  style: ["normal", "italic"],
+  variable: "--font-playfair",
 });
 
 export const metadata: Metadata = {
@@ -40,7 +41,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   await connection();
   return (
-    <html lang="en" data-scroll-behavior="smooth" className={`${outfit.variable} ${cormorant.variable} h-full`}>
+    <html lang="en" data-scroll-behavior="smooth" className={`${outfit.variable} ${playfair.variable} h-full`}>
       <body className="flex min-h-full flex-col bg-ivory text-espresso antialiased">
         <SiteShell>{children}</SiteShell>
         <Toaster />

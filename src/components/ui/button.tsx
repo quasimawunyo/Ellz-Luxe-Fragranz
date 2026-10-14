@@ -9,8 +9,11 @@ const buttonVariants = cva(
       variant: {
         primary: "bg-espresso text-ivory hover:bg-rich px-5 py-2.5",
         gold: "rounded-full bg-champagne px-8 py-2.5 text-espresso hover:bg-champagne/90",
+        solid: "bg-white px-7 py-3.5 text-[11px] font-medium uppercase tracking-[0.28em] text-espresso hover:bg-ivory",
         outline: "border border-espresso/20 text-espresso hover:border-espresso px-5 py-2.5 bg-transparent",
         ghost: "text-espresso hover:text-champagne px-3 py-2",
+        ghostOnDark:
+          "bg-transparent px-4 py-3.5 text-[11px] font-medium uppercase tracking-[0.28em] text-ivory/90 hover:text-ivory",
         danger: "bg-red-900 text-ivory hover:bg-red-800 px-5 py-2.5",
         shop: "rounded-full bg-leaf px-5 py-2.5 text-white shadow-[0_1px_0_rgba(255,255,255,0.18)_inset] hover:bg-leaf/90",
       },

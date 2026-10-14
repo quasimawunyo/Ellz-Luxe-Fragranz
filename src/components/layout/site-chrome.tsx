@@ -26,7 +26,7 @@ export function SiteChrome({
     <>
       <AnnouncementBar message={settings.announcement} />
       {header}
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 pb-16 lg:pb-0">{children}</main>
       <AnnexPromises phone={settings.contactPhone} />
       <TrustAndPay phone={settings.contactPhone} location={settings.location} />
       <Footer settings={settings} />

@@ -23,7 +23,10 @@ export function QuickAdd({
       <button
         type="submit"
         disabled={disabled}
-        className={cn(buttonVariants({ variant: "shop", size: "sm" }), wide && "w-full")}
+        className={cn(
+          buttonVariants({ variant: wide ? "primary" : "shop", size: "sm" }),
+          wide && "w-full rounded-full",
+        )}
       >
         Add to cart
       </button>
