@@ -4,7 +4,6 @@ import { ArrowUpRight } from "lucide-react";
 import { BrandGrid } from "@/components/brand/brand-grid";
 import { FactTicker } from "@/components/home/fact-ticker";
 import { HomeHero } from "@/components/home/home-hero";
-import { HomeTrust } from "@/components/home/home-trust";
 import { NewsletterBand } from "@/components/home/newsletter-band";
 import { ProductGrid } from "@/components/product/product-card";
 import { buttonVariants } from "@/components/ui/button";
@@ -27,7 +26,6 @@ export default async function HomePage() {
     <>
       <HomeHero location={settings.location} />
       <FactTicker />
-      <HomeTrust phone={settings.contactPhone} />
 
       <section className="bg-white px-4 py-20">
         <div className="mx-auto max-w-7xl">
