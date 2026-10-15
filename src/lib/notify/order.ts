@@ -62,7 +62,7 @@ async function webhookAnnex(notice: AnnexOrderNotice, body: string) {
   await postJson(env.orderNotifyWebhookUrl, { text: body, order: notice });
 }
 
-async function ntfyAnnex(orderNumber: string) {
+async function ntfyAnnex(body: string, orderNumber: string) {
   if (!env.orderNtfyTopic) return;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 4000);
@@ -75,7 +75,7 @@ async function ntfyAnnex(orderNumber: string) {
         priority: "high",
         tags: "package",
       },
-      body: `New order ${orderNumber}. Open admin to view details.`,
+      body,
       signal: controller.signal,
     });
   } finally {
@@ -104,7 +104,7 @@ export async function notifyAnnexOfOrder(order: StoreOrder) {
     emailAnnex(settings.contactEmail, body, order.orderNumber),
     webhookAnnex(notice, body),
     callMeBot(settings.contactPhone, body),
-    ntfyAnnex(order.orderNumber),
+    ntfyAnnex(body, order.orderNumber),
   ];
   await Promise.allSettled(jobs);
 }

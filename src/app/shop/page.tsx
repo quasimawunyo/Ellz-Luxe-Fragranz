@@ -18,8 +18,8 @@ export default async function ShopPage({
   return (
     <div className="mx-auto max-w-7xl px-4 py-10">
       <Breadcrumbs items={[{ href: "/", label: "Home" }, { label: "Shop" }]} />
-      <h1 className="mt-8 font-serif text-5xl md:text-6xl">Shop</h1>
-      <p className="mt-4 max-w-xl text-taupe">Bottles at {settings.location}.</p>
+      <h1 className="mt-8 font-serif text-4xl">Shop</h1>
+      <p className="mt-3 max-w-xl text-taupe">Bottles at {settings.location}.</p>
       <div className="mt-10 grid gap-10 lg:grid-cols-[16rem_1fr]">
         <aside>
           <ShopFilters
@@ -37,29 +37,29 @@ export default async function ShopPage({
             </EmptyState>
           )}
           {result.totalPages > 1 ? (
-            <div className="mt-12 flex justify-center gap-8 text-sm">
-              {(() => {
-                const paramsFor = (page: number) => {
-                  const params = new URLSearchParams();
-                  if (result.filters.q) params.set("q", result.filters.q);
-                  if (result.filters.collection) params.set("collection", result.filters.collection);
-                  if (result.filters.category) params.set("category", result.filters.category);
-                  if (result.filters.brand) params.set("brand", result.filters.brand);
-                  if (result.filters.sort) params.set("sort", result.filters.sort);
-                  if (result.filters.arrival) params.set("arrival", result.filters.arrival);
-                  params.set("page", String(page));
-                  return `/shop?${params.toString()}`;
-                };
+            <div className="mt-10 flex justify-center gap-3">
+              {Array.from({ length: result.totalPages }, (_, index) => {
+                const page = index + 1;
+                const params = new URLSearchParams();
+                if (result.filters.q) params.set("q", result.filters.q);
+                if (result.filters.collection) params.set("collection", result.filters.collection);
+                if (result.filters.category) params.set("category", result.filters.category);
+                if (result.filters.brand) params.set("brand", result.filters.brand);
+                if (result.filters.sort) params.set("sort", result.filters.sort);
+                if (result.filters.arrival) params.set("arrival", result.filters.arrival);
+                params.set("page", String(page));
                 return (
-                  <>
-                    {result.page > 1 ? <Link href={paramsFor(result.page - 1)}>Previous</Link> : null}
-                    <span className="text-taupe">
-                      {result.page} / {result.totalPages}
-                    </span>
-                    {result.page < result.totalPages ? <Link href={paramsFor(result.page + 1)}>Next</Link> : null}
-                  </>
+                  <Link
+                    key={page}
+                    href={`/shop?${params.toString()}`}
+                    className={`grid size-10 place-items-center border ${
+                      page === result.page ? "border-espresso bg-espresso text-ivory" : "border-espresso/20"
+                    }`}
+                  >
+                    {page}
+                  </Link>
                 );
-              })()}
+              })}
             </div>
           ) : null}
         </div>

@@ -46,7 +46,7 @@ export default async function BrandPage({ params }: { params: Promise<{ slug: st
         <div>
           <h1 className="font-serif text-4xl">{brand.name}</h1>
           <p className="mt-3 max-w-xl text-taupe">
-            Bottles from this house currently on the shelf. Ask on WhatsApp if you want to confirm a specific juice.
+            Demonstration catalog items currently tagged to this house. Live assortment is confirmed by the boutique.
           </p>
         </div>
       </div>

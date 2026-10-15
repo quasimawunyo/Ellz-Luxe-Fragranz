@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import {
   canFulfill,
   decrementStock,
-  restoreStock,
   InsufficientStockError,
   reserveStockMap,
 } from "@/lib/inventory";
@@ -15,10 +14,6 @@ describe("inventory", () => {
 
   it("decrements when stock is sufficient", () => {
     expect(decrementStock(5, 2)).toBe(3);
-  });
-
-  it("restores unpaid reservation stock on cancel", () => {
-    expect(restoreStock(decrementStock(5, 2), 2)).toBe(5);
   });
 
   it("applies sequential reservations without oversell", () => {

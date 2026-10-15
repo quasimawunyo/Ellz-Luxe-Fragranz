@@ -5,7 +5,6 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { contactSchema, newsletterSchema } from "@/lib/validations";
 import { rateLimit } from "@/lib/rate-limit";
-import { clientIp } from "@/lib/http/client-ip";
 import { isSupabaseAdminConfigured } from "@/lib/env";
 import { createServiceClient } from "@/lib/supabase/admin";
 
@@ -19,8 +18,8 @@ export async function subscribeNewsletter(_prev: { error?: string; ok?: boolean;
     return { error: parsed.error.issues[0]?.message ?? "Enter a valid email." };
   }
   const hdrs = await headers();
-  const ip = clientIp(hdrs);
-  if (!(await rateLimit(clientKey("news", ip), 5, 60_000)).ok) {
+  const ip = hdrs.get("x-forwarded-for") ?? "anon";
+  if (!rateLimit(clientKey("news", ip), 5, 60_000).ok) {
     return { error: "Please wait before submitting again." };
   }
   if (isSupabaseAdminConfigured()) {
@@ -45,8 +44,8 @@ export async function submitContact(_prev: { error?: string; ok?: boolean; messa
     return { error: parsed.error.issues[0]?.message ?? "Please complete the form." };
   }
   const hdrs = await headers();
-  const ip = clientIp(hdrs);
-  if (!(await rateLimit(clientKey("contact", ip), 4, 60_000)).ok) {
+  const ip = hdrs.get("x-forwarded-for") ?? "anon";
+  if (!rateLimit(clientKey("contact", ip), 4, 60_000).ok) {
     return { error: "Please wait before submitting again." };
   }
   if (isSupabaseAdminConfigured()) {

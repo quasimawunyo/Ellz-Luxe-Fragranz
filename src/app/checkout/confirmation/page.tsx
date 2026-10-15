@@ -23,28 +23,33 @@ export default async function ConfirmationPage({
   searchParams: Promise<{ order?: string }>;
 }) {
   const { order: orderId } = await searchParams;
-  const [loaded, auth, settings] = await Promise.all([
-    orderId ? getOrderById(orderId) : Promise.resolve(null),
-    getAuthContext(),
-    getStoreSettings(),
-  ]);
+  let order = orderId ? await getOrderById(orderId) : null;
+  if (order) order = await confirmMoolreIfPaid(order);
+  const [auth, settings] = await Promise.all([getAuthContext(), getStoreSettings()]);
 
-  const allowed = Boolean(
-    loaded &&
-      (canViewOrder({
-        orderUserId: loaded.userId,
-        orderGuestEmail: loaded.email,
-        actorUserId: auth.user?.id ?? null,
-        actorEmail: auth.email,
-        actorRole: auth.role,
-      }) ||
-        (await browserPlacedThisOrder(loaded.id))),
-  );
-
-  if (!loaded || !allowed) {
+  if (!order) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-16">
         <EmptyState title="Order not found">
+          <Link href="/shop">Shop</Link>
+        </EmptyState>
+      </div>
+    );
+  }
+
+  const allowed =
+    canViewOrder({
+      orderUserId: order.userId,
+      orderGuestEmail: order.email,
+      actorUserId: auth.user?.id ?? null,
+      actorEmail: auth.email,
+      actorRole: auth.role,
+    }) || (await browserPlacedThisOrder(order.id));
+
+  if (!allowed) {
+    return (
+      <div className="mx-auto max-w-3xl px-4 py-16">
+        <EmptyState title="This confirmation is private">
           <Link href="/track">Track with order number and email</Link>
           {" · "}
           <Link href="/login">Sign in</Link>
@@ -52,8 +57,6 @@ export default async function ConfirmationPage({
       </div>
     );
   }
-
-  const order = await confirmMoolreIfPaid(loaded);
 
   const annexWhatsApp = annexOrderWhatsAppHref(settings.contactPhone, order);
   const canResumeHostedPay =

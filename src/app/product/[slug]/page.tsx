@@ -51,13 +51,15 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       />
       <div className="mt-8 grid gap-12 lg:grid-cols-2">
         <ProductGallery images={product.images} name={product.name} />
-        <div className="lg:sticky lg:top-28">
-          <p className="text-[11px] uppercase tracking-[0.22em] text-taupe">
+        <div>
+          {product.isDemonstration ? (
+            <p className="text-sm text-taupe">Tester</p>
+          ) : null}
+          <h1 className="mt-2 font-serif text-4xl">{product.name}</h1>
+          <p className="mt-2 text-sm text-taupe">
             {product.brand}
             {product.concentration ? ` · ${product.concentration}` : ""}
           </p>
-          <h1 className="mt-3 font-serif text-4xl md:text-5xl">{product.name}</h1>
-          {product.isDemonstration ? <p className="mt-2 text-sm text-taupe">Tester</p> : null}
           <p className="mt-6 max-w-lg leading-7 text-espresso/80">{product.description}</p>
           <PurchaseForm
             variants={product.variants}
@@ -65,18 +67,18 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             productName={product.name}
             currencyCode={settings.currencyCode}
           />
-          <dl className="mt-12 grid gap-8 border-t border-espresso/10 pt-8 text-sm sm:grid-cols-3">
+          <dl className="mt-10 space-y-4 border-t border-espresso/10 pt-8 text-sm">
             <div>
-              <dt className="text-[11px] uppercase tracking-[0.18em] text-taupe">Top</dt>
-              <dd className="mt-2 leading-6">{product.notes.top.join(", ")}</dd>
+              <dt className="text-sm text-taupe">Top notes</dt>
+              <dd>{product.notes.top.join(", ")}</dd>
             </div>
             <div>
-              <dt className="text-[11px] uppercase tracking-[0.18em] text-taupe">Heart</dt>
-              <dd className="mt-2 leading-6">{product.notes.heart.join(", ")}</dd>
+              <dt className="text-sm text-taupe">Heart notes</dt>
+              <dd>{product.notes.heart.join(", ")}</dd>
             </div>
             <div>
-              <dt className="text-[11px] uppercase tracking-[0.18em] text-taupe">Base</dt>
-              <dd className="mt-2 leading-6">{product.notes.base.join(", ")}</dd>
+              <dt className="text-sm text-taupe">Base notes</dt>
+              <dd>{product.notes.base.join(", ")}</dd>
             </div>
           </dl>
           <div className="mt-8 space-y-3 text-sm leading-7 text-taupe">
@@ -93,8 +95,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           </div>
         </section>
       ) : null}
-      <p className="mt-16 text-sm text-taupe">
-        <Link href="/shop">Shop</Link>
+      <p className="mt-10 text-sm">
+        <Link href="/shop">Back to shop</Link>
       </p>
     </div>
   );

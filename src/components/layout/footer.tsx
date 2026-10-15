@@ -5,17 +5,17 @@ import { StoreContact, StoreSocials } from "@/components/layout/store-details";
 
 export function Footer({ settings }: { settings: StoreSettings }) {
   return (
-    <footer className="mt-auto border-t border-espresso/10 bg-ivory text-espresso">
-      <div className="mx-auto grid max-w-7xl gap-12 px-4 py-20 md:grid-cols-4">
+    <footer className="mt-auto border-t border-espresso/10 bg-white text-espresso">
+      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-16 md:grid-cols-4">
         <div>
-          <BrandLogo className="w-36" size={256} />
-          <p className="mt-6 font-serif text-2xl">Perfume boutique</p>
-          <p className="mt-2 text-sm leading-6 text-taupe">{settings.location}</p>
+          <BrandLogo className="w-32" size={256} />
+          <p className="mt-4 text-sm leading-6 text-taupe">Perfume boutique</p>
+          <p className="mt-2 text-sm text-taupe">{settings.location}</p>
           <StoreContact settings={settings} className="mt-5 space-y-2 text-sm text-taupe" />
           <StoreSocials settings={settings} />
         </div>
         <div>
-          <p className="text-[11px] uppercase tracking-[0.22em] text-taupe">Shop</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.22em]">Shop</p>
           <ul className="mt-4 space-y-2 text-sm text-taupe">
             <li><Link href="/shop">All products</Link></li>
             <li><Link href="/collections">Collections</Link></li>
@@ -24,7 +24,7 @@ export function Footer({ settings }: { settings: StoreSettings }) {
           </ul>
         </div>
         <div>
-          <p className="text-[11px] uppercase tracking-[0.22em] text-taupe">Help</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.22em]">Help</p>
           <ul className="mt-4 space-y-2 text-sm text-taupe">
             <li><Link href="/contact">Contact</Link></li>
             <li><Link href="/track">Track order</Link></li>
@@ -33,7 +33,7 @@ export function Footer({ settings }: { settings: StoreSettings }) {
           </ul>
         </div>
         <div>
-          <p className="text-[11px] uppercase tracking-[0.22em] text-taupe">About</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.22em]">About</p>
           <ul className="mt-4 space-y-2 text-sm text-taupe">
             <li><Link href="/about">Our story</Link></li>
             <li><Link href="/faq">FAQ</Link></li>

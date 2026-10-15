@@ -25,7 +25,7 @@ export function QuickAdd({
         disabled={disabled}
         className={cn(
           buttonVariants({ variant: wide ? "primary" : "shop", size: "sm" }),
-          wide && "w-full",
+          wide && "w-full rounded-full",
         )}
       >
         Add to cart

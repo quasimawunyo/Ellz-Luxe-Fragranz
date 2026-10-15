@@ -1,8 +1,7 @@
 import { cookies } from "next/headers";
 import { createServiceClient } from "@/lib/supabase/admin";
-import { env, isSupabaseAdminConfigured } from "@/lib/env";
+import { isSupabaseAdminConfigured } from "@/lib/env";
 import { readJsonCookie, writeJsonCookie } from "@/lib/cookies/json-cookie";
-import { readSignedPayload, signPayload } from "@/lib/cookies/signed-payload";
 import type { CartItem, CartState, ResolvedCart } from "@/lib/cart/types";
 import { getVariantById, getStoreSettings } from "@/lib/catalog/queries";
 import { lineTotalMinor } from "@/lib/money";
@@ -10,7 +9,6 @@ import { assertPurchasableQuantity } from "@/lib/inventory";
 
 const CART_ITEMS_COOKIE = "elf_cart";
 const CART_ID_COOKIE = "elf_cart_id";
-const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 async function readCookieCart(): Promise<CartState> {
   return readJsonCookie<CartState>(CART_ITEMS_COOKIE, { items: [] });
@@ -22,11 +20,7 @@ async function writeCookieCart(state: CartState) {
 
 async function readCartId() {
   const store = await cookies();
-  const raw = store.get(CART_ID_COOKIE)?.value;
-  const secret = env.cookieSigningSecret;
-  if (!raw || !secret) return undefined;
-  const id = readSignedPayload(raw, secret);
-  return id && UUID_RE.test(id) ? id : undefined;
+  return store.get(CART_ID_COOKIE)?.value;
 }
 
 function cartIdCookieOptions() {
@@ -43,11 +37,9 @@ async function getOrCreateCartId() {
   const existing = await readCartId();
   if (existing) return existing;
   const id = crypto.randomUUID();
-  const secret = env.cookieSigningSecret;
-  if (!secret) return id;
   const store = await cookies();
   try {
-    store.set(CART_ID_COOKIE, signPayload(id, secret), cartIdCookieOptions());
+    store.set(CART_ID_COOKIE, id, cartIdCookieOptions());
   } catch {
     // Cookie writes are only allowed in Server Actions / Route Handlers.
   }
@@ -55,7 +47,7 @@ async function getOrCreateCartId() {
 }
 
 export async function getCartItems(): Promise<CartItem[]> {
-  if (isSupabaseAdminConfigured() && env.cookieSigningSecret) {
+  if (isSupabaseAdminConfigured()) {
     const admin = createServiceClient();
     const cartId = await readCartId();
     if (admin && cartId) {
@@ -74,7 +66,7 @@ export async function getCartItems(): Promise<CartItem[]> {
 export async function saveCartItems(items: CartItem[]) {
   const next = items.filter((item) => item.quantity > 0);
   await writeCookieCart({ items: next });
-  if (isSupabaseAdminConfigured() && env.cookieSigningSecret) {
+  if (isSupabaseAdminConfigured()) {
     const admin = createServiceClient();
     if (admin) {
       const cartId = await getOrCreateCartId();

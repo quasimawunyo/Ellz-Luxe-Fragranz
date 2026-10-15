@@ -16,7 +16,7 @@ export default async function CollectionsPage() {
       </p>
       <div className="mt-12 grid gap-6 md:grid-cols-2">
         {collections.map((collection) => (
-          <Link key={collection.id} href={`/collections/${collection.slug}`} className="group relative min-h-80 overflow-hidden">
+          <Link key={collection.id} href={`/collections/${collection.slug}`} className="group relative min-h-80 overflow-hidden rounded-[1.75rem]">
             <Image src={collection.imageUrl} alt="" fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
             <div className="absolute inset-0 bg-rich/45" />
             <div className="absolute bottom-6 left-6 right-6 text-ivory">

@@ -27,7 +27,6 @@ export const env = {
   orderNotifyWebhookUrl: present(process.env.ORDER_NOTIFY_WEBHOOK_URL),
   callMeBotApiKey: present(process.env.CALLMEBOT_API_KEY),
   orderNtfyTopic: present(process.env.ORDER_NTFY_TOPIC),
-  cookieSigningSecret: present(process.env.COOKIE_SIGNING_SECRET) ?? present(process.env.SUPABASE_SERVICE_ROLE_KEY),
 };
 
 export function isSupabaseConfigured() {

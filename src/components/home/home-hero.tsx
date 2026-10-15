@@ -1,41 +1,139 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
+const SLIDES = [
+  {
+    kind: "video" as const,
+    src: "/videos/hero.mp4",
+    poster: "/images/hero.jpg",
+    eyebrow: "Welcome",
+    title: "EllzLuxe",
+    accent: "Fragranz",
+    body: (location: string) => `Perfume boutique at ${location}.`,
+    primary: { href: "/shop", label: "Shop" },
+    secondary: { href: "/about", label: "About" },
+  },
+  {
+    kind: "image" as const,
+    src: "/images/story.jpg",
+    eyebrow: "Women · Men · Unisex",
+    title: "Find your",
+    accent: "scent",
+    body: () => "Shop by collection, or message us if you want help choosing a bottle.",
+    primary: { href: "/collections", label: "Shop collections" },
+    secondary: { href: "/shop", label: "All perfumes" },
+  },
+  {
+    kind: "image" as const,
+    src: "/images/discovery.jpg",
+    eyebrow: "Houses we carry",
+    title: "Bottles worth",
+    accent: "trying",
+    body: () => "Shop Lattafa, Armaf, Maison Alhambra, and the other houses on the Brands page.",
+    primary: { href: "/brands", label: "Shop brands" },
+    secondary: { href: "/new", label: "New arrivals" },
+  },
+];
+
 export function HomeHero({ location }: { location: string }) {
   const place = location.trim();
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setIndex((current) => (current + 1) % SLIDES.length);
+    }, 7000);
+    return () => window.clearInterval(timer);
+  }, []);
+
   return (
     <section className="relative min-h-[88vh] overflow-hidden bg-rich text-ivory" aria-label="Featured">
-      <video
-        className="absolute inset-0 h-full w-full object-cover"
-        autoPlay
-        muted
-        loop
-        playsInline
-        poster="/images/hero.jpg"
-        aria-label="EllzLuxe Fragranz campaign film"
-      >
-        <source src="/videos/hero.mp4" type="video/mp4" />
-      </video>
-      <div className="absolute inset-0 bg-gradient-to-t from-rich/80 via-rich/30 to-rich/15" />
-      <div className="relative z-10 mx-auto flex min-h-[88vh] max-w-4xl flex-col items-center justify-center px-6 py-28 text-center">
-        <p className="text-[11px] uppercase tracking-[0.42em] text-ivory/70">Ells Luxe Annex, Pantang</p>
-        <h1 className="mt-6 font-serif text-5xl leading-[0.95] sm:text-7xl md:text-[5.25rem]">
-          EllzLuxe <span className="font-light italic text-champagne">Fragranz</span>
-        </h1>
-        <p className="mt-6 max-w-lg text-base leading-7 text-ivory/80 sm:text-lg">
-          Perfume boutique at {place}.
-        </p>
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-5">
-          <Link href="/shop" className={cn(buttonVariants({ variant: "solid" }), "gap-3")}>
-            Shop
-            <ArrowUpRight className="size-3.5" aria-hidden />
-          </Link>
-          <Link href="/about" className={cn(buttonVariants({ variant: "ghostOnDark" }))}>
-            About
-          </Link>
-        </div>
+      {SLIDES.map((slide, slideIndex) => {
+        const active = slideIndex === index;
+        return (
+          <div
+            key={slide.eyebrow}
+            className={cn(
+              "absolute inset-0 transition-opacity duration-700",
+              active ? "opacity-100" : "pointer-events-none opacity-0",
+            )}
+            aria-hidden={!active}
+          >
+            {slide.kind === "video" ? (
+              <video
+                className="absolute inset-0 h-full w-full object-cover"
+                autoPlay
+                muted
+                loop
+                playsInline
+                poster={slide.poster}
+                aria-label="EllzLuxe Fragranz campaign film"
+              >
+                <source src={slide.src} type="video/mp4" />
+              </video>
+            ) : (
+              <Image src={slide.src} alt="" fill sizes="100vw" priority={slideIndex === 0} className="object-cover" />
+            )}
+            <div className="absolute inset-0 bg-gradient-to-t from-rich/80 via-rich/35 to-rich/20" />
+          </div>
+        );
+      })}
+
+      <div className="relative z-10 mx-auto flex min-h-[88vh] max-w-4xl items-center justify-center px-6 py-28 text-center">
+        {SLIDES.map((slide, slideIndex) => {
+          const active = slideIndex === index;
+          const Heading = slideIndex === 0 ? "h1" : "p";
+          return (
+            <div
+              key={slide.eyebrow}
+              className={cn(
+                "flex flex-col items-center",
+                active ? "relative" : "pointer-events-none absolute inset-x-6 opacity-0",
+              )}
+              aria-hidden={!active}
+            >
+              <p className="text-[11px] uppercase tracking-[0.42em] text-ivory/80">— {slide.eyebrow} —</p>
+              <Heading className="mt-6 font-serif text-4xl leading-[0.95] sm:text-6xl md:text-7xl lg:text-[5.25rem]">
+                {slide.title}{" "}
+                <span className="bg-gradient-to-r from-champagne to-amber-100 bg-clip-text font-light italic text-transparent">
+                  {slide.accent}
+                </span>
+              </Heading>
+              <p className="mt-6 max-w-lg text-base leading-7 text-ivory/80 sm:text-lg">{slide.body(place)}</p>
+              <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+                <Link href={slide.primary.href} className={cn(buttonVariants({ variant: "solid" }), "gap-3")} tabIndex={active ? 0 : -1}>
+                  {slide.primary.label}
+                  <ArrowUpRight className="size-3.5" aria-hidden />
+                </Link>
+                <Link href={slide.secondary.href} className={cn(buttonVariants({ variant: "ghostOnDark" }), "gap-2")} tabIndex={active ? 0 : -1}>
+                  {slide.secondary.label}
+                  <ArrowUpRight className="size-3.5" aria-hidden />
+                </Link>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="absolute inset-x-0 bottom-8 z-10 flex justify-center gap-2">
+        {SLIDES.map((slide, slideIndex) => (
+          <button
+            key={slide.eyebrow}
+            type="button"
+            aria-label={`Go to slide ${slideIndex + 1}`}
+            onClick={() => setIndex(slideIndex)}
+            className={cn(
+              "h-1.5 rounded-full transition-all",
+              slideIndex === index ? "w-8 bg-ivory" : "w-3 bg-ivory/40",
+            )}
+          />
+        ))}
       </div>
     </section>
   );

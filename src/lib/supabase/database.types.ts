@@ -231,11 +231,6 @@ export type Database = {
         Insert: Database["public"]["Tables"]["faq_items"]["Row"] & { id?: string };
         Update: Partial<Database["public"]["Tables"]["faq_items"]["Insert"]>;
       };
-      rate_limits: {
-        Row: { bucket_key: string; hit_count: number; reset_at: string };
-        Insert: { bucket_key: string; hit_count?: number; reset_at: string };
-        Update: { hit_count?: number; reset_at?: string };
-      };
     };
     Views: Record<string, never>;
     Functions: {
@@ -254,14 +249,6 @@ export type Database = {
           p_items: Json;
         };
         Returns: string;
-      };
-      release_expired_pending_orders: {
-        Args: { p_max_age?: string };
-        Returns: number;
-      };
-      restock_cancelled_order: {
-        Args: { p_order_id: string };
-        Returns: undefined;
       };
     };
     Enums: Record<string, never>;

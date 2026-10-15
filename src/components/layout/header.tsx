@@ -77,18 +77,14 @@ export function Header({
                     Admin
                   </Link>
                 ) : null}
-                <Link
-                  href={signedIn ? "/account" : "/login"}
-                  className="hidden hover:text-champagne lg:inline"
-                  aria-label={signedIn ? "Account" : "Log in"}
-                >
+                <Link href={signedIn ? "/account" : "/login"} className="hover:text-champagne" aria-label={signedIn ? "Account" : "Log in"}>
                   <User className="size-5" />
                 </Link>
               </>
             ) : (
-              <span className="hidden size-5 lg:inline-block" aria-hidden />
+              <span className="inline-block size-5" aria-hidden />
             )}
-            <SavedHeartLink className="hidden hover:text-champagne lg:inline-flex" />
+            <SavedHeartLink className="hover:text-champagne" />
             <Link href="/cart" className="relative" aria-label={`Cart, ${cartCount} ${cartCount === 1 ? "item" : "items"}`}>
               <ShoppingBag className="size-5" />
               {ready && cartCount > 0 ? (
@@ -121,14 +117,19 @@ export function Header({
                 className="h-10 flex-1 bg-transparent text-sm outline-none"
               />
             </form>
-            {[...NAV, ...SHOP.filter((link) => link.href !== "/shop")].map((item) => (
+            {NAV.map((item) => (
+              <Link key={item.href} href={item.href} className="block py-2.5 text-sm" onClick={() => setOpen(false)}>
+                {item.label}
+              </Link>
+            ))}
+            {SHOP.map((link) => (
               <Link
-                key={item.href + item.label}
-                href={item.href}
-                className="block py-3 font-serif text-2xl"
+                key={link.href + link.label}
+                href={link.href}
+                className="block py-1.5 pl-3 text-sm text-taupe"
                 onClick={() => setOpen(false)}
               >
-                {item.label}
+                {link.label}
               </Link>
             ))}
             {isAdmin ? (

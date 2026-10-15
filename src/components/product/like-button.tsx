@@ -23,7 +23,7 @@ export function LikeButton({
       aria-label={liked ? `Unlike ${name}` : `Like ${name}`}
       onClick={() => toggleLike(productId)}
       className={cn(
-        "grid size-11 place-items-center text-espresso hover:bg-espresso/5",
+        "grid size-11 place-items-center text-leaf hover:bg-leaf/10",
         className,
       )}
     >

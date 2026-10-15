@@ -17,7 +17,7 @@ export default async function CartPage() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-10">
       <Breadcrumbs items={[{ href: "/", label: "Home" }, { label: "Cart" }]} />
-      <h1 className="mt-6 font-serif text-4xl">Your bag</h1>
+      <h1 className="mt-6 font-serif text-4xl">Cart</h1>
       {!cart.lines.length ? (
         <div className="mt-10">
           <EmptyState title="Your cart is empty">

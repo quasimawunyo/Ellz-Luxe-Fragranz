@@ -30,7 +30,7 @@ export function PurchaseForm({
     <form action={formAction} className="mt-8 space-y-5">
       {selected ? (
         <Price
-            className="text-xl font-medium text-espresso"
+          className="text-xl font-medium text-leaf"
           amountMinor={selected.priceMinor}
           compareAtMinor={selected.compareAtMinor}
           currencyCode={currencyCode}
@@ -44,10 +44,10 @@ export function PurchaseForm({
             return (
               <label
                 key={variant.id}
-                className={`cursor-pointer border-b px-1 py-2 text-sm ${
+                className={`cursor-pointer border px-4 py-2 text-sm ${
                   selectedSize
-                    ? "border-espresso text-espresso"
-                    : "border-transparent text-taupe hover:text-espresso"
+                    ? "border-espresso bg-espresso text-ivory"
+                    : "border-espresso/20 hover:border-espresso"
                 }`}
               >
                 <input
