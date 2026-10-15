@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { rateLimit } from "@/lib/rate-limit";
+import { clientIp } from "@/lib/http/client-ip";
 import { getOrderById, getOrderByNumber } from "@/lib/orders/store";
 import { rememberPlacedOrderId, browserPlacedThisOrder } from "@/lib/orders/placed-cookie";
 import { orderEmailMatches } from "@/lib/orders/lookup";
@@ -28,8 +29,8 @@ export async function trackOrderAction(_prev: { error?: string } | null, formDat
   }
 
   const hdrs = await headers();
-  const ip = hdrs.get("x-forwarded-for") ?? "anon";
-  if (!rateLimit(`track:${ip}`, 8, 60_000).ok) {
+  const ip = clientIp(hdrs);
+  if (!(await rateLimit(`track:${ip}`, 8, 60_000)).ok) {
     return { error: "Please wait before trying again." };
   }
 

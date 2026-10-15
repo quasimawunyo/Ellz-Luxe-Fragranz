@@ -7,12 +7,12 @@ import type { ProductImage } from "@/lib/catalog/types";
 export function ProductGallery({ images, name }: { images: ProductImage[]; name: string }) {
   const [active, setActive] = useState(images[0]);
   if (!active) {
-    return <div className="aspect-[3/4] bg-espresso/5" />;
+    return <div className="aspect-[3/4] bg-ivory" />;
   }
 
   return (
     <div>
-      <div className="relative aspect-[3/4] overflow-hidden bg-espresso/5">
+      <div className="relative aspect-[3/4] overflow-hidden bg-ivory">
         <Image
           src={active.url}
           alt={active.alt || name}
@@ -23,14 +23,14 @@ export function ProductGallery({ images, name }: { images: ProductImage[]; name:
         />
       </div>
       {images.length > 1 ? (
-        <div className="mt-3 flex gap-2">
+        <div className="mt-4 flex gap-2">
           {images.map((image) => (
             <button
               key={image.id}
               type="button"
               onClick={() => setActive(image)}
-              className={`relative size-16 overflow-hidden border ${
-                active.id === image.id ? "border-espresso" : "border-transparent"
+              className={`relative h-16 w-12 overflow-hidden border ${
+                active.id === image.id ? "border-espresso" : "border-espresso/15"
               }`}
               aria-label={`Show image ${image.position + 1}`}
             >

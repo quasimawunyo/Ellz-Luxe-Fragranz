@@ -31,6 +31,13 @@ export function decrementStock(stock: number, quantity: number) {
   return stock - quantity;
 }
 
+export function restoreStock(stock: number, quantity: number) {
+  if (!Number.isInteger(stock) || stock < 0 || !Number.isInteger(quantity) || quantity < 1) {
+    throw new Error("Cannot restore that quantity.");
+  }
+  return stock + quantity;
+}
+
 /**
  * Applies concurrent inventory reservations in memory.
  * Used for unit tests and the demonstration catalog.

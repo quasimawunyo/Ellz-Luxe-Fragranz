@@ -1,7 +1,7 @@
 import { createServiceClient } from "@/lib/supabase/admin";
-import { isSupabaseAdminConfigured } from "@/lib/env";
+import { isSupabaseAdminConfigured, isSupabaseConfigured } from "@/lib/env";
 import { readJsonCookie, writeJsonCookie } from "@/lib/cookies/json-cookie";
-import { decrementStock } from "@/lib/inventory";
+import { decrementStock, restoreStock } from "@/lib/inventory";
 import { getVariantById, setDemoStock } from "@/lib/catalog/queries";
 import { resolveCart, clearCart } from "@/lib/cart/store";
 import { getStoreSettings } from "@/lib/catalog/queries";
@@ -107,6 +107,10 @@ export async function createPendingOrder(input: CheckoutInput, userId: string | 
   const orderNumber = `ELF-${Date.now().toString(36).toUpperCase()}`;
   const reference = `elf_${crypto.randomUUID()}`;
   const provider = isMoolreConfigured() ? "moolre" : isPaystackConfigured() ? "paystack" : "manual";
+
+  if (isSupabaseConfigured() && !isSupabaseAdminConfigured()) {
+    throw new Error("Checkout is temporarily unavailable.");
+  }
 
   if (isSupabaseAdminConfigured()) {
     const admin = createServiceClient();
@@ -381,6 +385,9 @@ export async function updateFulfillment(
   if (isSupabaseAdminConfigured()) {
     const admin = createServiceClient();
     if (!admin) throw new Error("Database is not ready.");
+    if (next === "cancelled" && order.paymentStatus !== "paid") {
+      await admin.rpc("restock_cancelled_order", { p_order_id: orderId });
+    }
     await admin
       .from("orders")
       .update({
@@ -393,7 +400,16 @@ export async function updateFulfillment(
   }
   order.fulfillmentStatus = next;
   if (trackingNumber) order.trackingNumber = trackingNumber;
-  if (next === "cancelled") order.orderStatus = "cancelled";
+  if (next === "cancelled") {
+    order.orderStatus = "cancelled";
+    if (order.paymentStatus !== "paid") {
+      for (const item of order.items) {
+        if (!item.variantId) continue;
+        const live = await getVariantById(item.variantId);
+        if (live) await setDemoStock(item.variantId, restoreStock(live.variant.stock, item.quantity));
+      }
+    }
+  }
   const orders = await demoOrders();
   const index = orders.findIndex((item) => item.id === orderId);
   if (index >= 0) orders[index] = order;

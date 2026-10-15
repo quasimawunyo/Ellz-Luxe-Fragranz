@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
 import { BrandGrid } from "@/components/brand/brand-grid";
 import { FactTicker } from "@/components/home/fact-ticker";
 import { HomeHero } from "@/components/home/home-hero";
@@ -28,24 +27,23 @@ export default async function HomePage() {
       <FactTicker />
       <BrandGrid />
 
-      <section className="bg-white px-4 py-20">
+      <section className="bg-white px-4 py-24">
         <div className="mx-auto max-w-7xl">
-          <p className="text-center text-[11px] uppercase tracking-[0.42em] text-taupe">— Collections —</p>
-          <div className="mt-4 flex items-end justify-between gap-4">
-            <h2 className="font-serif text-4xl md:text-5xl">Shop by category</h2>
+          <div className="flex items-end justify-between gap-4">
+            <h2 className="font-serif text-4xl md:text-5xl">Collections</h2>
             <Link href="/collections" className="hidden text-sm text-taupe hover:text-espresso sm:inline">
-              All categories
+              All collections
             </Link>
           </div>
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {shopBy.map((collection) => (
               <Link
                 key={collection.id}
                 href={`/collections/${collection.slug}`}
-                className="group relative min-h-80 overflow-hidden rounded-[1.75rem]"
+                className="group relative min-h-[22rem] overflow-hidden"
               >
-                <Image src={collection.imageUrl} alt="" fill className="object-cover transition duration-500 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-rich/70 via-rich/10 to-transparent" />
+                <Image src={collection.imageUrl} alt="" fill className="object-cover transition duration-700 group-hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-t from-rich/65 via-rich/10 to-transparent" />
                 <span className="absolute inset-x-5 bottom-6 font-serif text-3xl leading-tight text-ivory">
                   {collection.name.replace(" fragrances", "")}
                 </span>
@@ -57,9 +55,8 @@ export default async function HomePage() {
 
       <section className="bg-ivory px-4 py-20">
         <div className="mx-auto max-w-7xl">
-          <p className="text-[11px] uppercase tracking-[0.42em] text-taupe">New arrivals</p>
-          <div className="mt-4 flex items-end justify-between gap-4">
-            <h2 className="font-serif text-4xl md:text-5xl">Fresh bottles</h2>
+          <div className="flex items-end justify-between gap-4">
+            <h2 className="font-serif text-4xl md:text-5xl">New arrivals</h2>
             <Link href="/new" className="text-sm text-taupe hover:text-espresso">
               View all
             </Link>
@@ -72,11 +69,10 @@ export default async function HomePage() {
 
       <section className="bg-white px-4 py-20">
         <div className="mx-auto max-w-7xl">
-          <p className="text-[11px] uppercase tracking-[0.42em] text-taupe">Handpicked</p>
-          <div className="mt-4 flex items-end justify-between gap-4">
+          <div className="flex items-end justify-between gap-4">
             <div>
-              <h2 className="font-serif text-4xl md:text-5xl">Featured products</h2>
-              <p className="mt-3 max-w-md text-taupe">Top picks from the boutique.</p>
+              <h2 className="font-serif text-4xl md:text-5xl">Featured</h2>
+              <p className="mt-3 max-w-md text-taupe">Picks from the current shelf.</p>
             </div>
             <Link href="/shop" className="hidden text-sm text-taupe hover:text-espresso sm:inline">
               View all products
@@ -116,9 +112,8 @@ export default async function HomePage() {
           <p className="text-[11px] uppercase tracking-[0.32em] text-ivory/50">Our story</p>
           <h2 className="mt-3 font-serif text-4xl">About</h2>
           <p className="mt-6 max-w-md leading-7 text-ivory/75">{settings.aboutStory}</p>
-          <Link href="/about" className={cn(buttonVariants({ variant: "gold" }), "mt-8 inline-flex w-fit items-center gap-2")}>
+          <Link href="/about" className={cn(buttonVariants({ variant: "solid" }), "mt-8 inline-flex w-fit")}>
             About us
-            <ArrowUpRight className="size-3.5" aria-hidden />
           </Link>
         </div>
       </section>

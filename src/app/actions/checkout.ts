@@ -1,10 +1,13 @@
 "use server";
 
+import { headers } from "next/headers";
 import { checkoutSchema } from "@/lib/validations";
 import { createPendingOrder } from "@/lib/orders/store";
 import { getAuthContext } from "@/lib/auth/session";
 import { notifyAnnexOfOrder } from "@/lib/notify/order";
 import { redirectToHostedPayment } from "@/lib/payments/hosted";
+import { rateLimit } from "@/lib/rate-limit";
+import { clientIp } from "@/lib/http/client-ip";
 
 export async function placeOrderAction(_prev: { error?: string } | null, formData: FormData) {
   const parsed = checkoutSchema.safeParse({
@@ -19,6 +22,12 @@ export async function placeOrderAction(_prev: { error?: string } | null, formDat
   });
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Please check your details." };
+  }
+
+  const hdrs = await headers();
+  const ip = clientIp(hdrs);
+  if (!(await rateLimit(`checkout:${ip}`, 5, 10 * 60_000)).ok) {
+    return { error: "Please wait before placing another order." };
   }
 
   try {

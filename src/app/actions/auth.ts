@@ -1,10 +1,13 @@
 "use server";
 
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createUserSupabase } from "@/lib/supabase/server";
 import { env, isSupabaseConfigured } from "@/lib/env";
 import { profileSchema, signInSchema, signUpSchema } from "@/lib/validations";
 import { safeInternalPath } from "@/lib/security/paths";
+import { rateLimit } from "@/lib/rate-limit";
+import { clientIp } from "@/lib/http/client-ip";
 
 export async function signInAction(_prev: { error?: string } | null, formData: FormData) {
   if (!isSupabaseConfigured()) {
@@ -55,6 +58,11 @@ export async function recoverPasswordAction(_prev: { error?: string; ok?: boolea
     return { error: "Authentication requires Supabase configuration." };
   }
   const email = String(formData.get("email") ?? "");
+  const hdrs = await headers();
+  const ip = clientIp(hdrs);
+  if (!(await rateLimit(`recover:${ip}:${email.toLowerCase()}`, 3, 15 * 60_000)).ok) {
+    return { ok: true as const, message: "If that account exists, a reset email is on its way." };
+  }
   const supabase = await createUserSupabase();
   const { error } = await supabase!.auth.resetPasswordForEmail(email, {
     redirectTo: `${env.siteUrl}/auth/callback?next=/account`,

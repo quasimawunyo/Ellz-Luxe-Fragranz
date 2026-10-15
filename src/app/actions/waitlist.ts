@@ -3,6 +3,7 @@
 import { headers } from "next/headers";
 import { waitlistSchema } from "@/lib/validations";
 import { rateLimit } from "@/lib/rate-limit";
+import { clientIp } from "@/lib/http/client-ip";
 import { isSupabaseAdminConfigured } from "@/lib/env";
 import { createServiceClient } from "@/lib/supabase/admin";
 import { getProductById } from "@/lib/catalog/queries";
@@ -29,8 +30,8 @@ export async function joinWaitlistAction(
   }
 
   const hdrs = await headers();
-  const ip = hdrs.get("x-forwarded-for") ?? "anon";
-  if (!rateLimit(`wait:${ip}:${parsed.data.productId}`, 8, 60_000).ok) {
+  const ip = clientIp(hdrs);
+  if (!(await rateLimit(`wait:${ip}:${parsed.data.productId}`, 8, 60_000)).ok) {
     return { error: "Please wait before submitting again." };
   }
 

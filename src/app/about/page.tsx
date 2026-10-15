@@ -13,14 +13,13 @@ export default async function AboutPage() {
   const wa = whatsappHref(settings.contactPhone, "Hello, I have a question about EllzLuxe Fragranz.");
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-16 leading-8">
-      <p className="text-sm uppercase tracking-[0.18em] text-taupe">Visit</p>
-      <h1 className="mt-3 font-serif text-4xl md:text-5xl">About</h1>
-      <div className="relative mt-10 aspect-[16/9] overflow-hidden bg-espresso/5">
+    <div>
+      <div className="relative min-h-[50vh] overflow-hidden bg-rich">
         <Image src="/images/story.jpg" alt="Perfume bottles at Ells Luxe Annex" fill className="object-cover" />
       </div>
-      <div className="mt-10">
-        <p>{settings.aboutStory}</p>
+      <div className="mx-auto max-w-3xl px-4 py-16 leading-8">
+        <h1 className="font-serif text-4xl md:text-5xl">About</h1>
+        <p className="mt-10">{settings.aboutStory}</p>
         <p className="mt-6">{settings.shippingNote}</p>
         <p className="mt-6">Delivery is between 24-72 hours.</p>
         <StoreContact settings={settings} className="mt-8 space-y-2 text-sm text-taupe" />

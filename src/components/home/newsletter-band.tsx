@@ -2,20 +2,14 @@ import { NewsletterForm } from "@/components/layout/newsletter-form";
 
 export function NewsletterBand() {
   return (
-    <section className="bg-white px-4 py-20" aria-label="Email updates">
-      <div className="mx-auto grid max-w-6xl overflow-hidden rounded-[2rem] bg-ivory lg:grid-cols-2">
-        <div className="bg-rich px-8 py-14 text-ivory md:px-12">
-          <p className="text-[11px] uppercase tracking-[0.32em] text-ivory/60">Stay in the loop</p>
-          <h2 className="mt-4 font-serif text-4xl md:text-5xl">Join the list</h2>
-          <p className="mt-6 max-w-sm leading-7 text-ivory/70">
-            New arrivals, restocks, sales date/discounts and shop notes. Unsubscribe anytime.
-          </p>
-        </div>
-        <div className="flex flex-col justify-center px-8 py-14 md:px-12">
-          <h3 className="font-serif text-3xl">Restocks, delivered first.</h3>
-          <p className="mt-4 max-w-md text-sm leading-6 text-taupe">
-            Leave your email for new arrivals and restock messages from EllzLuxe Fragranz.
-          </p>
+    <section className="border-t border-espresso/10 bg-ivory px-4 py-24" aria-label="Email updates">
+      <div className="mx-auto max-w-xl text-center">
+        <p className="text-[11px] uppercase tracking-[0.32em] text-taupe">Stay in the loop</p>
+        <h2 className="mt-4 font-serif text-4xl md:text-5xl">Join the list</h2>
+        <p className="mt-6 leading-7 text-taupe">
+          New arrivals, restocks, sales date/discounts and shop notes. Unsubscribe anytime.
+        </p>
+        <div className="mt-8">
           <NewsletterForm />
         </div>
       </div>
