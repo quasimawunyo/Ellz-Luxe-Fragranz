@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Image from "next/image";
 
 function Mark({
   label,
@@ -84,7 +85,7 @@ export function AcceptedPayMarks() {
         </svg>
       </Mark>
       <Mark label="AT Money" className="gap-1.5">
-        <img src="/images/pay/at.png" alt="" className="h-7 w-auto" />
+        <Image src="/images/pay/at.png" alt="" width={28} height={28} className="h-7 w-auto" />
         <span className="text-[13px] font-semibold tracking-tight text-[#00377B]">Money</span>
       </Mark>
     </div>

@@ -21,11 +21,11 @@ export async function POST(request: Request) {
     if (!order) {
       return NextResponse.json({ received: true, paid: false });
     }
-    if (event.data.currency && event.data.currency !== order.currencyCode) {
-      return NextResponse.json({ error: "Currency mismatch" }, { status: 400 });
+    if (typeof event.data.amount !== "number" || !event.data.currency) {
+      return NextResponse.json({ error: "Amount or currency missing" }, { status: 400 });
     }
-    if (typeof event.data.amount === "number" && event.data.amount !== order.totalMinor) {
-      return NextResponse.json({ error: "Amount mismatch" }, { status: 400 });
+    if (event.data.currency !== order.currencyCode || event.data.amount !== order.totalMinor) {
+      return NextResponse.json({ error: "Amount or currency mismatch" }, { status: 400 });
     }
     await markOrderPaid(
       event.data.reference,

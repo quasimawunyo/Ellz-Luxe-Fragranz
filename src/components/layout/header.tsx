@@ -42,17 +42,17 @@ export function Header({
   return (
     <>
       <header className="sticky top-0 z-40 border-b border-espresso/8 bg-white/95 backdrop-blur">
-        <div className="mx-auto grid max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 py-3">
-          <div className="flex items-center">
+        <div className="mx-auto flex max-w-7xl items-center gap-2 px-3 py-2.5 sm:gap-3 sm:px-4 sm:py-3 lg:grid lg:grid-cols-[1fr_auto_1fr]">
+          <div className="flex min-w-0 flex-1 items-center">
             <button
               type="button"
-              className="lg:hidden"
+              className="grid size-10 place-items-center sm:size-11 lg:hidden"
               aria-label={open ? "Close menu" : "Open menu"}
               onClick={() => setOpen((value) => !value)}
             >
               {open ? <X /> : <Menu />}
             </button>
-            <BrandLogo className="ml-2 w-[4.25rem] sm:ml-0 sm:w-24 md:w-28" size={224} priority />
+            <BrandLogo className="ml-1 w-[3.75rem] shrink-0 sm:ml-0 sm:w-24 md:w-28" size={224} priority />
           </div>
           <nav className="hidden items-center gap-9 text-[11px] uppercase tracking-[0.32em] text-taupe lg:flex" aria-label="Main navigation">
             {NAV.map((item) => (
@@ -61,10 +61,10 @@ export function Header({
               </Link>
             ))}
           </nav>
-          <div className="flex items-center justify-end gap-3 sm:gap-4">
+          <div className="flex shrink-0 items-center justify-end gap-0.5 sm:gap-2">
             <button
               type="button"
-              className="hidden text-espresso md:inline"
+              className="grid size-10 place-items-center text-espresso sm:size-11"
               aria-label="Search"
               onClick={() => router.push("/search")}
             >
@@ -77,15 +77,15 @@ export function Header({
                     Admin
                   </Link>
                 ) : null}
-                <Link href={signedIn ? "/account" : "/login"} className="hover:text-champagne" aria-label={signedIn ? "Account" : "Log in"}>
+                <Link href={signedIn ? "/account" : "/login"} className="grid size-10 place-items-center hover:text-champagne sm:size-11" aria-label={signedIn ? "Account" : "Log in"}>
                   <User className="size-5" />
                 </Link>
               </>
             ) : (
               <span className="inline-block size-5" aria-hidden />
             )}
-            <SavedHeartLink className="hover:text-champagne" />
-            <Link href="/cart" className="relative" aria-label={`Cart, ${cartCount} ${cartCount === 1 ? "item" : "items"}`}>
+            <SavedHeartLink className="grid size-10 place-items-center hover:text-champagne sm:size-11" />
+            <Link href="/cart" className="relative grid size-10 place-items-center sm:size-11" aria-label={`Cart, ${cartCount} ${cartCount === 1 ? "item" : "items"}`}>
               <ShoppingBag className="size-5" />
               {ready && cartCount > 0 ? (
                 <span className="absolute -right-2 -top-2 grid size-5 place-items-center rounded-full bg-espresso text-[10px] font-medium text-ivory">

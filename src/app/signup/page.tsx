@@ -15,17 +15,19 @@ export default function SignupPage() {
       <ActionForm action={signUpAction} className="mt-8 space-y-4">
         <div>
           <Label htmlFor="fullName">Full name</Label>
-          <Input id="fullName" name="fullName" required />
+          <Input id="fullName" name="fullName" required autoComplete="name" />
         </div>
         <div>
           <Label htmlFor="email">Email</Label>
-          <Input id="email" name="email" type="email" required />
+          <Input id="email" name="email" type="email" required autoComplete="email" />
         </div>
         <div>
           <Label htmlFor="password">Password</Label>
-          <Input id="password" name="password" type="password" required minLength={8} />
+          <Input id="password" name="password" type="password" required minLength={8} autoComplete="new-password" />
         </div>
-        <Button type="submit">Sign up</Button>
+        <Button type="submit" className="w-full">
+          Sign up
+        </Button>
       </ActionForm>
     </div>
   );

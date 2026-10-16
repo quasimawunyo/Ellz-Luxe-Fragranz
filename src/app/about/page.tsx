@@ -16,8 +16,14 @@ export default async function AboutPage() {
     <div className="mx-auto max-w-3xl px-4 py-16 leading-8">
       <p className="text-sm uppercase tracking-[0.18em] text-taupe">Visit</p>
       <h1 className="mt-3 font-serif text-4xl md:text-5xl">About</h1>
-      <div className="relative mt-10 aspect-[16/9] overflow-hidden bg-espresso/5">
-        <Image src="/images/story.jpg" alt="Perfume bottles at Ells Luxe Annex" fill className="object-cover" />
+      <div className="relative mt-10 aspect-[16/9] overflow-hidden rounded-[1.75rem] bg-espresso/5">
+        <Image
+          src="/images/story.jpg"
+          alt="Perfume bottles at Ells Luxe Annex"
+          fill
+          sizes="(min-width: 768px) 48rem, 100vw"
+          className="object-cover"
+        />
       </div>
       <div className="mt-10">
         <p>{settings.aboutStory}</p>

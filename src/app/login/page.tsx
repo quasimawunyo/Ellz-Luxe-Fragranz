@@ -26,13 +26,15 @@ export default async function LoginPage({
         <input type="hidden" name="next" value={safeInternalPath(next)} />
         <div>
           <Label htmlFor="email">Email</Label>
-          <Input id="email" name="email" type="email" required />
+          <Input id="email" name="email" type="email" required autoComplete="email" />
         </div>
         <div>
           <Label htmlFor="password">Password</Label>
-          <Input id="password" name="password" type="password" required minLength={8} />
+          <Input id="password" name="password" type="password" required minLength={8} autoComplete="current-password" />
         </div>
-        <Button type="submit">Sign in</Button>
+        <Button type="submit" className="w-full">
+          Sign in
+        </Button>
       </ActionForm>
       <p className="mt-6 text-sm">
         <Link href="/signup">Create an account</Link>

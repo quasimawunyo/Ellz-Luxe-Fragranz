@@ -12,9 +12,11 @@ export default function ForgotPasswordPage() {
       <ActionForm action={recoverPasswordAction} className="mt-8 space-y-4">
         <div>
           <Label htmlFor="email">Email</Label>
-          <Input id="email" name="email" type="email" required />
+          <Input id="email" name="email" type="email" required autoComplete="email" />
         </div>
-        <Button type="submit">Send reset link</Button>
+        <Button type="submit" className="w-full">
+          Send reset link
+        </Button>
       </ActionForm>
     </div>
   );

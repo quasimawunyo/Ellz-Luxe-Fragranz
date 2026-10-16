@@ -22,18 +22,33 @@ export default async function ShopPage({
       <p className="mt-3 max-w-xl text-taupe">Bottles at {settings.location}.</p>
       <div className="mt-10 grid gap-10 lg:grid-cols-[16rem_1fr]">
         <aside>
-          <ShopFilters
-            filters={result.filters}
-            collections={result.collections}
-            categories={result.categories}
-          />
+          <details className="rounded-[1.25rem] border border-espresso/10 bg-white p-4 lg:hidden">
+            <summary className="cursor-pointer text-sm font-medium">Filters</summary>
+            <div className="mt-4">
+              <ShopFilters
+                filters={result.filters}
+                collections={result.collections}
+                categories={result.categories}
+              />
+            </div>
+          </details>
+          <div className="hidden lg:block">
+            <ShopFilters
+              filters={result.filters}
+              collections={result.collections}
+              categories={result.categories}
+            />
+          </div>
         </aside>
         <div>
           {result.items.length ? (
             <ProductGrid products={result.items} />
           ) : (
             <EmptyState title="No products match">
-              <p>Try different filters or reset.</p>
+              <p>Try a different search, or reset filters.</p>
+              <Link href="/shop" className="mt-3 inline-block underline">
+                Reset shop
+              </Link>
             </EmptyState>
           )}
           {result.totalPages > 1 ? (

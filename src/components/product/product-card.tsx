@@ -51,7 +51,7 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
           name={product.name}
           className="absolute right-3 top-3 size-9 rounded-full bg-white/90 text-espresso hover:bg-white"
         />
-        <div className="absolute inset-x-3 bottom-3 opacity-0 transition group-hover:opacity-100 max-lg:opacity-100">
+        <div className="absolute inset-x-3 bottom-3 hidden opacity-0 transition group-hover:opacity-100 lg:block lg:group-hover:opacity-100">
           {soldOut ? (
             <WaitlistButton productId={product.id} wide />
           ) : defaultVariant ? (
@@ -69,6 +69,13 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
       <p className="mt-2 text-sm font-semibold">
         From <Price amountMinor={price} compareAtMinor={compare} className="text-sm font-semibold text-espresso" />
       </p>
+      <div className="mt-3 lg:hidden">
+        {soldOut ? (
+          <WaitlistButton productId={product.id} wide />
+        ) : defaultVariant ? (
+          <QuickAdd variantId={defaultVariant.id} wide />
+        ) : null}
+      </div>
     </article>
   );
 }

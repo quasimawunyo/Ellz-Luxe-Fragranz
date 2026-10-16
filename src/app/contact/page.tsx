@@ -21,17 +21,19 @@ export default async function ContactPage() {
       <ActionForm action={submitContact} className="space-y-4">
         <div>
           <Label htmlFor="name">Name</Label>
-          <Input id="name" name="name" required />
+          <Input id="name" name="name" required autoComplete="name" />
         </div>
         <div>
           <Label htmlFor="email">Email</Label>
-          <Input id="email" name="email" type="email" required />
+          <Input id="email" name="email" type="email" required autoComplete="email" />
         </div>
         <div>
           <Label htmlFor="message">Message</Label>
           <Textarea id="message" name="message" required />
         </div>
-        <Button type="submit">Send</Button>
+        <Button type="submit" className="w-full sm:w-auto">
+          Send
+        </Button>
       </ActionForm>
     </div>
   );

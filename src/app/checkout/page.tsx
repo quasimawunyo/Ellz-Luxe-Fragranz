@@ -21,17 +21,18 @@ export default async function CheckoutPage() {
     return (
       <div className="mx-auto max-w-3xl px-4 py-16">
         <EmptyState title="Your cart is empty">
-          <Link href="/shop">Shop</Link>
+          <Link href="/shop" className="underline">
+            Continue shopping
+          </Link>
         </EmptyState>
       </div>
     );
   }
 
-  const payCopy = isMoolreConfigured()
-    ? " Place the order to pay on Moolre (mobile money and cards). Delivery is quoted from your location on WhatsApp. The order is marked paid only after Moolre confirms the payment."
-    : isPaystackConfigured()
-      ? " Place the order to pay with Paystack. Delivery is quoted from your location on WhatsApp. The order is marked paid only after a verified webhook."
-      : ` Place the order, then confirm payment and the delivery fee on WhatsApp${settings.contactPhone ? ` ${settings.contactPhone}` : ""}.`;
+  const hosted = isMoolreConfigured() || isPaystackConfigured();
+  const payCopy = hosted
+    ? "No account needed. Place the order to pay by mobile money or card. Pickup is free. Delivery is quoted on WhatsApp from your location. The order is marked paid only after payment is confirmed."
+    : `No account needed. Place the order, then confirm payment and the delivery fee on WhatsApp${settings.contactPhone ? ` ${settings.contactPhone}` : ""}. Pickup is free.`;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
@@ -51,7 +52,7 @@ export default async function CheckoutPage() {
         subtotalMinor={cart.subtotalMinor}
         currencyCode={cart.currencyCode}
         deliveryMethods={settings.deliveryMethods}
-        payLabel={isMoolreConfigured() ? "Place order and pay" : "Place order"}
+        payLabel={hosted ? "Place order and pay" : "Place order"}
       />
     </div>
   );

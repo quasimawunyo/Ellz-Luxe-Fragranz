@@ -48,15 +48,15 @@ export function CheckoutView({
       <ActionForm action={placeOrderAction} className="space-y-5">
         <div>
           <Label htmlFor="fullName">Full name</Label>
-          <Input id="fullName" name="fullName" required defaultValue={fullName} />
+          <Input id="fullName" name="fullName" required autoComplete="name" defaultValue={fullName} />
         </div>
         <div>
           <Label htmlFor="email">Email</Label>
-          <Input id="email" name="email" type="email" required defaultValue={email} />
+          <Input id="email" name="email" type="email" required autoComplete="email" defaultValue={email} />
         </div>
         <div>
           <Label htmlFor="phone">Phone</Label>
-          <Input id="phone" name="phone" required placeholder="024 000 0000" />
+          <Input id="phone" name="phone" type="tel" required autoComplete="tel" inputMode="tel" placeholder="024 000 0000" />
         </div>
         <div>
           <Label htmlFor="region">Region</Label>
@@ -72,6 +72,7 @@ export function CheckoutView({
                 setDeliveryMethodId(next === "Greater Accra" ? "accra" : "national");
               }
             }}
+            autoComplete="address-level1"
             className="min-h-11 w-full border border-espresso/15 bg-white px-3 text-sm"
           >
             {GHANA_REGIONS.map((item) => (
@@ -83,11 +84,11 @@ export function CheckoutView({
         </div>
         <div>
           <Label htmlFor="locality">Locality / city</Label>
-          <Input id="locality" name="locality" required placeholder="East Legon" />
+          <Input id="locality" name="locality" required autoComplete="address-level2" placeholder="East Legon" />
         </div>
         <div>
           <Label htmlFor="addressLine">Street address</Label>
-          <Input id="addressLine" name="addressLine" required />
+          <Input id="addressLine" name="addressLine" required autoComplete="street-address" />
         </div>
         <fieldset className="space-y-2">
           <legend className="mb-1 text-sm font-medium">Delivery</legend>
@@ -121,7 +122,9 @@ export function CheckoutView({
           <Label htmlFor="notes">Order notes (optional)</Label>
           <Textarea id="notes" name="notes" />
         </div>
-        <Button type="submit">{payLabel}</Button>
+        <Button type="submit" className="w-full sm:w-auto">
+          {payLabel}
+        </Button>
       </ActionForm>
       <aside className="luxe-panel h-fit p-6">
         <h2 className="text-lg font-semibold">Summary</h2>

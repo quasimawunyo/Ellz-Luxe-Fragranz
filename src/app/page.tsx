@@ -33,7 +33,7 @@ export default async function HomePage() {
           <p className="text-center text-[11px] uppercase tracking-[0.42em] text-taupe">— Collections —</p>
           <div className="mt-4 flex items-end justify-between gap-4">
             <h2 className="font-serif text-4xl md:text-5xl">Shop by category</h2>
-            <Link href="/collections" className="hidden text-sm text-taupe hover:text-espresso sm:inline">
+            <Link href="/collections" className="shrink-0 text-sm text-taupe hover:text-espresso">
               All categories
             </Link>
           </div>
@@ -44,7 +44,13 @@ export default async function HomePage() {
                 href={`/collections/${collection.slug}`}
                 className="group relative min-h-80 overflow-hidden rounded-[1.75rem]"
               >
-                <Image src={collection.imageUrl} alt="" fill className="object-cover transition duration-500 group-hover:scale-105" />
+                <Image
+                  src={collection.imageUrl}
+                  alt=""
+                  fill
+                  sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                  className="object-cover transition duration-500 group-hover:scale-105"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-rich/70 via-rich/10 to-transparent" />
                 <span className="absolute inset-x-5 bottom-6 font-serif text-3xl leading-tight text-ivory">
                   {collection.name.replace(" fragrances", "")}
@@ -78,7 +84,7 @@ export default async function HomePage() {
               <h2 className="font-serif text-4xl md:text-5xl">Featured products</h2>
               <p className="mt-3 max-w-md text-taupe">Top picks from the boutique.</p>
             </div>
-            <Link href="/shop" className="hidden text-sm text-taupe hover:text-espresso sm:inline">
+            <Link href="/shop" className="shrink-0 text-sm text-taupe hover:text-espresso">
               View all products
             </Link>
           </div>
@@ -93,7 +99,7 @@ export default async function HomePage() {
         <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-3 md:gap-0 md:divide-x md:divide-espresso/10">
           <div className="md:px-10">
             <p className="font-serif text-2xl">Pickup</p>
-            <p className="mt-3 text-sm leading-6 text-taupe">Free at {settings.location.trim()}.</p>
+            <p className="mt-3 text-sm leading-6 text-taupe">Free at {settings.location.replace(/\s+\.?$/, "").trim()}.</p>
           </div>
           <div className="md:px-10">
             <p className="font-serif text-2xl">Delivery</p>
@@ -110,7 +116,13 @@ export default async function HomePage() {
 
       <section className="grid min-h-[24rem] bg-rich text-ivory md:grid-cols-2">
         <div className="relative min-h-80">
-          <Image src="/images/story.jpg" alt="Warm still life of perfume bottles" fill className="object-cover" />
+          <Image
+            src="/images/story.jpg"
+            alt="Warm still life of perfume bottles"
+            fill
+            sizes="(min-width: 768px) 50vw, 100vw"
+            className="object-cover"
+          />
         </div>
         <div className="flex flex-col justify-center px-8 py-16 md:px-16">
           <p className="text-[11px] uppercase tracking-[0.32em] text-ivory/50">Our story</p>

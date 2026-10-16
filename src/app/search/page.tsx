@@ -21,7 +21,7 @@ export default async function SearchPage({
     <div className="mx-auto max-w-7xl px-4 py-10">
       <Breadcrumbs items={[{ href: "/", label: "Home" }, { label: "Search" }]} />
       <h1 className="mt-6 font-serif text-4xl">Search</h1>
-      <form className="mt-8 flex max-w-xl gap-2" method="get">
+      <form className="mt-8 flex max-w-xl flex-col gap-2 sm:flex-row" method="get">
         <label className="sr-only" htmlFor="search-q">
           Search
         </label>

@@ -20,8 +20,10 @@ export default async function CartPage() {
       <h1 className="mt-6 font-serif text-4xl">Cart</h1>
       {!cart.lines.length ? (
         <div className="mt-10">
-          <EmptyState title="Your cart is empty">
-            <Link href="/shop">Shop</Link>
+            <EmptyState title="Your cart is empty">
+            <Link href="/shop" className="underline">
+              Continue shopping
+            </Link>
           </EmptyState>
         </div>
       ) : (
@@ -72,12 +74,13 @@ export default async function CartPage() {
             <p className="mt-2 text-2xl font-semibold">
               <Price amountMinor={cart.subtotalMinor} currencyCode={cart.currencyCode} />
             </p>
-            <p className="mt-3 text-sm text-taupe">
-              Shipping is calculated at checkout from configured delivery options. Totals are recomputed from catalog prices.
+            <p className="mt-3 text-sm leading-6 text-taupe">
+              Pickup is free. Delivery is quoted on WhatsApp from your location after you place the order.
             </p>
-            <Link href="/checkout" className={cn(buttonVariants(), "mt-6 flex")}>
+            <Link href="/checkout" className={cn(buttonVariants({ variant: "shop" }), "mt-6 flex")}>
               Checkout
             </Link>
+            <p className="mt-3 text-xs text-taupe">No account needed.</p>
           </aside>
         </div>
       )}

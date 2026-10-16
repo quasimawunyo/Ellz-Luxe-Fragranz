@@ -70,7 +70,7 @@ export function PurchaseForm({
         {soldOut ? (
           <WaitlistButton productId={productId} />
         ) : (
-          <Button type="submit" variant="shop">
+          <Button type="submit" variant="shop" className="w-full sm:w-auto">
             Add to cart
           </Button>
         )}

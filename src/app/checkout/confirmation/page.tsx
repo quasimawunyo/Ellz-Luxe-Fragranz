@@ -68,11 +68,9 @@ export default async function ConfirmationPage({
       <p className="mt-4 leading-7 text-taupe">
         Payment status: <strong className="text-espresso">{order.paymentStatus}</strong>.
         {order.paymentStatus === "pending"
-          ? isMoolreConfigured()
-            ? " This order is not marked paid until Moolre confirms the transaction by callback or status check."
-            : isPaystackConfigured()
-              ? " This order is not marked paid. Payment is confirmed only after a verified Paystack webhook — never from this page load alone."
-              : " This order is not marked paid. Confirm payment on WhatsApp."
+          ? canResumeHostedPay
+            ? " This order is not marked paid until payment is confirmed. Use Pay now if you still need to complete payment, then WhatsApp for delivery."
+            : " This order is not marked paid. Confirm payment on WhatsApp."
           : " Payment was verified server-side."}
       </p>
       <ul className="mt-8 space-y-2 border border-espresso/10 bg-white p-6 text-sm">
@@ -105,7 +103,7 @@ export default async function ConfirmationPage({
       {canResumeHostedPay ? (
         <ActionForm action={resumePaymentAction} className="mt-6">
           <input type="hidden" name="orderId" value={order.id} />
-          <Button type="submit" variant="shop">
+          <Button type="submit" variant="shop" className="w-full sm:w-auto">
             Pay now
           </Button>
         </ActionForm>
