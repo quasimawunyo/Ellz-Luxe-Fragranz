@@ -7,19 +7,19 @@ import type { ProductImage } from "@/lib/catalog/types";
 export function ProductGallery({ images, name }: { images: ProductImage[]; name: string }) {
   const [active, setActive] = useState(images[0]);
   if (!active) {
-    return <div className="aspect-[3/4] bg-espresso/5" />;
+    return <div className="aspect-square rounded-[1.5rem] bg-espresso/5" />;
   }
 
   return (
     <div>
-      <div className="relative aspect-[3/4] overflow-hidden bg-espresso/5">
+      <div className="relative mx-auto aspect-square w-full max-w-md overflow-hidden rounded-[1.5rem] bg-espresso/5 lg:max-w-none">
         <Image
           src={active.url}
           alt={active.alt || name}
           fill
           priority
           sizes="(min-width: 1024px) 50vw, 100vw"
-          className="object-contain p-4"
+          className="object-cover"
         />
       </div>
       {images.length > 1 ? (

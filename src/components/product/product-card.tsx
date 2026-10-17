@@ -29,14 +29,14 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
     <article className="group">
       <div className="relative">
         <Link href={`/product/${product.slug}`} className="block">
-          <div className="relative aspect-[4/5] overflow-hidden rounded-[1.5rem] bg-espresso/5">
+          <div className="relative aspect-square overflow-hidden rounded-[1.5rem] bg-espresso/5">
             {image ? (
               <Image
                 src={image.url}
                 alt={image.alt}
                 fill
                 sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                className="object-contain p-3 transition duration-500 hover:scale-105"
+                className="object-cover transition duration-500 hover:scale-105"
               />
             ) : null}
           </div>

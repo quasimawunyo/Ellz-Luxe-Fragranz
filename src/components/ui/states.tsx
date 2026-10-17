@@ -28,7 +28,7 @@ export function Skeleton({ className = "" }: { className?: string }) {
 export function ProductCardSkeleton() {
   return (
     <div>
-      <Skeleton className="aspect-[4/5] w-full" />
+      <Skeleton className="aspect-square w-full" />
       <Skeleton className="mt-4 h-4 w-2/3" />
       <Skeleton className="mt-2 h-4 w-1/3" />
     </div>
