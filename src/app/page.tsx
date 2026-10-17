@@ -56,7 +56,7 @@ export default async function HomePage() {
 
       <section className="bg-ivory px-4 py-20">
         <div className="mx-auto max-w-7xl">
-          <h2 className="font-serif text-4xl md:text-5xl">Featured products</h2>
+          <h2 className="font-serif text-4xl md:text-5xl">Best sellers</h2>
           <div className="mt-10">
             <ProductGrid products={featured} viewAllHref="/shop" />
           </div>
