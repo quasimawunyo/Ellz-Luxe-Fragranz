@@ -2,10 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { FactTicker } from "@/components/home/fact-ticker";
+import { FlashSales, picturesForFlashSales } from "@/components/home/flash-sales";
 import { HomeHero } from "@/components/home/home-hero";
 import { NewsletterBand } from "@/components/home/newsletter-band";
 import { ProductGrid } from "@/components/product/product-card";
-import { EmptyState } from "@/components/ui/states";
 import { buttonVariants } from "@/components/ui/button";
 import { getCollections, getDiscountedProducts, getFeaturedProducts, getNewArrivals, getStoreSettings } from "@/lib/catalog/queries";
 import { cn } from "@/lib/utils";
@@ -20,6 +20,10 @@ export default async function HomePage() {
   ]);
   const shopBy = collections.filter((collection) =>
     ["col-women", "col-men", "col-unisex", "col-gifts"].includes(collection.id),
+  );
+  const flash = picturesForFlashSales(
+    discounted.length ? discounted : [...featured, ...arrivals],
+    discounted.length ? discounted.length : 4,
   );
 
   return (
@@ -47,24 +51,18 @@ export default async function HomePage() {
 
       <section className="bg-white px-4 py-20">
         <div className="mx-auto max-w-7xl">
-          <p className="text-[11px] uppercase tracking-[0.42em] text-taupe">On sale</p>
+          <p className="text-[11px] uppercase tracking-[0.42em] text-taupe">Flash sales</p>
           <div className="mt-4 flex items-end justify-between gap-4">
             <div>
-              <h2 className="font-serif text-4xl md:text-5xl">Discounted perfumes</h2>
-              <p className="mt-3 max-w-md text-taupe">Bottles priced below their previous amount.</p>
+              <h2 className="font-serif text-4xl md:text-5xl">Flash sales</h2>
+              <p className="mt-3 max-w-md text-taupe">Bottles at Ells Luxe Annex.</p>
             </div>
             <Link href="/sale" className="shrink-0 text-sm text-taupe hover:text-espresso">
               View all
             </Link>
           </div>
           <div className="mt-10">
-            {discounted.length ? (
-              <ProductGrid products={discounted} />
-            ) : (
-              <EmptyState title="No discounted bottles right now">
-                <Link href="/shop">Shop all perfumes</Link>
-              </EmptyState>
-            )}
+            <FlashSales products={flash} />
           </div>
         </div>
       </section>

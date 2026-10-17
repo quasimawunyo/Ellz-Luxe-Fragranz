@@ -67,22 +67,22 @@ export function SalePopup({ products }: { products: SalePopupProduct[] }) {
       >
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-[11px] uppercase tracking-[0.32em] text-taupe">On sale</p>
+            <p className="text-[11px] uppercase tracking-[0.32em] text-taupe">Flash sales</p>
             <h2 id="sale-popup-title" className="mt-2 font-serif text-3xl leading-tight">
-              Discounted perfumes
+              Flash sales
             </h2>
           </div>
           <button
             ref={closeRef}
             type="button"
             onClick={() => setOpen(false)}
-            aria-label="Close discounted perfumes"
+            aria-label="Close flash sales"
             className="grid size-10 shrink-0 place-items-center rounded-full text-espresso hover:bg-espresso/5"
           >
             <X className="size-5" />
           </button>
         </div>
-        <p className="mt-2 text-sm leading-6 text-taupe">Bottles priced below their previous amount.</p>
+        <p className="mt-2 text-sm leading-6 text-taupe">Bottles at Ells Luxe Annex.</p>
         <ul className="mt-5 space-y-3">
           {shown.map((product) => (
             <li key={product.id}>
@@ -129,7 +129,7 @@ export function SalePopup({ products }: { products: SalePopupProduct[] }) {
           onClick={() => setOpen(false)}
           className="mt-5 block text-center text-sm text-leaf hover:text-espresso"
         >
-          View discounted perfumes
+          View flash sales
         </Link>
       </div>
     </div>

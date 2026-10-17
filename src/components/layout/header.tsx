@@ -19,7 +19,7 @@ const NAV = [
 const SHOP = [
   { href: "/shop", label: "All perfumes" },
   { href: "/new", label: "New arrivals" },
-  { href: "/sale", label: "Discounted" },
+  { href: "/sale", label: "Flash sales" },
   { href: "/brands", label: "Brands" },
   { href: "/collections/womens-fragrances", label: "Women" },
   { href: "/collections/mens-fragrances", label: "Men" },
