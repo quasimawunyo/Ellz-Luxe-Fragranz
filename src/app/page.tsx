@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import { BrandGrid } from "@/components/brand/brand-grid";
 import { FactTicker } from "@/components/home/fact-ticker";
 import { HomeHero } from "@/components/home/home-hero";
 import { NewsletterBand } from "@/components/home/newsletter-band";
@@ -26,7 +25,6 @@ export default async function HomePage() {
     <>
       <HomeHero location={settings.location} />
       <FactTicker />
-      <BrandGrid />
 
       <section className="bg-ivory px-4 py-20">
         <div className="mx-auto max-w-7xl">
