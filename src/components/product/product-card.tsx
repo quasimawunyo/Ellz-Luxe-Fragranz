@@ -106,14 +106,9 @@ export function ProductGrid({
       {viewAllHref ? (
         <Link
           href={viewAllHref}
-          className="flex min-h-[22rem] flex-col justify-between rounded-[1.5rem] bg-leaf p-8 text-snow transition hover:bg-leaf/90"
+          className="flex min-h-[22rem] items-end rounded-[1.5rem] bg-leaf p-8 text-snow transition hover:bg-leaf/90"
         >
-          <p className="text-[11px] uppercase tracking-[0.32em] text-champagne">Shop</p>
-          <div>
-            <p className="font-serif text-4xl leading-tight">View all products</p>
-            <p className="mt-3 text-sm leading-6 text-snow/80">Every bottle at Ells Luxe Annex.</p>
-          </div>
-          <span className="text-sm text-champagne">Open shop</span>
+          <p className="font-serif text-4xl leading-tight">View all products</p>
         </Link>
       ) : null}
     </div>

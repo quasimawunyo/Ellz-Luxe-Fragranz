@@ -35,7 +35,7 @@ export default async function SearchPage({
         {q && result.items.length ? (
           <ProductGrid products={result.items} />
         ) : (
-          <EmptyState title={q ? "No matches" : "Begin a search"}>
+          <EmptyState title={q ? "No matches" : "Search for a perfume"}>
             <p>Try citrus, oud, musk, or a product name.</p>
           </EmptyState>
         )}

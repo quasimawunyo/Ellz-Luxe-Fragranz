@@ -361,7 +361,7 @@ export const DEMO_SETTINGS: StoreSettings = {
   returnsNote:
     "Message WhatsApp 0593634512 before returning anything. We replace or make right a bottle we sent in error or that arrived damaged. Opened fragrance is not refunded except for a packing or sending error on our side. Pickup and delivery disputes are handled from Ells Luxe Annex.",
   privacyNote:
-    "EllzLuxe Fragranz at Ells Luxe Annex uses your name, email, phone, delivery area, and order contents to fulfill orders, answer messages, and send restock or email updates you asked for. Payment confirmation is by WhatsApp, or by Moolre when card checkout is on. We do not sell your details. Email ellzluxefragranz@gmail.com or WhatsApp 0593634512 to ask what we hold.",
+    "EllzLuxe Fragranz uses your name, email, phone, delivery area, and order contents to fulfill orders, answer messages, and send restock or email updates you asked for. Payment is confirmed on WhatsApp, or by card when checkout is available. We do not sell your details. Email ellzluxefragranz@gmail.com or WhatsApp 0593634512 to ask what we hold.",
   termsNote:
     "Prices are in Ghana cedis. An order is a request to buy. It is not paid until we confirm payment. Delivery, pickup, and fees are on the Shipping page. Ghana law applies. Questions: WhatsApp 0593634512 or ellzluxefragranz@gmail.com.",
   aboutStory:

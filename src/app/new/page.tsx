@@ -14,7 +14,6 @@ export default async function NewArrivalsPage() {
     <div className="mx-auto max-w-7xl px-4 py-10">
       <Breadcrumbs items={[{ href: "/", label: "Home" }, { label: "New arrivals" }]} />
       <h1 className="mt-8 font-serif text-4xl">New arrivals</h1>
-      <p className="mt-3 max-w-xl text-taupe">Bottles just introduced at Ells Luxe Annex.</p>
       <div className="mt-10">
         {products.length ? (
           <ProductGrid products={products} />

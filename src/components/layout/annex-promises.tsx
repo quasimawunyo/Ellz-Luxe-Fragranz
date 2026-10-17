@@ -4,24 +4,23 @@ import { formatGhanaPhone } from "@/lib/whatsapp";
 const PROMISES = [
   {
     icon: Truck,
-    title: "Delivery.",
-    body: "Delivery is between 24-72 hours!",
+    title: "Delivery",
+    body: "Delivery takes 24–72 hours.",
   },
   {
     icon: Headset,
-    title: "WhatsApp Support.",
-    body: (phone: string) =>
-      phone ? `Message ${formatGhanaPhone(phone)}. Get help now!` : "Message us. Get help now!",
+    title: "WhatsApp",
+    body: (phone: string) => (phone ? formatGhanaPhone(phone) : "Message us on WhatsApp."),
   },
   {
     icon: CreditCard,
-    title: "Secure Payments.",
-    body: "Fast, Safe & reliable!",
+    title: "Payment",
+    body: "Mobile money and card.",
   },
   {
     icon: ClipboardCheck,
-    title: "Genuine Products.",
-    body: "Authentic, Original & Safe!",
+    title: "Products",
+    body: "Authentic bottles.",
   },
 ] as const;
 

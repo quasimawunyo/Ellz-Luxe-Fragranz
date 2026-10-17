@@ -3,7 +3,7 @@ import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { ProductGrid } from "@/components/product/product-card";
 import { ShopFilters } from "@/components/shop/filters";
 import { EmptyState } from "@/components/ui/states";
-import { getStoreSettings, queryShop } from "@/lib/catalog/queries";
+import { queryShop } from "@/lib/catalog/queries";
 
 export const metadata = { title: "Shop" };
 
@@ -13,13 +13,12 @@ export default async function ShopPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const raw = await searchParams;
-  const [result, settings] = await Promise.all([queryShop(raw), getStoreSettings()]);
+  const result = await queryShop(raw);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10">
       <Breadcrumbs items={[{ href: "/", label: "Home" }, { label: "Shop" }]} />
       <h1 className="mt-8 font-serif text-4xl">Shop</h1>
-      <p className="mt-3 max-w-xl text-taupe">Bottles at {settings.location}.</p>
       <div className="mt-10 grid gap-10 lg:grid-cols-[16rem_1fr]">
         <aside>
           <details className="rounded-[1.25rem] border border-espresso/10 bg-white p-4 lg:hidden">

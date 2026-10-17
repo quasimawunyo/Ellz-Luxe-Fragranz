@@ -48,7 +48,7 @@ export default async function BrandPage({ params }: { params: Promise<{ slug: st
         <div>
           <h1 className="font-serif text-4xl">{brand.name}</h1>
           <p className="mt-3 max-w-xl text-taupe">
-            Bottles currently listed for this house. Stock is confirmed at Ells Luxe Annex.
+            Bottles currently listed.
           </p>
         </div>
       </div>
@@ -56,7 +56,7 @@ export default async function BrandPage({ params }: { params: Promise<{ slug: st
         {products.length ? (
           <ProductGrid products={products} />
         ) : (
-          <EmptyState title="No bottles tagged to this house yet" />
+          <EmptyState title="No bottles listed yet" />
         )}
       </div>
     </div>

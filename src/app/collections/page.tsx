@@ -11,9 +11,6 @@ export default async function CollectionsPage() {
     <div className="mx-auto max-w-7xl px-4 py-10">
       <Breadcrumbs items={[{ href: "/", label: "Home" }, { label: "Collections" }]} />
       <h1 className="mt-6 font-serif text-4xl">Collections</h1>
-      <p className="mt-3 max-w-xl text-taupe">
-        Shop by family — citrus, floral, woody, oud — then open a bottle for notes and sizes.
-      </p>
       <div className="mt-12 grid gap-6 md:grid-cols-2">
         {collections.map((collection) => (
           <Link key={collection.id} href={`/collections/${collection.slug}`} className="group relative min-h-80 overflow-hidden rounded-[1.75rem]">

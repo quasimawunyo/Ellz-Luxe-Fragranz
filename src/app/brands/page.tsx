@@ -10,7 +10,6 @@ export default function BrandsPage() {
     <div className="mx-auto max-w-7xl px-4 py-10">
       <Breadcrumbs items={[{ href: "/", label: "Home" }, { label: "Brands" }]} />
       <h1 className="mt-6 font-serif text-4xl">Brands</h1>
-      <p className="mt-3 max-w-xl text-taupe">Stocked at Ells Luxe Annex.</p>
       <ul className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-5">
         {HOUSE_BRANDS.map((brand) => (
           <li key={brand.slug}>
