@@ -92,20 +92,20 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="border-y border-espresso/10 bg-white px-4 py-16">
+      <section className="border-y border-espresso/10 bg-white px-4 py-8">
         <h2 className="sr-only">Pickup, delivery, and WhatsApp</h2>
-        <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-3 md:gap-0 md:divide-x md:divide-espresso/10">
-          <div className="md:px-10">
-            <p className="font-serif text-2xl">Pickup</p>
-            <p className="mt-3 text-sm leading-6 text-taupe">Free at {settings.location.replace(/\s+\.?$/, "").trim()}.</p>
+        <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-3 md:gap-0 md:divide-x md:divide-espresso/10">
+          <div className="md:px-8">
+            <p className="font-serif text-xl">Pickup</p>
+            <p className="mt-1.5 text-sm leading-6 text-taupe">Free at {settings.location.replace(/\s+\.?$/, "").trim()}.</p>
           </div>
-          <div className="md:px-10">
-            <p className="font-serif text-2xl">Delivery</p>
-            <p className="mt-3 text-sm leading-6 text-taupe">24–72 hours. Quoted on WhatsApp from your location.</p>
+          <div className="md:px-8">
+            <p className="font-serif text-xl">Delivery</p>
+            <p className="mt-1.5 text-sm leading-6 text-taupe">24–72 hours. Quoted on WhatsApp from your location.</p>
           </div>
-          <div className="md:px-10">
-            <p className="font-serif text-2xl">WhatsApp</p>
-            <p className="mt-3 text-sm leading-6 text-taupe">
+          <div className="md:px-8">
+            <p className="font-serif text-xl">WhatsApp</p>
+            <p className="mt-1.5 text-sm leading-6 text-taupe">
               {settings.contactPhone ? formatGhanaPhone(settings.contactPhone) : "Message us."}
             </p>
           </div>
