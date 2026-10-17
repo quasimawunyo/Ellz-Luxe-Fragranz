@@ -88,7 +88,7 @@ export function Header({
             <Link href="/cart" className="relative grid size-10 place-items-center sm:size-11" aria-label={`Cart, ${cartCount} ${cartCount === 1 ? "item" : "items"}`}>
               <ShoppingBag className="size-5" />
               {ready && cartCount > 0 ? (
-                <span className="absolute -right-2 -top-2 grid size-5 place-items-center rounded-full bg-espresso text-[10px] font-medium text-ivory">
+                <span className="absolute -right-2 -top-2 grid size-5 place-items-center rounded-full bg-leaf text-[10px] font-medium text-snow">
                   {cartCount}
                 </span>
               ) : null}

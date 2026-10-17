@@ -39,7 +39,11 @@ export default async function CartPage() {
                     {line.productName}
                   </Link>
                   <p className="text-sm text-taupe">{line.label}</p>
-                  <Price amountMinor={line.unitMinor} currencyCode={cart.currencyCode} className="mt-2 text-sm" />
+                  <Price
+                    amountMinor={line.unitMinor}
+                    currencyCode={cart.currencyCode}
+                    className="mt-2 text-xl font-semibold text-leaf"
+                  />
                   <ActionForm action={updateCartAction} className="mt-3 flex items-center gap-3">
                     <input type="hidden" name="variantId" value={line.variantId} />
                     <label className="sr-only" htmlFor={`qty-${line.variantId}`}>
@@ -71,7 +75,7 @@ export default async function CartPage() {
           </ul>
           <aside className="luxe-panel h-fit p-6">
             <p className="text-sm text-taupe">Subtotal</p>
-            <p className="mt-2 text-2xl font-semibold">
+            <p className="mt-2 text-3xl font-semibold text-leaf">
               <Price amountMinor={cart.subtotalMinor} currencyCode={cart.currencyCode} />
             </p>
             <p className="mt-3 text-sm leading-6 text-taupe">

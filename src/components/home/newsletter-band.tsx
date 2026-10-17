@@ -4,10 +4,10 @@ export function NewsletterBand() {
   return (
     <section className="bg-white px-4 py-20" aria-label="Email updates">
       <div className="mx-auto grid max-w-6xl overflow-hidden rounded-[2rem] bg-ivory lg:grid-cols-2">
-        <div className="bg-rich px-8 py-14 text-ivory md:px-12">
-          <p className="text-[11px] uppercase tracking-[0.32em] text-ivory/60">Stay in the loop</p>
+        <div className="bg-leaf px-8 py-14 text-snow md:px-12">
+          <p className="text-[11px] uppercase tracking-[0.32em] text-champagne">Stay in the loop</p>
           <h2 className="mt-4 font-serif text-4xl md:text-5xl">Join the list</h2>
-          <p className="mt-6 max-w-sm leading-7 text-ivory/70">
+          <p className="mt-6 max-w-sm leading-7 text-snow/80">
             New arrivals, restocks, sales date/discounts and shop notes. Unsubscribe anytime.
           </p>
         </div>

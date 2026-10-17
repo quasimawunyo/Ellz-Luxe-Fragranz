@@ -53,7 +53,7 @@ export function HomeHero({ location }: { location: string }) {
   }, []);
 
   return (
-    <section className="relative min-h-[88vh] overflow-hidden bg-rich text-ivory" aria-label="Featured">
+    <section className="relative min-h-[88vh] overflow-hidden bg-rich text-snow" aria-label="Featured">
       {SLIDES.map((slide, slideIndex) => {
         const active = slideIndex === index;
         return (
@@ -98,14 +98,14 @@ export function HomeHero({ location }: { location: string }) {
               )}
               aria-hidden={!active}
             >
-              <p className="text-[11px] uppercase tracking-[0.42em] text-ivory/80">— {slide.eyebrow} —</p>
+              <p className="text-[11px] uppercase tracking-[0.42em] text-snow/80">— {slide.eyebrow} —</p>
               <Heading className="mt-6 font-serif text-4xl leading-[0.95] sm:text-6xl md:text-7xl lg:text-[5.25rem]">
                 {slide.title}{" "}
                 <span className="bg-gradient-to-r from-champagne to-amber-100 bg-clip-text font-light italic text-transparent">
                   {slide.accent}
                 </span>
               </Heading>
-              <p className="mt-6 max-w-lg text-base leading-7 text-ivory/80 sm:text-lg">{slide.body(place)}</p>
+              <p className="mt-6 max-w-lg text-base leading-7 text-snow/80 sm:text-lg">{slide.body(place)}</p>
               <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
                 <Link href={slide.primary.href} className={cn(buttonVariants({ variant: "solid" }), "gap-3")} tabIndex={active ? 0 : -1}>
                   {slide.primary.label}
@@ -130,7 +130,7 @@ export function HomeHero({ location }: { location: string }) {
             onClick={() => setIndex(slideIndex)}
             className={cn(
               "h-1.5 rounded-full transition-all",
-              slideIndex === index ? "w-8 bg-ivory" : "w-3 bg-ivory/40",
+              slideIndex === index ? "w-8 bg-snow" : "w-3 bg-snow/40",
             )}
           />
         ))}

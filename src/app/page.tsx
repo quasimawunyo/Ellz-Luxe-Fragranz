@@ -52,7 +52,7 @@ export default async function HomePage() {
                   className="object-cover transition duration-500 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-rich/70 via-rich/10 to-transparent" />
-                <span className="absolute inset-x-5 bottom-6 font-serif text-3xl leading-tight text-ivory">
+                <span className="absolute inset-x-5 bottom-6 font-serif text-3xl leading-tight text-snow">
                   {collection.name.replace(" fragrances", "")}
                 </span>
               </Link>
@@ -89,7 +89,7 @@ export default async function HomePage() {
             </Link>
           </div>
           <div className="mt-10">
-            <ProductGrid products={featured} />
+            <ProductGrid products={featured} viewAllHref="/shop" />
           </div>
         </div>
       </section>
@@ -114,7 +114,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="grid min-h-[24rem] bg-rich text-ivory md:grid-cols-2">
+      <section className="grid min-h-[24rem] bg-rich text-snow md:grid-cols-2">
         <div className="relative min-h-80">
           <Image
             src="/images/story.jpg"
@@ -125,9 +125,9 @@ export default async function HomePage() {
           />
         </div>
         <div className="flex flex-col justify-center px-8 py-16 md:px-16">
-          <p className="text-[11px] uppercase tracking-[0.32em] text-ivory/50">Our story</p>
+          <p className="text-[11px] uppercase tracking-[0.32em] text-snow/50">Our story</p>
           <h2 className="mt-3 font-serif text-4xl">About</h2>
-          <p className="mt-6 max-w-md leading-7 text-ivory/75">{settings.aboutStory}</p>
+          <p className="mt-6 max-w-md leading-7 text-snow/75">{settings.aboutStory}</p>
           <Link href="/about" className={cn(buttonVariants({ variant: "gold" }), "mt-8 inline-flex w-fit items-center gap-2")}>
             About us
             <ArrowUpRight className="size-3.5" aria-hidden />

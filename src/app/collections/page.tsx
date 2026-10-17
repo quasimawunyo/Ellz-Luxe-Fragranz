@@ -25,9 +25,9 @@ export default async function CollectionsPage() {
               className="object-cover transition-transform duration-700 group-hover:scale-105"
             />
             <div className="absolute inset-0 bg-rich/45" />
-            <div className="absolute bottom-6 left-6 right-6 text-ivory">
+            <div className="absolute bottom-6 left-6 right-6 text-snow">
               <h2 className="font-serif text-4xl">{collection.name}</h2>
-              <p className="mt-2 max-w-md text-sm text-ivory/80">{collection.description}</p>
+              <p className="mt-2 max-w-md text-sm text-snow/80">{collection.description}</p>
             </div>
           </Link>
         ))}

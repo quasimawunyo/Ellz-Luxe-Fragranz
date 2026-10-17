@@ -30,7 +30,7 @@ export function PurchaseForm({
     <form action={formAction} className="mt-8 space-y-5">
       {selected ? (
         <Price
-          className="text-xl font-medium text-leaf"
+          className="text-3xl font-semibold tracking-tight text-leaf sm:text-4xl"
           amountMinor={selected.priceMinor}
           compareAtMinor={selected.compareAtMinor}
           currencyCode={currencyCode}

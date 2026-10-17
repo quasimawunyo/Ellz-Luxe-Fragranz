@@ -66,8 +66,13 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
       {product.isDemonstration && badge !== "Tester" ? (
         <p className="mt-1 text-xs text-taupe">Tester</p>
       ) : null}
-      <p className="mt-2 text-sm font-semibold">
-        From <Price amountMinor={price} compareAtMinor={compare} className="text-sm font-semibold text-espresso" />
+      <p className="mt-3 flex flex-wrap items-baseline gap-2">
+        <span className="text-xs uppercase tracking-[0.16em] text-taupe">From</span>
+        <Price
+          amountMinor={price}
+          compareAtMinor={compare}
+          className="text-2xl font-semibold tracking-tight text-leaf sm:text-[1.75rem]"
+        />
       </p>
       <div className="mt-3 lg:hidden">
         {soldOut ? (
@@ -83,15 +88,36 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
 export function ProductGrid({
   products,
   className,
+  viewAllHref,
 }: {
   products: CatalogProduct[];
   className?: string;
+  viewAllHref?: string;
 }) {
   return (
-    <div className={cn("grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3", className)}>
+    <div
+      className={cn(
+        "grid gap-x-6 gap-y-12 sm:grid-cols-2",
+        viewAllHref ? "lg:grid-cols-4" : "lg:grid-cols-3",
+        className,
+      )}
+    >
       {products.map((product) => (
         <ProductCard key={product.id} product={product} />
       ))}
+      {viewAllHref ? (
+        <Link
+          href={viewAllHref}
+          className="flex min-h-[22rem] flex-col justify-between rounded-[1.5rem] bg-leaf p-8 text-snow transition hover:bg-leaf/90"
+        >
+          <p className="text-[11px] uppercase tracking-[0.32em] text-champagne">Shop</p>
+          <div>
+            <p className="font-serif text-4xl leading-tight">View all products</p>
+            <p className="mt-3 text-sm leading-6 text-snow/80">Every bottle at Ells Luxe Annex.</p>
+          </div>
+          <span className="text-sm text-champagne">Open shop</span>
+        </Link>
+      ) : null}
     </div>
   );
 }

@@ -148,8 +148,8 @@ export function CheckoutView({
             {quoted ? "Quoted for your location" : deliveryMethodId === "pickup" ? "Free" : <Price amountMinor={shipping} currencyCode={currencyCode} />}
           </span>
         </p>
-        <p className="mt-4 flex justify-between border-t border-espresso/10 pt-4 font-medium">
-          <span>{quoted ? "Goods total" : "Total"}</span>
+        <p className="mt-4 flex justify-between border-t border-espresso/10 pt-4 text-xl font-semibold text-leaf">
+          <span className="text-espresso">{quoted ? "Goods total" : "Total"}</span>
           <Price amountMinor={totalMinor} currencyCode={currencyCode} />
         </p>
       </aside>

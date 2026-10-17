@@ -41,7 +41,7 @@ export function MobileNav({
                 <span className="relative">
                   <Icon className="size-5" strokeWidth={1.6} />
                   {item.count ? (
-                    <span className="absolute -right-2 -top-1 grid size-4 place-items-center rounded-full bg-espresso text-[9px] text-ivory">
+                    <span className="absolute -right-2 -top-1 grid size-4 place-items-center rounded-full bg-leaf text-[9px] text-snow">
                       {item.count}
                     </span>
                   ) : null}

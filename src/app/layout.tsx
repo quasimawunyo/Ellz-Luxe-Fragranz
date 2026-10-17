@@ -3,6 +3,7 @@ import { connection } from "next/server";
 import { Outfit, Playfair_Display } from "next/font/google";
 import { Toaster } from "@/components/ui/toaster";
 import { SiteShell } from "@/components/layout/site-shell";
+import { ThemeScript } from "@/components/theme/theme-script";
 import { resolveSiteUrl } from "@/lib/site-url";
 import "./globals.css";
 
@@ -41,7 +42,10 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   await connection();
   return (
-    <html lang="en" data-scroll-behavior="smooth" className={`${outfit.variable} ${playfair.variable} h-full`}>
+    <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth" className={`${outfit.variable} ${playfair.variable} h-full`}>
+      <head>
+        <ThemeScript />
+      </head>
       <body className="flex min-h-full flex-col bg-ivory text-espresso antialiased">
         <SiteShell>{children}</SiteShell>
         <Toaster />

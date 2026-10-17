@@ -2,17 +2,31 @@
 
 :root {
   --ivory: #f7f4ef;
-  --champagne: #b0893e;
+  --champagne: #c4a35a;
   --espresso: #1a211c;
   --rich-black: #121814;
   --taupe: #6b706b;
-  --leaf: #1f6b45;
+  --leaf: #1c7a48;
   --white: #fcfbf8;
+  --snow: #fcfbf8;
   --background: var(--ivory);
   --foreground: var(--espresso);
   --muted: var(--taupe);
   --ring: var(--champagne);
 }
+
+.dark {
+  --ivory: #141a16;
+  --white: #1c2420;
+  --espresso: #f3eee4;
+  --taupe: #a4aea7;
+  --leaf: #2f9d5e;
+  --champagne: #d4b46a;
+  --background: #141a16;
+  --foreground: #f3eee4;
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
   --color-ivory: var(--ivory);
@@ -22,6 +36,7 @@
   --color-taupe: var(--taupe);
   --color-leaf: var(--leaf);
   --color-white: var(--white);
+  --color-snow: var(--snow);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-outfit);
@@ -51,7 +66,7 @@ h3,
 }
 
 :focus-visible {
-  outline: 2px solid var(--espresso);
+  outline: 2px solid var(--champagne);
   outline-offset: 2px;
 }
 
