@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { filterProducts, isNewProduct } from "@/lib/catalog/helpers";
+import { filterProducts, isDiscounted, isNewProduct } from "@/lib/catalog/helpers";
 import { DEMO_PRODUCTS } from "@/lib/catalog/seed";
 
 describe("catalog filters", () => {
@@ -27,6 +27,17 @@ describe("catalog filters", () => {
     const result = filterProducts(DEMO_PRODUCTS, { arrival: "1", sort: "featured", page: 1 });
     expect(result.length).toBeGreaterThan(0);
     expect(result.every((product) => product.newArrival || isNewProduct(product))).toBe(true);
+  });
+
+  it("treats a higher compare-at price as a discount", () => {
+    const product = DEMO_PRODUCTS[0];
+    expect(isDiscounted(product)).toBe(false);
+    expect(
+      isDiscounted({
+        ...product,
+        variants: [{ ...product.variants[0], priceMinor: 40000, compareAtMinor: 48000 }],
+      }),
+    ).toBe(true);
   });
 
   it("sorts by price ascending", () => {

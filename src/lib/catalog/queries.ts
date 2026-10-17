@@ -1,5 +1,5 @@
 import { DEMO_CATEGORIES, DEMO_COLLECTIONS, DEMO_FAQS, DEMO_PRODUCTS, DEMO_SETTINGS } from "@/lib/catalog/seed";
-import { filterProducts, paginate, relatedProducts } from "@/lib/catalog/helpers";
+import { filterProducts, isDiscounted, paginate, relatedProducts } from "@/lib/catalog/helpers";
 import type { CatalogProduct, StoreSettings } from "@/lib/catalog/types";
 import { readJsonCookie, writeJsonCookie } from "@/lib/cookies/json-cookie";
 import { isSupabaseConfigured } from "@/lib/env";
@@ -202,6 +202,10 @@ export async function getVariantById(variantId: string) {
 
 export async function getFeaturedProducts() {
   return (await getPublishedProducts()).filter((product) => product.featured);
+}
+
+export async function getDiscountedProducts() {
+  return (await getPublishedProducts()).filter(isDiscounted);
 }
 
 export async function getNewArrivals() {

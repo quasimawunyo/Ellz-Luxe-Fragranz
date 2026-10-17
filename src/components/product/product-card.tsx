@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { CatalogProduct } from "@/lib/catalog/types";
-import { isNewProduct, lowestPrice, primaryImage, totalStock } from "@/lib/catalog/helpers";
+import { isDiscounted, isNewProduct, lowestPrice, primaryImage, totalStock } from "@/lib/catalog/helpers";
 import { Price } from "@/components/ui/price";
 import { QuickAdd } from "@/components/product/quick-add";
 import { LikeButton } from "@/components/product/like-button";
@@ -17,13 +17,15 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
   const compare = product.variants.find((variant) => variant.priceMinor === price)?.compareAtMinor;
   const defaultVariant = product.variants.find((variant) => variant.stock > 0) ?? product.variants[0];
   const soldOut = stock < 1;
-  const badge = product.featured
-    ? "Featured"
-    : isNewProduct(product)
-      ? "New"
-      : product.isDemonstration
-        ? "Tester"
-        : null;
+  const badge = isDiscounted(product)
+    ? "Sale"
+    : product.featured
+      ? "Featured"
+      : isNewProduct(product)
+        ? "New"
+        : product.isDemonstration
+          ? "Tester"
+          : null;
 
   return (
     <article className="group">

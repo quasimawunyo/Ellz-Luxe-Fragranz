@@ -5,13 +5,15 @@ import { FactTicker } from "@/components/home/fact-ticker";
 import { HomeHero } from "@/components/home/home-hero";
 import { NewsletterBand } from "@/components/home/newsletter-band";
 import { ProductGrid } from "@/components/product/product-card";
+import { EmptyState } from "@/components/ui/states";
 import { buttonVariants } from "@/components/ui/button";
-import { getCollections, getFeaturedProducts, getNewArrivals, getStoreSettings } from "@/lib/catalog/queries";
+import { getCollections, getDiscountedProducts, getFeaturedProducts, getNewArrivals, getStoreSettings } from "@/lib/catalog/queries";
 import { cn } from "@/lib/utils";
 
 export default async function HomePage() {
-  const [featured, arrivals, collections, settings] = await Promise.all([
+  const [featured, discounted, arrivals, collections, settings] = await Promise.all([
     getFeaturedProducts(),
+    getDiscountedProducts(),
     getNewArrivals(),
     getCollections(),
     getStoreSettings(),
@@ -39,6 +41,30 @@ export default async function HomePage() {
           </div>
           <div className="mt-10">
             <ProductGrid products={featured} viewAllHref="/shop" />
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-white px-4 py-20">
+        <div className="mx-auto max-w-7xl">
+          <p className="text-[11px] uppercase tracking-[0.42em] text-taupe">On sale</p>
+          <div className="mt-4 flex items-end justify-between gap-4">
+            <div>
+              <h2 className="font-serif text-4xl md:text-5xl">Discounted perfumes</h2>
+              <p className="mt-3 max-w-md text-taupe">Bottles priced below their previous amount.</p>
+            </div>
+            <Link href="/sale" className="shrink-0 text-sm text-taupe hover:text-espresso">
+              View all
+            </Link>
+          </div>
+          <div className="mt-10">
+            {discounted.length ? (
+              <ProductGrid products={discounted} />
+            ) : (
+              <EmptyState title="No discounted bottles right now">
+                <Link href="/shop">Shop all perfumes</Link>
+              </EmptyState>
+            )}
           </div>
         </div>
       </section>

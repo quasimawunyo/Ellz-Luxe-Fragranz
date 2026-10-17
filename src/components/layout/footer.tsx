@@ -20,6 +20,7 @@ export function Footer({ settings }: { settings: StoreSettings }) {
             <li><Link href="/shop">All products</Link></li>
             <li><Link href="/collections">Collections</Link></li>
             <li><Link href="/new">New arrivals</Link></li>
+            <li><Link href="/sale">Discounted</Link></li>
             <li><Link href="/brands">Brands</Link></li>
           </ul>
         </div>

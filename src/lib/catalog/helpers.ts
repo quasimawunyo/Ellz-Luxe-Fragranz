@@ -32,6 +32,12 @@ export function isNewProduct(product: Product, now = Date.now()) {
   return Number.isFinite(created) && now - created < NEW_MS;
 }
 
+export function isDiscounted(product: Product) {
+  return product.variants.some(
+    (variant) => variant.compareAtMinor != null && variant.compareAtMinor > variant.priceMinor,
+  );
+}
+
 export function searchHaystack(product: Product) {
   return [
     product.name,
