@@ -62,7 +62,7 @@ export default async function AdminProductsPage() {
                   <td>{totalStock(product)}</td>
                   <td>
                     {[...product.variants]
-                      .sort((a, b) => a.sizeMl - b.sizeMl)
+                      .sort((a, b) => (a.sizeMl ?? 0) - (b.sizeMl ?? 0))
                       .map((variant) => `${variant.label} ${formatMoney(variant.priceMinor)}`)
                       .join(" · ")}
                   </td>

@@ -37,6 +37,18 @@ export const metadata: Metadata = {
     description: "Perfume boutique at Ells Luxe Annex, Pantang.",
     type: "website",
   },
+  appleWebApp: {
+    capable: true,
+    title: "EllzLuxe",
+    statusBarStyle: "default",
+  },
+  icons: {
+    icon: [
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: "/icons/icon-192.png",
+  },
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {

@@ -8,6 +8,7 @@ import { Footer } from "@/components/layout/footer";
 import { BrandGrid } from "@/components/brand/brand-grid";
 import { AnnexPromises } from "@/components/layout/annex-promises";
 import { TrustAndPay } from "@/components/layout/trust-and-pay";
+import { InstallPrompt } from "@/components/layout/install-prompt";
 import { SalePopup, type SalePopupProduct } from "@/components/layout/sale-popup";
 import { WhatsAppButton } from "@/components/layout/whatsapp-button";
 
@@ -46,6 +47,7 @@ export function SiteChrome({
       <Footer settings={settings} />
       <WhatsAppButton phone={settings.contactPhone} />
       <SalePopup products={saleProducts} />
+      <InstallPrompt />
     </>
   );
 }

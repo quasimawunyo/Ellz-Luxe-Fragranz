@@ -13,7 +13,9 @@ import { cn } from "@/lib/utils";
 export function ProductCard({ product }: { product: CatalogProduct }) {
   const image = primaryImage(product);
   const stock = totalStock(product);
-  const variants = [...product.variants].sort((a, b) => a.sizeMl - b.sizeMl || a.priceMinor - b.priceMinor);
+  const variants = [...product.variants].sort(
+    (a, b) => (a.sizeMl ?? 0) - (b.sizeMl ?? 0) || a.priceMinor - b.priceMinor,
+  );
   const defaultVariant = variants.find((variant) => variant.stock > 0) ?? variants[0];
   const soldOut = stock < 1;
   const badge = isDiscounted(product)
