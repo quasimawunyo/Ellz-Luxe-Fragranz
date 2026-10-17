@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { filterProducts, isDiscounted, isNewProduct } from "@/lib/catalog/helpers";
+import { discountedVariantOffers, filterProducts, isDiscounted, isNewProduct } from "@/lib/catalog/helpers";
 import { DEMO_PRODUCTS } from "@/lib/catalog/seed";
 
 describe("catalog filters", () => {
@@ -32,12 +32,16 @@ describe("catalog filters", () => {
   it("treats a higher compare-at price as a discount", () => {
     const product = DEMO_PRODUCTS[0];
     expect(isDiscounted(product)).toBe(false);
-    expect(
-      isDiscounted({
-        ...product,
-        variants: [{ ...product.variants[0], priceMinor: 40000, compareAtMinor: 48000 }],
-      }),
-    ).toBe(true);
+    expect(discountedVariantOffers(product)).toEqual([]);
+    const discounted = {
+      ...product,
+      variants: [
+        { ...product.variants[0], priceMinor: 40000, compareAtMinor: 48000 },
+        { ...product.variants[0], id: "full", priceMinor: 68000, compareAtMinor: null },
+      ],
+    };
+    expect(isDiscounted(discounted)).toBe(true);
+    expect(discountedVariantOffers(discounted).map((variant) => variant.priceMinor)).toEqual([40000]);
   });
 
   it("sorts by price ascending", () => {

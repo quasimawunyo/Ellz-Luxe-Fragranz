@@ -8,16 +8,19 @@ import { Footer } from "@/components/layout/footer";
 import { BrandGrid } from "@/components/brand/brand-grid";
 import { AnnexPromises } from "@/components/layout/annex-promises";
 import { TrustAndPay } from "@/components/layout/trust-and-pay";
+import { SalePopup, type SalePopupProduct } from "@/components/layout/sale-popup";
 import { WhatsAppButton } from "@/components/layout/whatsapp-button";
 
 export function SiteChrome({
   children,
   header,
   settings,
+  saleProducts,
 }: {
   children: ReactNode;
   header: ReactNode;
   settings: StoreSettings;
+  saleProducts: SalePopupProduct[];
 }) {
   const pathname = usePathname();
   if (pathname.startsWith("/admin")) {
@@ -42,6 +45,7 @@ export function SiteChrome({
       <TrustAndPay />
       <Footer settings={settings} />
       <WhatsAppButton phone={settings.contactPhone} />
+      <SalePopup products={saleProducts} />
     </>
   );
 }

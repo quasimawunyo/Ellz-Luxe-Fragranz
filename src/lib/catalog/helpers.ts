@@ -33,9 +33,13 @@ export function isNewProduct(product: Product, now = Date.now()) {
 }
 
 export function isDiscounted(product: Product) {
-  return product.variants.some(
-    (variant) => variant.compareAtMinor != null && variant.compareAtMinor > variant.priceMinor,
-  );
+  return discountedVariantOffers(product).length > 0;
+}
+
+export function discountedVariantOffers(product: Product) {
+  return product.variants
+    .filter((variant) => variant.compareAtMinor != null && variant.compareAtMinor > variant.priceMinor)
+    .sort((a, b) => (a.sizeMl ?? 0) - (b.sizeMl ?? 0) || a.priceMinor - b.priceMinor);
 }
 
 export function searchHaystack(product: Product) {
