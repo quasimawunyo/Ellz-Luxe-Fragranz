@@ -102,22 +102,24 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="grid min-h-[24rem] bg-rich text-snow md:grid-cols-2">
-        <div className="relative min-h-80">
-          <Image
-            src="/images/story.jpg"
-            alt="Perfume bottles"
-            fill
-            sizes="(min-width: 768px) 50vw, 100vw"
-            className="object-cover"
-          />
-        </div>
-        <div className="flex flex-col justify-center px-8 py-16 md:px-16">
-          <h2 className="font-serif text-4xl">About</h2>
-          <p className="mt-6 max-w-md leading-7 text-snow/75">{settings.aboutStory}</p>
-          <Link href="/about" className={cn(buttonVariants({ variant: "gold" }), "mt-8 inline-flex w-fit")}>
-            About us
-          </Link>
+      <section className="bg-white px-4 py-20">
+        <div className="mx-auto grid min-h-[24rem] max-w-7xl overflow-hidden rounded-[2rem] bg-rich text-snow md:grid-cols-2">
+          <div className="relative min-h-80">
+            <Image
+              src="/images/story.jpg"
+              alt="Perfume bottles"
+              fill
+              sizes="(min-width: 768px) 50vw, 100vw"
+              className="object-cover"
+            />
+          </div>
+          <div className="flex flex-col justify-center px-8 py-16 md:px-16">
+            <h2 className="font-serif text-4xl">About</h2>
+            <p className="mt-6 max-w-md leading-7 text-snow/75">{settings.aboutStory}</p>
+            <Link href="/about" className={cn(buttonVariants({ variant: "gold" }), "mt-8 inline-flex w-fit")}>
+              About us
+            </Link>
+          </div>
         </div>
       </section>
 
