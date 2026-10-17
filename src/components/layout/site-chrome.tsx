@@ -8,6 +8,7 @@ import { Footer } from "@/components/layout/footer";
 import { BrandGrid } from "@/components/brand/brand-grid";
 import { AnnexPromises } from "@/components/layout/annex-promises";
 import { TrustAndPay } from "@/components/layout/trust-and-pay";
+import { WhatsAppButton } from "@/components/layout/whatsapp-button";
 
 export function SiteChrome({
   children,
@@ -40,6 +41,7 @@ export function SiteChrome({
       <AnnexPromises phone={settings.contactPhone} />
       <TrustAndPay />
       <Footer settings={settings} />
+      <WhatsAppButton phone={settings.contactPhone} />
     </>
   );
 }
