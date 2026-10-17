@@ -31,7 +31,7 @@ export function SiteChrome({
       >
         Skip to content
       </a>
-      <AnnouncementBar message={settings.announcement} />
+      <AnnouncementBar location={settings.location} phone={settings.contactPhone} />
       {header}
       <main id="main" className="flex-1 pb-16 lg:pb-0">
         {children}
