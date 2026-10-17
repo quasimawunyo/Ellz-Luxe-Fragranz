@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState } from "react";
 import { addToCartAction } from "@/app/actions/cart";
 import { QuantitySelector } from "@/components/product/quantity-selector";
 import { Button } from "@/components/ui/button";
@@ -20,9 +20,8 @@ export function PurchaseForm({
   productName: string;
   currencyCode?: string;
 }) {
-  const [variantId, setVariantId] = useState(variants[0]?.id ?? "");
   const [state, formAction] = useActionState(addToCartAction, null);
-  const selected = variants.find((variant) => variant.id === variantId) ?? variants[0];
+  const selected = variants[0];
   const max = Math.min(6, selected?.stock || 1);
   const soldOut = !selected || selected.stock < 1;
 
@@ -36,36 +35,8 @@ export function PurchaseForm({
           currencyCode={currencyCode}
         />
       ) : null}
-      <fieldset>
-        <legend className="mb-2 text-sm font-medium">Size</legend>
-        <div className="flex flex-wrap gap-2">
-          {variants.map((variant) => {
-            const selectedSize = variant.id === variantId;
-            return (
-              <label
-                key={variant.id}
-                className={`cursor-pointer border px-4 py-2 text-sm ${
-                  selectedSize
-                    ? "border-espresso bg-espresso text-ivory"
-                    : "border-espresso/20 hover:border-espresso"
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="variantId"
-                  value={variant.id}
-                  checked={selectedSize}
-                  onChange={() => setVariantId(variant.id)}
-                  className="sr-only"
-                />
-                {variant.label}
-                {variant.stock < 1 ? " (sold out)" : ""}
-              </label>
-            );
-          })}
-        </div>
-      </fieldset>
-      {soldOut ? null : <QuantitySelector key={variantId} max={max} />}
+      {selected ? <input type="hidden" name="variantId" value={selected.id} /> : null}
+      {soldOut ? null : <QuantitySelector max={max} />}
       <div className="flex flex-wrap items-center gap-3">
         {soldOut ? (
           <WaitlistButton productId={productId} />

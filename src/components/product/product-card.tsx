@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { CatalogProduct } from "@/lib/catalog/types";
-import { isDiscounted, isNewProduct, primaryImage, totalStock } from "@/lib/catalog/helpers";
+import { isDiscounted, isNewProduct, primaryImage, sellingVariant } from "@/lib/catalog/helpers";
 import { Price } from "@/components/ui/price";
 import { QuickAdd } from "@/components/product/quick-add";
 import { LikeButton } from "@/components/product/like-button";
@@ -12,12 +12,8 @@ import { cn } from "@/lib/utils";
 
 export function ProductCard({ product }: { product: CatalogProduct }) {
   const image = primaryImage(product);
-  const stock = totalStock(product);
-  const variants = [...product.variants].sort(
-    (a, b) => (a.sizeMl ?? 0) - (b.sizeMl ?? 0) || a.priceMinor - b.priceMinor,
-  );
-  const defaultVariant = variants.find((variant) => variant.stock > 0) ?? variants[0];
-  const soldOut = stock < 1;
+  const variant = sellingVariant(product);
+  const soldOut = !variant || variant.stock < 1;
   const badge = isDiscounted(product)
     ? "Sale"
     : product.featured
@@ -57,12 +53,8 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
         <div className="absolute inset-x-3 bottom-3 hidden opacity-0 transition group-hover:opacity-100 lg:block lg:group-hover:opacity-100">
           {soldOut ? (
             <WaitlistButton productId={product.id} wide />
-          ) : defaultVariant ? (
-            <QuickAdd
-              variantId={defaultVariant.id}
-              wide
-              label={variants.length > 1 ? `Add ${defaultVariant.label}` : undefined}
-            />
+          ) : variant ? (
+            <QuickAdd variantId={variant.id} wide />
           ) : null}
         </div>
       </div>
@@ -73,32 +65,18 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
       {product.isDemonstration && badge !== "Tester" ? (
         <p className="mt-1 text-xs text-taupe">Tester</p>
       ) : null}
-      <div className="mt-3 space-y-1">
-        {variants.map((variant) => (
-          <p key={variant.id} className="flex flex-wrap items-baseline gap-2">
-            {variants.length > 1 ? (
-              <span className="text-xs uppercase tracking-[0.16em] text-taupe">{variant.label}</span>
-            ) : null}
-            <Price
-              amountMinor={variant.priceMinor}
-              compareAtMinor={variant.compareAtMinor}
-              className={cn(
-                "font-semibold tracking-tight text-leaf",
-                variants.length > 1 ? "text-lg" : "text-2xl sm:text-[1.75rem]",
-              )}
-            />
-          </p>
-        ))}
-      </div>
+      {variant ? (
+        <Price
+          amountMinor={variant.priceMinor}
+          compareAtMinor={variant.compareAtMinor}
+          className="mt-3 text-2xl font-semibold tracking-tight text-leaf sm:text-[1.75rem]"
+        />
+      ) : null}
       <div className="mt-3 lg:hidden">
         {soldOut ? (
           <WaitlistButton productId={product.id} wide />
-        ) : defaultVariant ? (
-          <QuickAdd
-            variantId={defaultVariant.id}
-            wide
-            label={variants.length > 1 ? `Add ${defaultVariant.label}` : undefined}
-          />
+        ) : variant ? (
+          <QuickAdd variantId={variant.id} wide />
         ) : null}
       </div>
     </article>

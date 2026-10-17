@@ -8,7 +8,7 @@ import { getAuthContext } from "@/lib/auth/session";
 import { canViewOrder } from "@/lib/auth/roles";
 import { browserPlacedThisOrder } from "@/lib/orders/placed-cookie";
 import { getStoreSettings } from "@/lib/catalog/queries";
-import { orderShippingIsQuoted } from "@/lib/catalog/helpers";
+import { orderShippingIsQuoted, publicVariantLabel } from "@/lib/catalog/helpers";
 import { annexOrderWhatsAppHref } from "@/lib/whatsapp";
 import { OpenAnnexWhatsApp } from "@/components/checkout/open-annex-whatsapp";
 import { resumePaymentAction } from "@/app/actions/orders";
@@ -77,7 +77,8 @@ export default async function ConfirmationPage({
         {order.items.map((item) => (
           <li key={item.sku} className="flex justify-between">
             <span>
-              {item.productName} · {item.variantLabel} × {item.quantity}
+              {item.productName}
+              {publicVariantLabel(item.variantLabel) ? ` · ${publicVariantLabel(item.variantLabel)}` : ""} × {item.quantity}
             </span>
             <Price amountMinor={item.unitPriceMinor * item.quantity} currencyCode={order.currencyCode} />
           </li>

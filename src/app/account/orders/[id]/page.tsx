@@ -2,7 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import { getAuthContext } from "@/lib/auth/session";
 import { canViewOrder } from "@/lib/auth/roles";
 import { getOrderById } from "@/lib/orders/store";
-import { orderShippingIsQuoted } from "@/lib/catalog/helpers";
+import { orderShippingIsQuoted, publicVariantLabel } from "@/lib/catalog/helpers";
 import { Price } from "@/components/ui/price";
 
 export default async function AccountOrderPage({ params }: { params: Promise<{ id: string }> }) {
@@ -33,7 +33,8 @@ export default async function AccountOrderPage({ params }: { params: Promise<{ i
         {order.items.map((item) => (
           <li key={item.sku} className="flex justify-between">
             <span>
-              {item.productName} · {item.variantLabel} × {item.quantity}
+              {item.productName}
+              {publicVariantLabel(item.variantLabel) ? ` · ${publicVariantLabel(item.variantLabel)}` : ""} × {item.quantity}
             </span>
             <Price amountMinor={item.unitPriceMinor * item.quantity} currencyCode={order.currencyCode} />
           </li>

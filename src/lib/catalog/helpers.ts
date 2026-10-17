@@ -12,8 +12,30 @@ export function orderShippingIsQuoted(order: { shippingMinor: number; deliveryMe
   return order.shippingMinor === 0 && !/pickup/i.test(order.deliveryMethod);
 }
 
+const SIZE_ONLY_LABEL = /^\d+\s*ml$/i;
+
+export function isSizeOnlyLabel(label: string) {
+  return SIZE_ONLY_LABEL.test(label.trim());
+}
+
+export function publicVariantLabel(label: string) {
+  return isSizeOnlyLabel(label) ? "" : label;
+}
+
+export function sellingVariant(product: Product) {
+  const variants = [...product.variants].sort(
+    (a, b) => (a.sizeMl ?? 0) - (b.sizeMl ?? 0) || a.priceMinor - b.priceMinor,
+  );
+  const named = variants.find((variant) => {
+    if (variant.sizeMl == null) return false;
+    return new RegExp(`\\b${variant.sizeMl}\\s*ml\\b`, "i").test(product.description);
+  });
+  const choices = named ? [named] : variants;
+  return choices.find((variant) => variant.stock > 0) ?? choices[0] ?? variants[0];
+}
+
 export function lowestPrice(product: Product) {
-  return Math.min(...product.variants.map((variant) => variant.priceMinor));
+  return sellingVariant(product)?.priceMinor ?? Math.min(...product.variants.map((variant) => variant.priceMinor));
 }
 
 export function totalStock(product: Product) {

@@ -3,13 +3,14 @@ import type { SalePopupProduct } from "@/components/layout/sale-popup";
 import { SiteChrome } from "@/components/layout/site-chrome";
 import { getAuthContext } from "@/lib/auth/session";
 import { resolveCart } from "@/lib/cart/store";
-import { discountedVariantOffers, primaryImage } from "@/lib/catalog/helpers";
+import { discountedVariantOffers, primaryImage, sellingVariant } from "@/lib/catalog/helpers";
 import { getDiscountedProducts, getStoreSettings } from "@/lib/catalog/queries";
 
 function salePopupProducts(products: Awaited<ReturnType<typeof getDiscountedProducts>>): SalePopupProduct[] {
   return products.flatMap((product) => {
-    const offers = discountedVariantOffers(product);
-    if (offers.length === 0) return [];
+    const selling = sellingVariant(product);
+    const offer = discountedVariantOffers(product).find((variant) => variant.id === selling?.id);
+    if (!offer || offer.compareAtMinor == null) return [];
     const image = primaryImage(product);
     return [
       {
@@ -19,18 +20,14 @@ function salePopupProducts(products: Awaited<ReturnType<typeof getDiscountedProd
         brand: product.brand,
         imageUrl: image?.url ?? null,
         imageAlt: image?.alt ?? product.name,
-        offers: offers.flatMap((variant) =>
-          variant.compareAtMinor == null
-            ? []
-            : [
-                {
-                  id: variant.id,
-                  label: variant.label,
-                  priceMinor: variant.priceMinor,
-                  compareAtMinor: variant.compareAtMinor,
-                },
-              ],
-        ),
+        offers: [
+          {
+            id: offer.id,
+            label: offer.label,
+            priceMinor: offer.priceMinor,
+            compareAtMinor: offer.compareAtMinor,
+          },
+        ],
       },
     ];
   });

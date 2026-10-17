@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/input";
 import { Price } from "@/components/ui/price";
 import { GHANA_REGIONS } from "@/lib/ghana";
-import { deliveryIsQuoted } from "@/lib/catalog/helpers";
+import { deliveryIsQuoted, publicVariantLabel } from "@/lib/catalog/helpers";
 import { orderGrandTotal } from "@/lib/money";
 import type { DeliveryMethod } from "@/lib/catalog/types";
 
@@ -132,7 +132,8 @@ export function CheckoutView({
           {lines.map((line) => (
             <li key={line.variantId} className="flex justify-between gap-3">
               <span>
-                {line.productName} · {line.label} × {line.quantity}
+                {line.productName}
+                {publicVariantLabel(line.label) ? ` · ${publicVariantLabel(line.label)}` : ""} × {line.quantity}
               </span>
               <Price amountMinor={line.lineMinor} currencyCode={currencyCode} />
             </li>

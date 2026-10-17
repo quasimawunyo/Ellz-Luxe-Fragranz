@@ -4,6 +4,7 @@ import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { ProductGallery } from "@/components/product/gallery";
 import { ProductGrid } from "@/components/product/product-card";
 import { PurchaseForm } from "@/components/product/purchase-form";
+import { sellingVariant } from "@/lib/catalog/helpers";
 import { getProductBySlug, getRelated, getStoreSettings } from "@/lib/catalog/queries";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
@@ -22,6 +23,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const product = await getProductBySlug(slug);
   if (!product) notFound();
   const [related, settings] = await Promise.all([getRelated(product), getStoreSettings()]);
+  const variant = sellingVariant(product);
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -29,14 +31,16 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     description: product.description,
     brand: { "@type": "Brand", name: product.brand },
     image: product.images.map((image) => image.url),
-    offers: product.variants.map((variant) => ({
-      "@type": "Offer",
-      sku: variant.sku,
-      priceCurrency: settings.currencyCode,
-      price: (variant.priceMinor / 100).toFixed(2),
-      availability:
-        variant.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-    })),
+    offers: variant
+      ? {
+          "@type": "Offer",
+          sku: variant.sku,
+          priceCurrency: settings.currencyCode,
+          price: (variant.priceMinor / 100).toFixed(2),
+          availability:
+            variant.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+        }
+      : undefined,
   };
 
   return (
@@ -62,7 +66,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           </p>
           <p className="mt-6 max-w-lg leading-7 text-espresso/80">{product.description}</p>
           <PurchaseForm
-            variants={product.variants}
+            variants={variant ? [variant] : []}
             productId={product.id}
             productName={product.name}
             currencyCode={settings.currencyCode}

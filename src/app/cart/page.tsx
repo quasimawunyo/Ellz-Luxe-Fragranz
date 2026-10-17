@@ -7,6 +7,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Price } from "@/components/ui/price";
 import { EmptyState } from "@/components/ui/states";
 import { resolveCart } from "@/lib/cart/store";
+import { publicVariantLabel } from "@/lib/catalog/helpers";
 import { cn } from "@/lib/utils";
 
 export const metadata = { title: "Cart" };
@@ -38,7 +39,9 @@ export default async function CartPage() {
                   <Link href={`/product/${line.productSlug}`} className="font-medium">
                     {line.productName}
                   </Link>
-                  <p className="text-sm text-taupe">{line.label}</p>
+                  {publicVariantLabel(line.label) ? (
+                    <p className="text-sm text-taupe">{publicVariantLabel(line.label)}</p>
+                  ) : null}
                   <Price
                     amountMinor={line.unitMinor}
                     currencyCode={cart.currencyCode}
