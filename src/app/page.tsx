@@ -27,11 +27,32 @@ export default async function HomePage() {
   return (
     <>
       <HomeHero />
-      <div className="bg-white px-4 py-8 text-center">
+      <div className="bg-white px-4 pb-2 pt-8 text-center">
         <Link href="/shop" className={cn(buttonVariants({ variant: "shop" }), "px-8")}>
           View all perfumes
         </Link>
       </div>
+
+      <section className="overflow-hidden bg-white pb-20 pt-6" aria-label="New arrivals">
+        <div className="mx-auto max-w-7xl px-4">
+          <h2 className="font-serif text-4xl md:text-5xl">New arrivals</h2>
+        </div>
+        {arrivals.length ? (
+          <div className="mt-10 overflow-hidden">
+            <div className="flex w-max animate-brand-marquee gap-6 px-4 hover:[animation-play-state:paused]">
+              {[...arrivals, ...arrivals].map((product, index) => (
+                <div
+                  key={`${product.id}-${index}`}
+                  className="w-64 shrink-0 sm:w-72"
+                  aria-hidden={index >= arrivals.length}
+                >
+                  <ProductCard product={product} />
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : null}
+      </section>
 
       <section className="bg-ivory px-4 py-20">
         <div className="mx-auto max-w-7xl">
@@ -91,27 +112,6 @@ export default async function HomePage() {
             ))}
           </div>
         </div>
-      </section>
-
-      <section className="overflow-hidden bg-ivory py-20" aria-label="New arrivals">
-        <div className="mx-auto max-w-7xl px-4">
-          <h2 className="font-serif text-4xl md:text-5xl">New arrivals</h2>
-        </div>
-        {arrivals.length ? (
-          <div className="mt-10 overflow-hidden">
-            <div className="flex w-max animate-brand-marquee gap-6 px-4 hover:[animation-play-state:paused]">
-              {[...arrivals, ...arrivals].map((product, index) => (
-                <div
-                  key={`${product.id}-${index}`}
-                  className="w-64 shrink-0 sm:w-72"
-                  aria-hidden={index >= arrivals.length}
-                >
-                  <ProductCard product={product} />
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : null}
       </section>
 
       <section className="bg-white px-4 py-20">
