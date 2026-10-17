@@ -8,22 +8,58 @@ import { Input } from "@/components/ui/input";
 export function NewsletterForm({ compact = false }: { compact?: boolean }) {
   const [state, formAction] = useActionState(subscribeNewsletter, null);
 
-  return (
-    <form action={formAction} className={compact ? "mt-6" : "mt-8"}>
-      <div className={compact ? "space-y-2" : "flex gap-2"}>
+  if (!compact) {
+    return (
+      <form action={formAction} className="mx-auto mt-10 w-full max-w-xl">
         <label className="sr-only" htmlFor="newsletter-email">
           Email address
         </label>
+        <div className="flex items-center rounded-full border border-[#7dcea0]/35 bg-[#0a2e26] p-1.5 pl-6">
+          <input
+            id="newsletter-email"
+            name="email"
+            type="email"
+            required
+            placeholder="Enter your email address"
+            className="min-h-12 min-w-0 flex-1 bg-transparent text-sm text-snow outline-none placeholder:text-[#8fb8a4]"
+          />
+          <button
+            type="submit"
+            className="shrink-0 rounded-full bg-[#2fce7a] px-7 py-3 text-sm font-semibold text-[#06281c] hover:bg-[#46d98b]"
+          >
+            Join
+          </button>
+        </div>
+        {state?.error ? (
+          <p role="alert" className="mt-3 text-sm text-red-200">
+            {state.error}
+          </p>
+        ) : null}
+        {state?.ok && state.message ? (
+          <p role="status" className="mt-3 text-sm text-[#b7e4c7]">
+            {state.message}
+          </p>
+        ) : null}
+      </form>
+    );
+  }
+
+  return (
+    <form action={formAction} className="mt-6">
+      <div className="space-y-2">
+        <label className="sr-only" htmlFor="newsletter-email-compact">
+          Email address
+        </label>
         <Input
-          id="newsletter-email"
+          id="newsletter-email-compact"
           name="email"
           type="email"
           required
           placeholder="Email address"
-          className={compact ? "rounded-full bg-ivory px-5 text-espresso" : "flex-1 rounded-full px-5"}
+          className="rounded-full bg-ivory px-5 text-espresso"
         />
-        <Button type="submit" variant={compact ? "gold" : "primary"} className={compact ? "w-full rounded-full" : "rounded-full px-8 uppercase tracking-[0.18em]"}>
-          {compact ? "Subscribe" : "Join the list"}
+        <Button type="submit" variant="gold" className="w-full rounded-full">
+          Subscribe
         </Button>
       </div>
       {state?.error ? (
