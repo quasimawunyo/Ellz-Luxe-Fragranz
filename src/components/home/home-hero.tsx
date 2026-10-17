@@ -48,7 +48,7 @@ export function HomeHero() {
       })}
       <div className="absolute inset-0 bg-rich/55" />
       <div className="relative z-10 mx-auto flex min-h-[70vh] max-w-3xl flex-col items-center justify-center px-6 py-24 text-center">
-        <p className="font-serif text-2xl italic text-snow sm:text-3xl">Welcome</p>
+        <p className="font-serif text-2xl italic text-snow sm:text-3xl">Welcome to</p>
         <h1 className="mt-3 font-serif text-5xl leading-tight sm:text-6xl md:text-7xl">
           <span className="text-snow">Ellz</span>
           <span className="italic text-champagne">Luxe</span> <span className="text-[#8fd4a8]">Fragranz</span>
