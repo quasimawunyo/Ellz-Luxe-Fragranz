@@ -108,7 +108,7 @@ export function ProductGrid({
           href={viewAllHref}
           className="flex min-h-[22rem] items-end rounded-[1.5rem] bg-leaf p-8 text-snow transition hover:bg-leaf/90"
         >
-          <p className="font-serif text-4xl leading-tight">View all products</p>
+          <p className="font-serif text-4xl leading-tight">View all perfumes</p>
         </Link>
       ) : null}
     </div>

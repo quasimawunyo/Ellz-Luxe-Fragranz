@@ -29,7 +29,7 @@ export default async function HomePage() {
       <HomeHero />
       <div className="bg-white px-4 py-8 text-center">
         <Link href="/shop" className={cn(buttonVariants({ variant: "shop" }), "px-8")}>
-          View all
+          View all perfumes
         </Link>
       </div>
 
