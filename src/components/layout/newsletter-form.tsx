@@ -20,9 +20,9 @@ export function NewsletterForm({ compact = false }: { compact?: boolean }) {
           type="email"
           required
           placeholder="Email address"
-          className={compact ? "bg-ivory text-espresso" : "flex-1"}
+          className={compact ? "rounded-full bg-ivory px-5 text-espresso" : "flex-1 rounded-full px-5"}
         />
-        <Button type="submit" variant={compact ? "gold" : "primary"} className={compact ? "w-full" : "uppercase tracking-[0.18em]"}>
+        <Button type="submit" variant={compact ? "gold" : "primary"} className={compact ? "w-full rounded-full" : "rounded-full px-8 uppercase tracking-[0.18em]"}>
           {compact ? "Subscribe" : "Join the list"}
         </Button>
       </div>
