@@ -3,7 +3,7 @@ import Link from "next/link";
 import { FlashSales, picturesForFlashSales } from "@/components/home/flash-sales";
 import { HomeHero } from "@/components/home/home-hero";
 import { NewsletterBand } from "@/components/home/newsletter-band";
-import { ProductGrid } from "@/components/product/product-card";
+import { ProductCard, ProductGrid } from "@/components/product/product-card";
 import { buttonVariants } from "@/components/ui/button";
 import { getCollections, getDiscountedProducts, getFeaturedProducts, getNewArrivals, getStoreSettings } from "@/lib/catalog/queries";
 import { cn } from "@/lib/utils";
@@ -27,6 +27,11 @@ export default async function HomePage() {
   return (
     <>
       <HomeHero />
+      <div className="bg-white px-4 py-8 text-center">
+        <Link href="/shop" className={cn(buttonVariants({ variant: "shop" }), "px-8")}>
+          View all
+        </Link>
+      </div>
 
       <section className="bg-ivory px-4 py-20">
         <div className="mx-auto max-w-7xl">
@@ -88,18 +93,25 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="bg-ivory px-4 py-20">
-        <div className="mx-auto max-w-7xl">
-          <div className="flex items-end justify-between gap-4">
-            <h2 className="font-serif text-4xl md:text-5xl">New arrivals</h2>
-            <Link href="/new" className="text-sm text-taupe hover:text-espresso">
-              View all
-            </Link>
-          </div>
-          <div className="mt-10">
-            <ProductGrid products={arrivals} />
-          </div>
+      <section className="overflow-hidden bg-ivory py-20" aria-label="New arrivals">
+        <div className="mx-auto max-w-7xl px-4">
+          <h2 className="font-serif text-4xl md:text-5xl">New arrivals</h2>
         </div>
+        {arrivals.length ? (
+          <div className="mt-10 overflow-hidden">
+            <div className="flex w-max animate-brand-marquee gap-6 px-4 hover:[animation-play-state:paused]">
+              {[...arrivals, ...arrivals].map((product, index) => (
+                <div
+                  key={`${product.id}-${index}`}
+                  className="w-64 shrink-0 sm:w-72"
+                  aria-hidden={index >= arrivals.length}
+                >
+                  <ProductCard product={product} />
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : null}
       </section>
 
       <section className="bg-white px-4 py-20">
