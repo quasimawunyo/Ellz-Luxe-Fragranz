@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import { primaryImage } from "@/lib/catalog/helpers";
+import { QuickAdd } from "@/components/product/quick-add";
+import { WaitlistButton } from "@/components/product/waitlist-button";
+import { primaryImage, totalStock } from "@/lib/catalog/helpers";
 import type { CatalogProduct } from "@/lib/catalog/types";
 import { formatMoney } from "@/lib/money";
 
@@ -31,9 +33,12 @@ export function FlashSales({ products }: { products: CatalogProduct[] }) {
       {products.map((product) => {
         const image = primaryImage(product);
         const variants = [...product.variants].sort((a, b) => (a.sizeMl ?? 0) - (b.sizeMl ?? 0));
+        const defaultVariant = variants.find((variant) => variant.stock > 0) ?? variants[0];
+        const soldOut = totalStock(product) < 1;
         return (
-          <Link key={product.id} href={`/product/${product.slug}`} className="group block">
-            <div className="relative aspect-square overflow-hidden rounded-[1.5rem] bg-espresso/5">
+          <article key={product.id} className="group">
+            <Link href={`/product/${product.slug}`} className="block">
+              <div className="relative aspect-square overflow-hidden rounded-[1.5rem] bg-espresso/5">
               {image ? (
                 <Image
                   src={image.url}
@@ -60,8 +65,20 @@ export function FlashSales({ products }: { products: CatalogProduct[] }) {
                   ))}
                 </p>
               </div>
+              </div>
+            </Link>
+            <div className="mt-3">
+              {soldOut || !defaultVariant ? (
+                <WaitlistButton productId={product.id} wide />
+              ) : (
+                <QuickAdd
+                  variantId={defaultVariant.id}
+                  wide
+                  label={variants.length > 1 ? `Add ${defaultVariant.label}` : "Add to cart"}
+                />
+              )}
             </div>
-          </Link>
+          </article>
         );
       })}
     </div>

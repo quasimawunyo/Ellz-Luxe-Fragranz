@@ -67,8 +67,7 @@ export function SalePopup({ products }: { products: SalePopupProduct[] }) {
       >
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-[11px] uppercase tracking-[0.32em] text-taupe">Flash sales</p>
-            <h2 id="sale-popup-title" className="mt-2 font-serif text-3xl leading-tight">
+            <h2 id="sale-popup-title" className="font-serif text-3xl leading-tight">
               Flash sales
             </h2>
           </div>
