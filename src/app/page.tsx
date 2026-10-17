@@ -52,10 +52,7 @@ export default async function HomePage() {
       <section className="bg-white px-4 py-20">
         <div className="mx-auto max-w-7xl">
           <div className="flex items-end justify-between gap-4">
-            <div>
-              <h2 className="font-serif text-4xl md:text-5xl">Flash sales</h2>
-              <p className="mt-3 max-w-md text-taupe">Bottles at Ells Luxe Annex.</p>
-            </div>
+            <h2 className="font-serif text-4xl md:text-5xl">Flash sales</h2>
             <Link href="/sale" className="shrink-0 text-sm text-taupe hover:text-espresso">
               View all
             </Link>

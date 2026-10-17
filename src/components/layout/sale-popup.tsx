@@ -81,7 +81,6 @@ export function SalePopup({ products }: { products: SalePopupProduct[] }) {
             <X className="size-5" />
           </button>
         </div>
-        <p className="mt-2 text-sm leading-6 text-taupe">Bottles at Ells Luxe Annex.</p>
         <ul className="mt-5 space-y-3">
           {shown.map((product) => (
             <li key={product.id}>
