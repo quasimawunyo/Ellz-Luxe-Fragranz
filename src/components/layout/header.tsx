@@ -7,6 +7,7 @@ import { SavedHeartLink } from "@/components/layout/saved-heart-link";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { useRouter } from "next/navigation";
 import { BrandLogo } from "@/components/brand/logo";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 
 const NAV = [
   { href: "/shop", label: "Shop" },
@@ -70,6 +71,7 @@ export function Header({
             >
               <Search className="size-5" />
             </button>
+            <ThemeToggle className="text-espresso hover:text-champagne" />
             {ready ? (
               <>
                 {isAdmin ? (
