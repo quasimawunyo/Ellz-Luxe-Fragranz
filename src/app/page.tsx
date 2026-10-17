@@ -28,6 +28,24 @@ export default async function HomePage() {
       <FactTicker />
       <BrandGrid />
 
+      <section className="bg-ivory px-4 py-20">
+        <div className="mx-auto max-w-7xl">
+          <p className="text-[11px] uppercase tracking-[0.42em] text-taupe">Handpicked</p>
+          <div className="mt-4 flex items-end justify-between gap-4">
+            <div>
+              <h2 className="font-serif text-4xl md:text-5xl">Featured products</h2>
+              <p className="mt-3 max-w-md text-taupe">Top picks from the boutique.</p>
+            </div>
+            <Link href="/shop" className="shrink-0 text-sm text-taupe hover:text-espresso">
+              View all products
+            </Link>
+          </div>
+          <div className="mt-10">
+            <ProductGrid products={featured} viewAllHref="/shop" />
+          </div>
+        </div>
+      </section>
+
       <section className="bg-white px-4 py-20">
         <div className="mx-auto max-w-7xl">
           <p className="text-center text-[11px] uppercase tracking-[0.42em] text-taupe">— Collections —</p>
@@ -72,24 +90,6 @@ export default async function HomePage() {
           </div>
           <div className="mt-10">
             <ProductGrid products={arrivals} />
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-white px-4 py-20">
-        <div className="mx-auto max-w-7xl">
-          <p className="text-[11px] uppercase tracking-[0.42em] text-taupe">Handpicked</p>
-          <div className="mt-4 flex items-end justify-between gap-4">
-            <div>
-              <h2 className="font-serif text-4xl md:text-5xl">Featured products</h2>
-              <p className="mt-3 max-w-md text-taupe">Top picks from the boutique.</p>
-            </div>
-            <Link href="/shop" className="shrink-0 text-sm text-taupe hover:text-espresso">
-              View all products
-            </Link>
-          </div>
-          <div className="mt-10">
-            <ProductGrid products={featured} viewAllHref="/shop" />
           </div>
         </div>
       </section>
