@@ -9,10 +9,12 @@ export function QuickAdd({
   variantId,
   disabled,
   wide,
+  label = "Add to cart",
 }: {
   variantId: string;
   disabled?: boolean;
   wide?: boolean;
+  label?: string;
 }) {
   const [state, formAction] = useActionState(addToCartAction, null);
 
@@ -28,7 +30,7 @@ export function QuickAdd({
           wide && "w-full rounded-full",
         )}
       >
-        Add to cart
+        {label}
       </button>
       {state?.error ? (
         <p role="alert" className="mt-2 text-xs text-red-800">

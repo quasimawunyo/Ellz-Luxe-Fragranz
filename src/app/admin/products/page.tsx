@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getAllProductsForAdmin } from "@/lib/catalog/queries";
 import { formatMoney } from "@/lib/money";
-import { isNewProduct, lowestPrice, primaryImage, totalStock } from "@/lib/catalog/helpers";
+import { isNewProduct, primaryImage, totalStock } from "@/lib/catalog/helpers";
 import { StatusPill } from "@/components/admin/status-pill";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -31,7 +31,7 @@ export default async function AdminProductsPage() {
               <th>Kind</th>
               <th>Arrival</th>
               <th>Stock</th>
-              <th>From</th>
+              <th>Price</th>
             </tr>
           </thead>
           <tbody>
@@ -60,7 +60,12 @@ export default async function AdminProductsPage() {
                   </td>
                   <td>{isNewProduct(product) ? "New arrival" : "—"}</td>
                   <td>{totalStock(product)}</td>
-                  <td>{formatMoney(lowestPrice(product))}</td>
+                  <td>
+                    {[...product.variants]
+                      .sort((a, b) => a.sizeMl - b.sizeMl)
+                      .map((variant) => `${variant.label} ${formatMoney(variant.priceMinor)}`)
+                      .join(" · ")}
+                  </td>
                 </tr>
               );
             })}
