@@ -7,20 +7,20 @@ test("home page presents the brand and a shop path", async ({ page }) => {
 });
 
 test("shop filters and product detail, cart persists after refresh", async ({ page }) => {
-  await page.goto("/shop?q=citrus");
-  await expect(page.getByRole("heading", { name: "Citrus Veil" })).toBeVisible();
-  await page.getByRole("link", { name: /citrus veil/i }).first().click();
-  await expect(page.getByRole("heading", { name: "Citrus Veil" })).toBeVisible();
+  await page.goto("/shop?q=silverado");
+  await expect(page.getByRole("heading", { name: "Silverado 21" })).toBeVisible();
+  await page.getByRole("link", { name: /silverado 21/i }).first().click();
+  await expect(page.getByRole("heading", { name: "Silverado 21" })).toBeVisible();
   await page.getByRole("button", { name: /add to cart/i }).click();
   await expect(page.getByRole("link", { name: /cart, 1 item/i })).toBeVisible();
   await page.goto("/cart");
-  await expect(page.getByRole("link", { name: "Citrus Veil" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Silverado 21" })).toBeVisible();
   await page.reload();
-  await expect(page.getByRole("link", { name: "Citrus Veil" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Silverado 21" })).toBeVisible();
 });
 
 test("checkout is reachable with a cart and does not fake payment", async ({ page }) => {
-  await page.goto("/product/citrus-veil");
+  await page.goto("/product/silverado-21");
   await page.getByRole("button", { name: /add to cart/i }).click();
   await expect(page.getByRole("link", { name: /cart, 1 item/i })).toBeVisible();
   await page.goto("/checkout");

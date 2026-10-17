@@ -35,18 +35,20 @@ export default async function BrandPage({ params }: { params: Promise<{ slug: st
         ]}
       />
       <div className="mt-8 flex flex-col items-start gap-6 sm:flex-row sm:items-center">
-        <Image
-          src={brand.logo}
-          alt=""
-          width={160}
-          height={160}
-          unoptimized
-          className="h-24 w-auto object-contain"
-        />
+        {brand.logo ? (
+          <Image
+            src={brand.logo}
+            alt=""
+            width={160}
+            height={160}
+            unoptimized
+            className="h-24 w-auto object-contain"
+          />
+        ) : null}
         <div>
           <h1 className="font-serif text-4xl">{brand.name}</h1>
           <p className="mt-3 max-w-xl text-taupe">
-            Demonstration catalog items currently tagged to this house. Live assortment is confirmed by the boutique.
+            Bottles currently listed for this house. Stock is confirmed at Ells Luxe Annex.
           </p>
         </div>
       </div>

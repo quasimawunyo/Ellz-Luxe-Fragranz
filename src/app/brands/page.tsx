@@ -15,14 +15,18 @@ export default function BrandsPage() {
         {HOUSE_BRANDS.map((brand) => (
           <li key={brand.slug}>
             <Link href={`/brands/${brand.slug}`} className="flex flex-col items-center gap-3 border border-espresso/10 bg-ivory px-4 py-8">
-              <Image
-                src={brand.logo}
-                alt={brand.name}
-                width={180}
-                height={72}
-                unoptimized
-                className="h-20 w-auto max-w-56 object-contain"
-              />
+              {brand.logo ? (
+                <Image
+                  src={brand.logo}
+                  alt={brand.name}
+                  width={180}
+                  height={72}
+                  unoptimized
+                  className="h-20 w-auto max-w-56 object-contain"
+                />
+              ) : (
+                <span className="font-serif text-2xl text-espresso">{brand.name}</span>
+              )}
               <span className="text-sm">{brand.name}</span>
             </Link>
           </li>

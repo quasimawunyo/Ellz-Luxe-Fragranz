@@ -67,20 +67,28 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             productName={product.name}
             currencyCode={settings.currencyCode}
           />
-          <dl className="mt-10 space-y-4 border-t border-espresso/10 pt-8 text-sm">
-            <div>
-              <dt className="text-sm text-taupe">Top notes</dt>
-              <dd>{product.notes.top.join(", ")}</dd>
-            </div>
-            <div>
-              <dt className="text-sm text-taupe">Heart notes</dt>
-              <dd>{product.notes.heart.join(", ")}</dd>
-            </div>
-            <div>
-              <dt className="text-sm text-taupe">Base notes</dt>
-              <dd>{product.notes.base.join(", ")}</dd>
-            </div>
-          </dl>
+          {product.notes.top.length || product.notes.heart.length || product.notes.base.length ? (
+            <dl className="mt-10 space-y-4 border-t border-espresso/10 pt-8 text-sm">
+              {product.notes.top.length ? (
+                <div>
+                  <dt className="text-sm text-taupe">Top notes</dt>
+                  <dd>{product.notes.top.join(", ")}</dd>
+                </div>
+              ) : null}
+              {product.notes.heart.length ? (
+                <div>
+                  <dt className="text-sm text-taupe">Heart notes</dt>
+                  <dd>{product.notes.heart.join(", ")}</dd>
+                </div>
+              ) : null}
+              {product.notes.base.length ? (
+                <div>
+                  <dt className="text-sm text-taupe">Base notes</dt>
+                  <dd>{product.notes.base.join(", ")}</dd>
+                </div>
+              ) : null}
+            </dl>
+          ) : null}
           <div className="mt-8 space-y-3 text-sm leading-7 text-taupe">
             <p>{settings.shippingNote}</p>
             <p>{settings.returnsNote}</p>
