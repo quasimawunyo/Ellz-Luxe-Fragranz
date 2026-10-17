@@ -56,12 +56,7 @@ export default async function HomePage() {
 
       <section className="bg-ivory px-4 py-20">
         <div className="mx-auto max-w-7xl">
-          <div className="flex items-end justify-between gap-4">
-            <h2 className="font-serif text-4xl md:text-5xl">Featured products</h2>
-            <Link href="/shop" className="shrink-0 text-sm text-taupe hover:text-espresso">
-              View all products
-            </Link>
-          </div>
+          <h2 className="font-serif text-4xl md:text-5xl">Featured products</h2>
           <div className="mt-10">
             <ProductGrid products={featured} viewAllHref="/shop" />
           </div>
