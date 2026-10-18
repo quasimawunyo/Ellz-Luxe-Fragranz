@@ -53,6 +53,7 @@ export function HomeHero() {
           <span className="text-snow">Ellz</span>
           <span className="italic text-champagne">Luxe</span> <span className="text-[#8fd4a8]">Fragranz</span>
         </h1>
+        <p className="mt-5 font-serif text-xl italic tracking-wide text-champagne sm:text-2xl">Your scent. Your signature.</p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <Link href="/shop" className={buttonVariants({ variant: "solid" })}>
             Shop
