@@ -22,7 +22,7 @@ export default async function CartPage() {
       {!cart.lines.length ? (
         <div className="mt-10">
             <EmptyState title="Your cart is empty">
-            <Link href="/shop" className="underline">
+            <Link href="/shop" className={cn(buttonVariants({ variant: "shop" }), "mt-6 inline-flex px-8")}>
               Continue shopping
             </Link>
           </EmptyState>

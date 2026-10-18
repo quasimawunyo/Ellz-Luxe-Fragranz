@@ -25,7 +25,7 @@ export function OpenAnnexWhatsApp({
 
   return (
     <p className="mt-8">
-      <a href={href} className={cn(buttonVariants({ variant: "gold" }), "inline-flex")}>
+      <a href={href} className={cn(buttonVariants({ variant: "shop" }), "inline-flex px-8")}>
         Send this order on WhatsApp
       </a>
       <span className="mt-3 block text-sm text-taupe">

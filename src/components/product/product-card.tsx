@@ -16,13 +16,11 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
   const soldOut = !variant || variant.stock < 1;
   const badge = isDiscounted(product)
     ? "Sale"
-    : product.featured
-      ? "Featured"
-      : isNewProduct(product)
-        ? "New"
-        : product.isDemonstration
-          ? "Tester"
-          : null;
+    : isNewProduct(product)
+      ? "New"
+      : product.isDemonstration
+        ? "Tester"
+        : null;
 
   return (
     <article className="group">

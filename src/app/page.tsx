@@ -20,43 +20,29 @@ export default async function HomePage() {
   const shopBy = collections.filter((collection) =>
     ["col-women", "col-men", "col-unisex", "col-gifts"].includes(collection.id),
   );
-  const flash = picturesForFlashSales(
-    discounted.length ? discounted : [...featured, ...arrivals],
-    discounted.length ? discounted.length : 4,
-  );
+  const flash = picturesForFlashSales(discounted, discounted.length);
 
   return (
     <>
       <HomeHero />
       <HeroAnnouncement location={settings.location} phone={settings.contactPhone} />
-      <div className="bg-white px-4 pb-2 pt-8 text-center">
-        <Link href="/shop" className={cn(buttonVariants({ variant: "shop" }), "px-8")}>
-          View all perfumes
-        </Link>
-      </div>
 
-      <section className="overflow-hidden bg-white pb-20 pt-6" aria-label="New arrivals">
-        <div className="mx-auto max-w-7xl px-4">
+      <section className="bg-white px-4 pb-14 pt-14" aria-label="New arrivals">
+        <div className="mx-auto max-w-7xl">
           <h2 className="font-serif text-4xl md:text-5xl">New arrivals</h2>
-        </div>
-        {arrivals.length ? (
-          <div className="mt-10 overflow-hidden">
-            <div className="flex w-max animate-brand-marquee gap-6 px-4 hover:[animation-play-state:paused]">
-              {[...arrivals, ...arrivals].map((product, index) => (
-                <div
-                  key={`${product.id}-${index}`}
-                  className="w-64 shrink-0 sm:w-72"
-                  aria-hidden={index >= arrivals.length}
-                >
+          {arrivals.length ? (
+            <div className="mt-8 flex snap-x snap-mandatory gap-6 overflow-x-auto pb-2">
+              {arrivals.map((product) => (
+                <div key={product.id} className="w-64 shrink-0 snap-start sm:w-72">
                   <ProductCard product={product} />
                 </div>
               ))}
             </div>
-          </div>
-        ) : null}
+          ) : null}
+        </div>
       </section>
 
-      <section className="bg-ivory px-4 py-20">
+      <section className="bg-ivory px-4 py-14">
         <div className="mx-auto max-w-7xl">
           <h2 className="font-serif text-4xl md:text-5xl">Best sellers</h2>
           <div className="mt-10">
@@ -65,21 +51,23 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="bg-white px-4 py-20">
-        <div className="mx-auto max-w-7xl">
-          <div className="flex items-end justify-between gap-4">
-            <h2 className="font-serif text-4xl md:text-5xl">Flash sales</h2>
-            <Link href="/sale" className="shrink-0 text-sm text-taupe hover:text-espresso">
-              View all
-            </Link>
+      {flash.length ? (
+        <section className="bg-white px-4 py-14">
+          <div className="mx-auto max-w-7xl">
+            <div className="flex items-end justify-between gap-4">
+              <h2 className="font-serif text-4xl md:text-5xl">Flash sales</h2>
+              <Link href="/sale" className="shrink-0 text-sm text-taupe hover:text-espresso">
+                View all
+              </Link>
+            </div>
+            <div className="mt-8">
+              <FlashSales products={flash} />
+            </div>
           </div>
-          <div className="mt-10">
-            <FlashSales products={flash} />
-          </div>
-        </div>
-      </section>
+        </section>
+      ) : null}
 
-      <section className="bg-white px-4 py-20">
+      <section className="bg-white px-4 py-14">
         <div className="mx-auto max-w-7xl">
           <div className="flex items-end justify-between gap-4">
             <h2 className="font-serif text-4xl md:text-5xl">Shop by category</h2>
@@ -92,7 +80,7 @@ export default async function HomePage() {
               <Link
                 key={collection.id}
                 href={`/collections/${collection.slug}`}
-                className="group relative min-h-80 overflow-hidden rounded-[1.75rem]"
+                className="group relative min-h-64 overflow-hidden rounded-[1.75rem]"
               >
                 <Image
                   src={collection.imageUrl}
@@ -111,7 +99,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="bg-white px-4 py-20">
+      <section className="bg-white px-4 py-14">
         <div className="mx-auto grid min-h-[24rem] max-w-7xl overflow-hidden rounded-[2rem] bg-rich text-snow md:grid-cols-2">
           <div className="relative min-h-80">
             <Image

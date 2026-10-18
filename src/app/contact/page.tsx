@@ -31,7 +31,7 @@ export default async function ContactPage() {
           <Label htmlFor="message">Message</Label>
           <Textarea id="message" name="message" required />
         </div>
-        <Button type="submit" className="w-full sm:w-auto">
+        <Button type="submit" variant="shop" className="w-full px-8 sm:w-auto">
           Send
         </Button>
       </ActionForm>

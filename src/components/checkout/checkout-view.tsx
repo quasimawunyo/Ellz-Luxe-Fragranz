@@ -122,7 +122,7 @@ export function CheckoutView({
           <Label htmlFor="notes">Order notes (optional)</Label>
           <Textarea id="notes" name="notes" />
         </div>
-        <Button type="submit" className="w-full sm:w-auto">
+        <Button type="submit" variant="shop" className="w-full px-8 sm:w-auto">
           {payLabel}
         </Button>
       </ActionForm>

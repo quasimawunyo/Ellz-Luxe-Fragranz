@@ -58,7 +58,7 @@ export function NewsletterForm({ compact = false }: { compact?: boolean }) {
           placeholder="Email address"
           className="rounded-full bg-ivory px-5 text-espresso"
         />
-        <Button type="submit" variant="gold" className="w-full rounded-full">
+        <Button type="submit" variant="shop" className="w-full rounded-full px-8">
           Subscribe
         </Button>
       </div>

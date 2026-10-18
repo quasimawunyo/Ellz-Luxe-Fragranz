@@ -30,7 +30,7 @@ export default async function AboutPage() {
         <p className="mt-6">Delivery is between 24-72 hours.</p>
         <StoreContact settings={settings} className="mt-8 space-y-2 text-sm text-taupe" />
         <div className="mt-10 flex flex-wrap gap-3">
-          <Link href="/shop" className={cn(buttonVariants({ variant: "gold" }))}>
+          <Link href="/shop" className={cn(buttonVariants({ variant: "shop" }), "px-8")}>
             Shop
           </Link>
           {wa ? (
