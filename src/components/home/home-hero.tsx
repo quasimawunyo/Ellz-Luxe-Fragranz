@@ -46,14 +46,16 @@ export function HomeHero() {
           </div>
         );
       })}
-      <div className="absolute inset-0 bg-rich/55" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(18,24,20,0.78)_0%,rgba(18,24,20,0.5)_58%,rgba(18,24,20,0.32)_100%)]" />
       <div className="relative z-10 mx-auto flex min-h-[70vh] max-w-3xl flex-col items-center justify-center px-6 py-24 text-center">
-        <p className="font-serif text-2xl italic text-snow sm:text-3xl">Welcome to</p>
-        <h1 className="mt-3 font-serif text-5xl leading-tight sm:text-6xl md:text-7xl">
+        <p className="font-serif text-2xl italic text-snow [text-shadow:0_2px_16px_rgba(18,24,20,0.55)] sm:text-3xl">Welcome to</p>
+        <h1 className="mt-3 font-serif text-5xl leading-tight [text-shadow:0_2px_18px_rgba(18,24,20,0.55)] sm:text-6xl md:text-7xl">
           <span className="text-snow">Ellz</span>
-          <span className="italic text-champagne">Luxe</span> <span className="text-[#8fd4a8]">Fragranz</span>
+          <span className="italic text-[#f6e7b2]">Luxe</span> <span className="text-[#e7f6ee]">Fragranz</span>
         </h1>
-        <p className="mt-5 font-serif text-xl italic tracking-wide text-champagne sm:text-2xl">Your scent. Your signature.</p>
+        <p className="mt-5 font-serif text-xl italic tracking-wide text-[#f7f1df] [text-shadow:0_2px_16px_rgba(18,24,20,0.55)] sm:text-2xl">
+          Your scent. Your signature.
+        </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <Link href="/shop" className={buttonVariants({ variant: "solid" })}>
             Shop
