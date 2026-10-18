@@ -57,10 +57,10 @@ export function HomeHero() {
           Your scent. Your signature.
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <Link href="/shop" className={buttonVariants({ variant: "solid" })}>
+          <Link href="/shop" className={cn(buttonVariants({ variant: "shop" }), "px-8")}>
             Shop
           </Link>
-          <Link href="/about" className={buttonVariants({ variant: "ghostOnDark" })}>
+          <Link href="/about" className={cn(buttonVariants({ variant: "shop" }), "px-8")}>
             About
           </Link>
         </div>

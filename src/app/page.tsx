@@ -125,7 +125,7 @@ export default async function HomePage() {
           <div className="flex flex-col justify-center px-8 py-16 md:px-16">
             <h2 className="font-serif text-4xl">About</h2>
             <p className="mt-6 max-w-md leading-7 text-snow/75">{settings.aboutStory}</p>
-            <Link href="/about" className={cn(buttonVariants({ variant: "gold" }), "mt-8 inline-flex w-fit")}>
+            <Link href="/about" className={cn(buttonVariants({ variant: "shop" }), "mt-8 inline-flex w-fit px-8")}>
               About us
             </Link>
           </div>
