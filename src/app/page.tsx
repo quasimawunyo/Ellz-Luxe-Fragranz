@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { FlashSales, picturesForFlashSales } from "@/components/home/flash-sales";
+import { HeroAnnouncement } from "@/components/home/hero-announcement";
 import { HomeHero } from "@/components/home/home-hero";
 import { NewsletterBand } from "@/components/home/newsletter-band";
 import { ProductCard, ProductGrid } from "@/components/product/product-card";
@@ -27,6 +28,7 @@ export default async function HomePage() {
   return (
     <>
       <HomeHero />
+      <HeroAnnouncement location={settings.location} phone={settings.contactPhone} />
       <div className="bg-white px-4 pb-2 pt-8 text-center">
         <Link href="/shop" className={cn(buttonVariants({ variant: "shop" }), "px-8")}>
           View all perfumes
