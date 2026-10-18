@@ -26,7 +26,7 @@ export function QuickAdd({
         type="submit"
         disabled={disabled}
         className={cn(
-          buttonVariants({ variant: wide ? "primary" : "shop", size: "sm" }),
+          buttonVariants({ variant: "shop", size: "sm" }),
           wide && "w-full rounded-full",
         )}
       >
