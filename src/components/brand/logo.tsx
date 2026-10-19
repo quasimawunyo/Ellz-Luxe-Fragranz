@@ -17,12 +17,11 @@ export function BrandLogo({
 }) {
   const image = (
     <Image
-      src="/images/logo.png?v=header-ivory"
+      src="/images/logo.png"
       alt={label}
       width={size}
       height={size}
       priority={priority}
-      unoptimized
       className="h-auto w-full bg-transparent object-contain"
     />
   );

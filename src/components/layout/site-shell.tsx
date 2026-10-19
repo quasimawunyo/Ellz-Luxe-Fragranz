@@ -1,6 +1,13 @@
+import { Suspense } from "react";
+import { PublicAnnouncement } from "@/components/layout/public-announcement";
+import { AnnexPromises } from "@/components/layout/annex-promises";
+import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
-import type { SalePopupProduct } from "@/components/layout/sale-popup";
+import { SalePopup, type SalePopupProduct } from "@/components/layout/sale-popup";
 import { SiteChrome } from "@/components/layout/site-chrome";
+import { TrustAndPay } from "@/components/layout/trust-and-pay";
+import { WhatsAppButton } from "@/components/layout/whatsapp-button";
+import { BrandGrid } from "@/components/brand/brand-grid";
 import { getAuthContext } from "@/lib/auth/session";
 import { resolveCart } from "@/lib/cart/store";
 import { discountedVariantOffers, primaryImage, sellingVariant } from "@/lib/catalog/helpers";
@@ -33,28 +40,50 @@ function salePopupProducts(products: Awaited<ReturnType<typeof getDiscountedProd
   });
 }
 
-export async function SiteShell({ children }: { children: React.ReactNode }) {
-  const [settings, discounted] = await Promise.all([getStoreSettings(), getDiscountedProducts()]);
-  const saleProducts = salePopupProducts(discounted);
-  let cartCount = 0;
-  let signedIn = false;
-  let isAdmin = false;
-  try {
-    const [cart, auth] = await Promise.all([resolveCart(), getAuthContext()]);
-    cartCount = cart.itemCount;
-    signedIn = Boolean(auth.user);
-    isAdmin = auth.role === "admin" || auth.role === "super_admin";
-  } catch {
-    cartCount = 0;
-    signedIn = false;
-    isAdmin = false;
-  }
+async function ChromeHeader() {
+  const [settings, session] = await Promise.all([
+    getStoreSettings(),
+    Promise.all([resolveCart(), getAuthContext()]).catch(() => null),
+  ]);
+  const cartCount = session?.[0].itemCount ?? 0;
+  const signedIn = Boolean(session?.[1].user);
+  const isAdmin = session?.[1].role === "admin" || session?.[1].role === "super_admin";
 
   return (
+    <>
+      <PublicAnnouncement location={settings.location} phone={settings.contactPhone} />
+      <Header cartCount={cartCount} signedIn={signedIn} isAdmin={isAdmin} />
+    </>
+  );
+}
+
+async function ChromeExtras() {
+  const [settings, discounted] = await Promise.all([getStoreSettings(), getDiscountedProducts()]);
+  return (
+    <>
+      <BrandGrid />
+      <AnnexPromises phone={settings.contactPhone} />
+      <TrustAndPay />
+      <Footer settings={settings} />
+      <WhatsAppButton phone={settings.contactPhone} />
+      <SalePopup products={salePopupProducts(discounted)} />
+    </>
+  );
+}
+
+export function SiteShell({ children }: { children: React.ReactNode }) {
+  return (
     <SiteChrome
-      settings={settings}
-      saleProducts={saleProducts}
-      header={<Header cartCount={cartCount} signedIn={signedIn} isAdmin={isAdmin} />}
+      header={
+        <Suspense fallback={<Header cartCount={0} signedIn={false} ready={false} />}>
+          <ChromeHeader />
+        </Suspense>
+      }
+      extras={
+        <Suspense fallback={null}>
+          <ChromeExtras />
+        </Suspense>
+      }
     >
       {children}
     </SiteChrome>

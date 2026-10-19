@@ -14,8 +14,17 @@ const SLIDES = [
 
 export function HomeHero() {
   const [index, setIndex] = useState(0);
+  const [restLoaded, setRestLoaded] = useState(false);
 
   useEffect(() => {
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (motion.matches) return;
+    const idle = window.setTimeout(() => setRestLoaded(true), 1200);
+    return () => window.clearTimeout(idle);
+  }, []);
+
+  useEffect(() => {
+    if (!restLoaded) return;
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (motion.matches) return;
 
@@ -23,11 +32,13 @@ export function HomeHero() {
       setIndex((current) => (current + 1) % SLIDES.length);
     }, 7000);
     return () => window.clearInterval(timer);
-  }, [index]);
+  }, [index, restLoaded]);
+
+  const slides = restLoaded ? SLIDES : SLIDES.slice(0, 1);
 
   return (
     <section className="relative min-h-[70vh] overflow-hidden bg-rich text-snow" aria-roledescription="carousel" aria-label="EllzLuxe Fragranz">
-      {SLIDES.map((slide, slideIndex) => {
+      {slides.map((slide, slideIndex) => {
         const active = slideIndex === index;
         return (
           <div
@@ -74,7 +85,10 @@ export function HomeHero() {
               type="button"
               aria-label={`Photo ${slideIndex + 1}`}
               aria-current={active ? "true" : undefined}
-              onClick={() => setIndex(slideIndex)}
+              onClick={() => {
+                setRestLoaded(true);
+                setIndex(slideIndex);
+              }}
               className={cn("h-1.5 rounded-full", active ? "w-8 bg-champagne" : "w-3 bg-snow/50")}
             />
           );

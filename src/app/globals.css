@@ -44,10 +44,6 @@
   --animate-brand-marquee: brand-marquee 40s linear infinite;
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
@@ -93,9 +89,6 @@ h3,
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
   *,
   *::before,
   *::after {

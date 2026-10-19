@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { DEMO_CATEGORIES, DEMO_COLLECTIONS, DEMO_FAQS, DEMO_PRODUCTS, DEMO_SETTINGS } from "@/lib/catalog/seed";
 import { filterProducts, isDiscounted, paginate, relatedProducts } from "@/lib/catalog/helpers";
 import type { CatalogProduct, StoreSettings } from "@/lib/catalog/types";
@@ -40,7 +41,7 @@ function withCategoryNames(
   }));
 }
 
-export async function getStoreSettings(): Promise<StoreSettings> {
+export const getStoreSettings = cache(async (): Promise<StoreSettings> => {
   if (!isSupabaseConfigured()) return DEMO_SETTINGS;
   const supabase = await createUserSupabase();
   if (!supabase) return DEMO_SETTINGS;
@@ -67,7 +68,7 @@ export async function getStoreSettings(): Promise<StoreSettings> {
     aboutStory: String(map.about_story ?? DEMO_SETTINGS.aboutStory),
     deliveryMethods: (map.delivery_methods as StoreSettings["deliveryMethods"]) ?? DEMO_SETTINGS.deliveryMethods,
   };
-}
+});
 
 export async function getFaqs() {
   if (!isSupabaseConfigured()) return DEMO_FAQS;
@@ -107,7 +108,7 @@ export async function getCategories() {
   return data.map((row) => ({ id: row.id, slug: row.slug, name: row.name }));
 }
 
-async function loadAllProducts(): Promise<CatalogProduct[]> {
+const loadAllProducts = cache(async (): Promise<CatalogProduct[]> => {
   if (!isSupabaseConfigured()) {
     const overlay = await demoStockOverlay();
     return withCategoryNames(applyStock(DEMO_PRODUCTS, overlay), DEMO_CATEGORIES);
@@ -118,11 +119,13 @@ async function loadAllProducts(): Promise<CatalogProduct[]> {
     return withCategoryNames(applyStock(DEMO_PRODUCTS, overlay), DEMO_CATEGORIES);
   }
 
-  const { data: products } = await supabase.from("products").select("*");
-  const { data: variants } = await supabase.from("product_variants").select("*");
-  const { data: images } = await supabase.from("product_images").select("*");
-  const { data: links } = await supabase.from("collection_products").select("*");
-  const { data: categories } = await supabase.from("categories").select("id, name");
+  const [{ data: products }, { data: variants }, { data: images }, { data: links }, { data: categories }] = await Promise.all([
+    supabase.from("products").select("*"),
+    supabase.from("product_variants").select("*"),
+    supabase.from("product_images").select("*"),
+    supabase.from("collection_products").select("*"),
+    supabase.from("categories").select("id, name"),
+  ]);
   if (!products?.length) {
     const overlay = await demoStockOverlay();
     return withCategoryNames(applyStock(DEMO_PRODUCTS, overlay), DEMO_CATEGORIES);
@@ -170,7 +173,7 @@ async function loadAllProducts(): Promise<CatalogProduct[]> {
       })),
     createdAt: product.created_at,
   })), categories ?? []);
-}
+});
 
 export async function getPublishedProducts() {
   const all = await loadAllProducts();

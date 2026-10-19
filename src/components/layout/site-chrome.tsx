@@ -2,26 +2,16 @@
 
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
-import type { StoreSettings } from "@/lib/catalog/types";
-import { AnnouncementBar } from "@/components/layout/announcement-bar";
-import { Footer } from "@/components/layout/footer";
-import { BrandGrid } from "@/components/brand/brand-grid";
-import { AnnexPromises } from "@/components/layout/annex-promises";
-import { TrustAndPay } from "@/components/layout/trust-and-pay";
 import { InstallPrompt } from "@/components/layout/install-prompt";
-import { SalePopup, type SalePopupProduct } from "@/components/layout/sale-popup";
-import { WhatsAppButton } from "@/components/layout/whatsapp-button";
 
 export function SiteChrome({
   children,
   header,
-  settings,
-  saleProducts,
+  extras,
 }: {
   children: ReactNode;
   header: ReactNode;
-  settings: StoreSettings;
-  saleProducts: SalePopupProduct[];
+  extras: ReactNode;
 }) {
   const pathname = usePathname();
   if (pathname.startsWith("/admin")) {
@@ -36,19 +26,11 @@ export function SiteChrome({
       >
         Skip to content
       </a>
-      {pathname === "/" ? null : (
-        <AnnouncementBar location={settings.location} phone={settings.contactPhone} />
-      )}
       {header}
       <main id="main" className="flex-1 pb-16 lg:pb-0">
         {children}
       </main>
-      <BrandGrid />
-      <AnnexPromises phone={settings.contactPhone} />
-      <TrustAndPay />
-      <Footer settings={settings} />
-      <WhatsAppButton phone={settings.contactPhone} />
-      <SalePopup products={saleProducts} />
+      {extras}
       <InstallPrompt />
     </>
   );

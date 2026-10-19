@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { connection } from "next/server";
 import { Outfit, Playfair_Display } from "next/font/google";
 import { Toaster } from "@/components/ui/toaster";
 import { SiteShell } from "@/components/layout/site-shell";
@@ -14,7 +13,7 @@ const outfit = Outfit({
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "600"],
   style: ["normal", "italic"],
   variable: "--font-playfair",
 });
@@ -51,10 +50,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({ children }: LayoutProps<"/">) {
-  await connection();
+export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth" className={`${outfit.variable} ${playfair.variable} h-full`}>
+    <html lang="en" suppressHydrationWarning className={`${outfit.variable} ${playfair.variable} h-full`}>
       <head>
         <ThemeScript />
       </head>

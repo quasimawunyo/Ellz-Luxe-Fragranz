@@ -8,8 +8,8 @@ export function BrandGrid() {
   return (
     <section className="bg-leaf" aria-label="Brands">
       <p className="pt-3 text-center text-[10px] font-bold uppercase tracking-[0.4em] text-champagne sm:text-xs">Brands</p>
-      <div className="overflow-hidden">
-        <div className="brand-marquee-track flex w-max items-center gap-6 py-4 sm:gap-10 sm:py-5">
+      <div className="overflow-x-auto md:overflow-hidden">
+        <div className="brand-marquee-track flex w-max items-center gap-6 py-4 max-md:animate-none! sm:gap-10 sm:py-5">
           {LOOP.map((brand, index) => (
             <Link
               key={`${brand.slug}-${index}`}
