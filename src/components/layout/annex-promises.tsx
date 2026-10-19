@@ -26,16 +26,16 @@ const PROMISES = [
 
 export function AnnexPromises({ phone }: { phone: string }) {
   return (
-    <section className="bg-rich py-7 text-snow sm:py-8" aria-label="Shopping with EllzLuxe Fragranz">
-      <div className="mx-auto grid max-w-6xl grid-cols-2 gap-y-6 px-4 lg:grid-cols-4 lg:gap-y-0">
+    <section className="bg-rich py-3.5 text-snow sm:py-4" aria-label="Shopping with EllzLuxe Fragranz">
+      <div className="mx-auto grid max-w-6xl grid-cols-2 gap-y-3 px-4 lg:grid-cols-4 lg:gap-y-0">
         {PROMISES.map((item) => {
           const Icon = item.icon;
           const body = typeof item.body === "function" ? item.body(phone) : item.body;
           return (
-            <div key={item.title} className="px-3 text-center sm:px-5">
-              <Icon className="mx-auto size-7 text-champagne sm:size-8" strokeWidth={1.5} aria-hidden />
-              <p className="mt-2.5 text-sm">{item.title}</p>
-              <p className="mt-1 text-xs leading-5 text-snow/80">{body}</p>
+            <div key={item.title} className="px-2 text-center sm:px-4">
+              <Icon className="mx-auto size-5 text-champagne" strokeWidth={1.5} aria-hidden />
+              <p className="mt-1 text-xs sm:text-sm">{item.title}</p>
+              <p className="mt-0.5 text-[11px] leading-4 text-snow/80 sm:text-xs">{body}</p>
             </div>
           );
         })}
