@@ -84,8 +84,10 @@ h3,
   animation: brand-marquee 40s linear infinite;
 }
 
-.brand-marquee-track:hover {
-  animation-play-state: paused;
+@media (hover: hover) {
+  .brand-marquee-track:hover {
+    animation-play-state: paused;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
