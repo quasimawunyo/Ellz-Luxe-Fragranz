@@ -17,9 +17,8 @@ export default async function HomePage() {
     getCollections(),
     getStoreSettings(),
   ]);
-  const shopBy = collections.filter((collection) =>
-    ["col-women", "col-men", "col-unisex", "col-gifts"].includes(collection.id),
-  );
+  const categoryOrder = ["col-women", "col-men", "col-unisex", "col-gifts"];
+  const shopBy = categoryOrder.flatMap((id) => collections.filter((collection) => collection.id === id));
   const flash = picturesForFlashSales(discounted, discounted.length);
 
   return (
@@ -44,6 +43,38 @@ export default async function HomePage() {
 
       <section className="bg-ivory px-4 py-14">
         <div className="mx-auto max-w-7xl">
+          <div className="flex items-end justify-between gap-4">
+            <h2 className="font-serif text-4xl md:text-5xl">Shop by category</h2>
+            <Link href="/collections" className="shrink-0 text-sm text-taupe hover:text-espresso">
+              All categories
+            </Link>
+          </div>
+          <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+            {shopBy.map((collection) => (
+              <Link
+                key={collection.id}
+                href={`/collections/${collection.slug}`}
+                className="group relative aspect-[4/5] overflow-hidden rounded-[1.25rem] sm:rounded-[1.75rem]"
+              >
+                <Image
+                  src={collection.imageUrl}
+                  alt=""
+                  fill
+                  sizes="(min-width: 1024px) 25vw, 50vw"
+                  className="object-cover transition duration-500 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-rich/75 via-rich/15 to-transparent" />
+                <span className="absolute inset-x-3 bottom-4 font-serif text-xl leading-tight text-snow sm:inset-x-5 sm:bottom-6 sm:text-3xl">
+                  {collection.name.replace(" fragrances", "")}
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-white px-4 py-14">
+        <div className="mx-auto max-w-7xl">
           <h2 className="font-serif text-4xl md:text-5xl">Best sellers</h2>
           <div className="mt-10">
             <ProductGrid products={featured} viewAllHref="/shop" className="grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-6 lg:gap-y-12" />
@@ -66,38 +97,6 @@ export default async function HomePage() {
           </div>
         </section>
       ) : null}
-
-      <section className="bg-white px-4 py-14">
-        <div className="mx-auto max-w-7xl">
-          <div className="flex items-end justify-between gap-4">
-            <h2 className="font-serif text-4xl md:text-5xl">Shop by category</h2>
-            <Link href="/collections" className="shrink-0 text-sm text-taupe hover:text-espresso">
-              All categories
-            </Link>
-          </div>
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {shopBy.map((collection) => (
-              <Link
-                key={collection.id}
-                href={`/collections/${collection.slug}`}
-                className="group relative min-h-64 overflow-hidden rounded-[1.75rem]"
-              >
-                <Image
-                  src={collection.imageUrl}
-                  alt=""
-                  fill
-                  sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-                  className="object-cover transition duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-rich/70 via-rich/10 to-transparent" />
-                <span className="absolute inset-x-5 bottom-6 font-serif text-3xl leading-tight text-snow">
-                  {collection.name.replace(" fragrances", "")}
-                </span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
 
       <section className="bg-white px-4 py-14">
         <div className="mx-auto grid min-h-[24rem] max-w-7xl overflow-hidden rounded-[2rem] bg-rich text-snow md:grid-cols-2">
