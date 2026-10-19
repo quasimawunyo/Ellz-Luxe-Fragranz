@@ -3,6 +3,7 @@ import { signInAction } from "@/app/actions/auth";
 import { ActionForm } from "@/components/forms/form-status";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { isSupabaseConfigured } from "@/lib/env";
 import { safeInternalPath } from "@/lib/security/paths";
 
@@ -30,10 +31,9 @@ export default async function LoginPage({
           </div>
           <div>
             <Label htmlFor="password">Password</Label>
-            <Input
+            <PasswordInput
               id="password"
               name="password"
-              type="password"
               required
               minLength={8}
               autoComplete="current-password"
