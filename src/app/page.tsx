@@ -46,7 +46,7 @@ export default async function HomePage() {
         <div className="mx-auto max-w-7xl">
           <h2 className="font-serif text-4xl md:text-5xl">Best sellers</h2>
           <div className="mt-10">
-            <ProductGrid products={featured} viewAllHref="/shop" />
+            <ProductGrid products={featured} viewAllHref="/shop" className="grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-6 lg:gap-y-12" />
           </div>
         </div>
       </section>
