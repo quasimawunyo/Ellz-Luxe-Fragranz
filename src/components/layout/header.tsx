@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { Menu, Search, ShoppingBag, User, X } from "lucide-react";
 import { SavedHeartLink } from "@/components/layout/saved-heart-link";
 import { MobileNav } from "@/components/layout/mobile-nav";
-import { useRouter } from "next/navigation";
 import { BrandLogo } from "@/components/brand/logo";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 
@@ -39,18 +39,45 @@ export function Header({
   ready?: boolean;
 }) {
   const [open, setOpen] = useState(false);
+  const [panelTop, setPanelTop] = useState(0);
+  const headerRef = useRef<HTMLElement>(null);
   const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!open) return;
+    const measure = () => setPanelTop(headerRef.current?.getBoundingClientRect().bottom ?? 0);
+    measure();
+    document.body.style.overflow = "hidden";
+    window.addEventListener("resize", measure);
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("resize", measure);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-espresso/8 bg-white/95 backdrop-blur">
+      <header ref={headerRef} className="sticky top-0 z-40 border-b border-espresso/8 bg-white/95 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center gap-2 px-3 py-2.5 sm:gap-3 sm:px-4 sm:py-3 lg:grid lg:grid-cols-[1fr_auto_1fr]">
           <div className="flex min-w-0 flex-1 items-center">
             <button
               type="button"
               className="grid size-10 place-items-center sm:size-11 lg:hidden"
               aria-label={open ? "Close menu" : "Open menu"}
-              onClick={() => setOpen((value) => !value)}
+              onClick={() => {
+                setPanelTop(headerRef.current?.getBoundingClientRect().bottom ?? 0);
+                setOpen((value) => !value);
+              }}
             >
               {open ? <X /> : <Menu />}
             </button>
@@ -98,51 +125,65 @@ export function Header({
             </Link>
           </div>
         </div>
-        {open ? (
-          <nav className="border-t border-espresso/10 px-4 py-3 lg:hidden">
-            <form
-              className="mb-3 flex items-center gap-2 border-b border-espresso/15 pb-2"
-              onSubmit={(event) => {
-                event.preventDefault();
-                const q = String(new FormData(event.currentTarget).get("q") ?? "");
-                setOpen(false);
-                router.push(`/search?q=${encodeURIComponent(q)}`);
-              }}
-            >
-              <Search className="size-4 text-taupe" />
-              <label className="sr-only" htmlFor="site-search-mobile">
-                Search products
-              </label>
-              <input
-                id="site-search-mobile"
-                name="q"
-                placeholder="Search"
-                className="h-10 flex-1 bg-transparent text-sm outline-none"
-              />
-            </form>
+      </header>
+      {open ? (
+        <nav
+          className="fixed inset-x-0 bottom-0 z-[60] overflow-y-auto bg-ivory px-6 pb-10 pt-6 lg:hidden"
+          style={{ top: panelTop }}
+          aria-label="Menu"
+        >
+          <form
+            className="flex items-center gap-3 rounded-full border border-espresso/15 bg-white px-5"
+            onSubmit={(event) => {
+              event.preventDefault();
+              const q = String(new FormData(event.currentTarget).get("q") ?? "");
+              setOpen(false);
+              router.push(`/search?q=${encodeURIComponent(q)}`);
+            }}
+          >
+            <Search className="size-4 text-taupe" />
+            <label className="sr-only" htmlFor="site-search-mobile">
+              Search products
+            </label>
+            <input
+              id="site-search-mobile"
+              name="q"
+              placeholder="Search perfumes"
+              className="h-12 flex-1 bg-transparent text-sm outline-none"
+            />
+          </form>
+          <div className="mt-8">
             {NAV.map((item) => (
-              <Link key={item.href} href={item.href} className="block py-2.5 text-sm" onClick={() => setOpen(false)}>
+              <Link
+                key={item.href}
+                href={item.href}
+                className="block border-b border-espresso/10 py-4 font-serif text-3xl"
+                onClick={() => setOpen(false)}
+              >
                 {item.label}
               </Link>
             ))}
+          </div>
+          <p className="mt-10 text-[11px] font-medium uppercase tracking-[0.28em] text-taupe">Browse</p>
+          <div className="mt-2 grid grid-cols-2 gap-x-8">
             {SHOP.map((link) => (
               <Link
                 key={link.href + link.label}
                 href={link.href}
-                className="block py-1.5 pl-3 text-sm text-taupe"
+                className="border-b border-espresso/10 py-3 text-sm"
                 onClick={() => setOpen(false)}
               >
                 {link.label}
               </Link>
             ))}
-            {isAdmin ? (
-              <Link href="/admin" className="mt-2 block py-2.5 text-sm" onClick={() => setOpen(false)}>
-                Admin
-              </Link>
-            ) : null}
-          </nav>
-        ) : null}
-      </header>
+          </div>
+          {isAdmin ? (
+            <Link href="/admin" className="mt-6 block py-3 text-sm" onClick={() => setOpen(false)}>
+              Admin
+            </Link>
+          ) : null}
+        </nav>
+      ) : null}
       {ready ? <MobileNav cartCount={cartCount} signedIn={signedIn} /> : null}
     </>
   );
