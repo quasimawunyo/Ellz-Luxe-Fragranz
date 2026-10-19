@@ -15,32 +15,44 @@ export default async function LoginPage({
 }) {
   const { next } = await searchParams;
   return (
-    <div className="mx-auto max-w-md px-4 py-16">
-      <h1 className="font-serif text-4xl">Sign in</h1>
-      {!isSupabaseConfigured() ? (
-        <p className="mt-4 text-sm text-taupe">
-          Customer accounts are not open yet.
-        </p>
-      ) : null}
-      <ActionForm action={signInAction} className="mt-8 space-y-4">
-        <input type="hidden" name="next" value={safeInternalPath(next)} />
-        <div>
-          <Label htmlFor="email">Email</Label>
-          <Input id="email" name="email" type="email" required autoComplete="email" />
+    <div className="mx-auto max-w-md px-4 py-12 md:py-16">
+      <div className="rounded-[1.75rem] border border-espresso/10 bg-white p-6 sm:p-8">
+        <h1 className="font-serif text-4xl">Sign in</h1>
+        <p className="mt-2 text-sm text-taupe">See your orders and saved bottles.</p>
+        {!isSupabaseConfigured() ? (
+          <p className="mt-4 text-sm text-taupe">Customer accounts are not open yet.</p>
+        ) : null}
+        <ActionForm action={signInAction} className="mt-8 space-y-4">
+          <input type="hidden" name="next" value={safeInternalPath(next)} />
+          <div>
+            <Label htmlFor="email">Email</Label>
+            <Input id="email" name="email" type="email" required autoComplete="email" className="rounded-xl px-4" />
+          </div>
+          <div>
+            <Label htmlFor="password">Password</Label>
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              required
+              minLength={8}
+              autoComplete="current-password"
+              className="rounded-xl px-4"
+            />
+          </div>
+          <Button type="submit" variant="shop" className="w-full">
+            Sign in
+          </Button>
+        </ActionForm>
+        <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm">
+          <Link href="/signup" className="text-espresso underline-offset-4 hover:underline">
+            Create an account
+          </Link>
+          <Link href="/forgot-password" className="text-taupe hover:text-espresso">
+            Forgot password
+          </Link>
         </div>
-        <div>
-          <Label htmlFor="password">Password</Label>
-          <Input id="password" name="password" type="password" required minLength={8} autoComplete="current-password" />
-        </div>
-        <Button type="submit" className="w-full">
-          Sign in
-        </Button>
-      </ActionForm>
-      <p className="mt-6 text-sm">
-        <Link href="/signup">Create an account</Link>
-        {" · "}
-        <Link href="/forgot-password">Forgot password</Link>
-      </p>
+      </div>
     </div>
   );
 }
