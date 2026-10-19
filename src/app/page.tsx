@@ -41,21 +41,21 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="bg-ivory px-4 py-14">
+      <section className="bg-ivory px-4 py-8 md:py-12">
         <div className="mx-auto max-w-7xl">
           <div className="flex items-end justify-between gap-4">
-            <h2 className="font-serif text-4xl md:text-5xl">Shop by category</h2>
+            <h2 className="font-serif text-3xl md:text-4xl">Shop by category</h2>
             <Link href="/collections" className="shrink-0 text-sm text-taupe hover:text-espresso">
               All categories
             </Link>
           </div>
-          <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+          <div className="mt-5 grid grid-cols-2 gap-2.5 sm:mt-6 sm:gap-4 lg:grid-cols-4">
             {shopBy.map((collection) => (
               <Link
                 key={collection.id}
                 href={`/collections/${collection.slug}`}
                 prefetch
-                className="group relative aspect-[4/5] overflow-hidden rounded-[1.25rem] sm:rounded-[1.75rem]"
+                className="group relative aspect-[3/2] min-w-0 overflow-hidden rounded-2xl sm:aspect-[4/3] lg:rounded-[1.5rem]"
               >
                 <Image
                   src={collection.imageUrl}
@@ -64,8 +64,8 @@ export default async function HomePage() {
                   sizes="(min-width: 1024px) 25vw, 50vw"
                   className="object-cover transition duration-500 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-rich/75 via-rich/15 to-transparent" />
-                <span className="absolute inset-x-3 bottom-4 font-serif text-xl leading-tight text-snow sm:inset-x-5 sm:bottom-6 sm:text-3xl">
+                <div className="absolute inset-0 bg-gradient-to-t from-rich/75 via-rich/20 to-transparent" />
+                <span className="absolute inset-x-2.5 bottom-2.5 font-serif text-base leading-tight text-snow sm:inset-x-4 sm:bottom-4 sm:text-xl">
                   {collection.name.replace(" fragrances", "")}
                 </span>
               </Link>
