@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { Outfit, Playfair_Display } from "next/font/google";
 import { Toaster } from "@/components/ui/toaster";
 import { SiteShell } from "@/components/layout/site-shell";
+import { InstallCapture } from "@/components/layout/install-capture";
 import { ThemeScript } from "@/components/theme/theme-script";
 import { resolveSiteUrl } from "@/lib/site-url";
 import "./globals.css";
@@ -50,10 +52,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
   return (
     <html lang="en" suppressHydrationWarning className={`${outfit.variable} ${playfair.variable} h-full`}>
       <head>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <InstallCapture nonce={nonce} />
         <ThemeScript />
       </head>
       <body className="flex min-h-full flex-col bg-ivory text-espresso antialiased">

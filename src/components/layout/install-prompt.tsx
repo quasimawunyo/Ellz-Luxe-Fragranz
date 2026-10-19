@@ -13,65 +13,106 @@ type BeforeInstallPromptEvent = Event & {
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 };
 
+type InstallWindow = Window & {
+  __elfInstallPrompt?: BeforeInstallPromptEvent;
+};
+
 const tiles = [
   { icon: Smartphone, label: "One tap" },
   { icon: ShoppingBag, label: "The shop" },
   { icon: MessageCircle, label: "WhatsApp" },
 ];
 
+function isIosDevice() {
+  const ua = navigator.userAgent;
+  const iPadOs = navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1;
+  return /iphone|ipad|ipod/i.test(ua) || iPadOs;
+}
+
+function isStandalone() {
+  const nav = navigator as Navigator & { standalone?: boolean };
+  return window.matchMedia("(display-mode: standalone)").matches || nav.standalone === true;
+}
+
 export function InstallPrompt() {
-  const [open, setOpen] = useState(false);
   const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null);
+  const [ios, setIos] = useState(false);
+  const [phone, setPhone] = useState(false);
+  const [waited, setWaited] = useState(false);
+  const [dismissed, setDismissed] = useState(true);
   const [manual, setManual] = useState<string | null>(null);
   const [host, setHost] = useState("");
 
   useEffect(() => {
-    if (window.matchMedia("(display-mode: standalone)").matches) return;
-    if (localStorage.getItem(NEVER_KEY) === "1" || sessionStorage.getItem(LATER_KEY) === "1") return;
-    setHost(window.location.host);
+    if (isStandalone()) return;
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("/sw.js").catch(() => undefined);
     }
-    const onPrompt = (event: Event) => {
-      event.preventDefault();
-      setDeferred(event as BeforeInstallPromptEvent);
+
+    const installWindow = window as InstallWindow;
+    const take = (event?: BeforeInstallPromptEvent) => {
+      const promptEvent = event ?? installWindow.__elfInstallPrompt ?? null;
+      if (!promptEvent) return;
+      promptEvent.preventDefault();
+      installWindow.__elfInstallPrompt = promptEvent;
+      setDeferred(promptEvent);
     };
+    take();
+    const onPrompt = (event: Event) => take(event as BeforeInstallPromptEvent);
+    const onReady = () => take();
     window.addEventListener("beforeinstallprompt", onPrompt);
-    const id = window.setTimeout(() => setOpen(true), SHOW_AFTER_MS);
+    window.addEventListener("elf-install-ready", onReady);
+
+    const hidden = localStorage.getItem(NEVER_KEY) === "1" || sessionStorage.getItem(LATER_KEY) === "1";
+    const iosDevice = isIosDevice();
+    setIos(iosDevice);
+    setPhone(window.matchMedia("(max-width: 767px), (pointer: coarse)").matches);
+    setHost(window.location.host);
+    setDismissed(hidden);
+    const id = window.setTimeout(() => setWaited(true), SHOW_AFTER_MS);
+
     return () => {
       window.clearTimeout(id);
       window.removeEventListener("beforeinstallprompt", onPrompt);
+      window.removeEventListener("elf-install-ready", onReady);
     };
   }, []);
 
   function later() {
     sessionStorage.setItem(LATER_KEY, "1");
-    setOpen(false);
+    setDismissed(true);
   }
 
   function never() {
     localStorage.setItem(NEVER_KEY, "1");
-    setOpen(false);
+    setDismissed(true);
   }
 
   async function install() {
     if (!deferred) {
-      const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
-      setManual(
-        ios
-          ? "Tap Share, then Add to Home Screen."
-          : "Open the browser menu, then choose Add to Home Screen.",
-      );
+      setManual(ios ? "Tap Share, then Add to Home Screen." : "Open the browser menu, then choose Add to Home Screen.");
       return;
     }
-    await deferred.prompt();
-    const choice = await deferred.userChoice;
-    setDeferred(null);
-    if (choice.outcome === "accepted") localStorage.setItem(NEVER_KEY, "1");
-    setOpen(false);
+    try {
+      await deferred.prompt();
+      const choice = await deferred.userChoice;
+      (window as InstallWindow).__elfInstallPrompt = undefined;
+      setDeferred(null);
+      if (choice.outcome === "accepted") localStorage.setItem(NEVER_KEY, "1");
+      setDismissed(true);
+    } catch {
+      setManual("Open the browser menu, then choose Add to Home Screen.");
+    }
   }
 
+  const open = waited && !dismissed && (Boolean(deferred) || ios || phone);
   if (!open) return null;
+
+  const steps = ios
+    ? "Tap Share, then Add to Home Screen."
+    : deferred
+      ? null
+      : "Open the browser menu, then choose Add to Home Screen.";
 
   return (
     <div className="fixed inset-0 z-[80] flex items-end justify-center bg-rich/50 p-4 pb-24 sm:items-center sm:p-6">
@@ -88,10 +129,10 @@ export function InstallPrompt() {
           </span>
           <span className="min-w-0">
             <span id="install-prompt-title" className="block text-xl font-semibold leading-tight text-espresso">
-              EllzLuxe Fragranz
+              Add to Home Screen
             </span>
             {host ? <span className="mt-0.5 block truncate text-sm text-taupe">{host}</span> : null}
-            <span className="mt-1 block text-sm text-taupe">Perfume boutique</span>
+            <span className="mt-1 block text-sm text-taupe">EllzLuxe Fragranz</span>
           </span>
         </div>
         <div className="mt-5 grid grid-cols-3 gap-3">
@@ -104,14 +145,18 @@ export function InstallPrompt() {
             </div>
           ))}
         </div>
-        <button
-          type="button"
-          onClick={install}
-          className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-leaf py-4 text-base font-semibold text-white"
-        >
-          <Download className="size-5" aria-hidden />
-          Add to Home Screen
-        </button>
+        {deferred ? (
+          <button
+            type="button"
+            onClick={install}
+            className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-leaf py-4 text-base font-semibold text-white"
+          >
+            <Download className="size-5" aria-hidden />
+            Add to Home Screen
+          </button>
+        ) : (
+          <p className="mt-5 text-center text-sm leading-6 text-espresso">{steps}</p>
+        )}
         {manual ? <p className="mt-3 text-center text-sm leading-6 text-taupe">{manual}</p> : null}
         <button type="button" onClick={later} className="mt-4 block w-full text-center text-sm text-taupe">
           Maybe Later
