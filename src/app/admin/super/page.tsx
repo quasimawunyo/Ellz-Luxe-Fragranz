@@ -43,26 +43,26 @@ export default async function SuperAdminPage() {
   ];
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
       <header>
-        <h1 className="text-2xl font-semibold">Super admin</h1>
+        <h1 className="font-serif text-4xl">Super admin</h1>
         <p className="mt-2 text-sm text-taupe">
           Staff roles, checkout keys, and catalog health. Day-to-day shop work stays in Orders and Products.
         </p>
       </header>
 
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {cards.map((card) => (
-          <article key={card.label} className="border border-espresso/10 bg-white p-5">
-            <p className="text-sm text-taupe">{card.label}</p>
-            <p className="mt-3 text-2xl font-semibold leading-none">{card.value}</p>
+          <article key={card.label} className="rounded-[1.25rem] border border-espresso/10 bg-white p-5">
+            <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-taupe">{card.label}</p>
+            <p className="mt-3 font-serif text-3xl leading-tight">{card.value}</p>
             <p className="mt-2 text-sm text-taupe">{card.hint}</p>
           </article>
         ))}
       </section>
 
-      <section className="border border-espresso/10 bg-white p-5">
-        <h2 className="text-lg font-semibold">House</h2>
+      <section className="rounded-[1.25rem] border border-espresso/10 bg-white p-5 sm:p-6">
+        <h2 className="font-serif text-2xl">House</h2>
         <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
           <div>
             <dt className="text-taupe">Catalog saves</dt>
@@ -85,15 +85,15 @@ export default async function SuperAdminPage() {
             <dd className="mt-1 break-all">{launch.moolreWebhook}</dd>
           </div>
         </dl>
-        <p className="mt-4">
-          <Link href="/admin/settings" className="text-sm underline underline-offset-4">
+        <p className="mt-5">
+          <Link href="/admin/settings" className="text-sm text-leaf underline underline-offset-4">
             Store settings
           </Link>
         </p>
       </section>
 
-      <section className="border border-espresso/10 bg-white p-5">
-        <h2 className="text-lg font-semibold">Staff</h2>
+      <section className="rounded-[1.25rem] border border-espresso/10 bg-white p-5 sm:p-6">
+        <h2 className="font-serif text-2xl">Staff</h2>
         <p className="mt-2 text-sm text-taupe">
           Promote a signed-up account to Admin for day-to-day shop work. Only super admin can change roles.
         </p>
@@ -103,7 +103,7 @@ export default async function SuperAdminPage() {
           <div className="mt-6 overflow-x-auto">
             <table className="w-full min-w-[36rem] text-left text-sm">
               <thead>
-                <tr className="border-b border-espresso/10 text-taupe">
+                <tr className="border-b border-espresso/10 text-[11px] uppercase tracking-[0.16em] text-taupe">
                   <th className="pb-3 font-medium">Account</th>
                   <th className="pb-3 font-medium">Role</th>
                   <th className="pb-3 font-medium">Change</th>

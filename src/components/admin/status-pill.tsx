@@ -21,7 +21,7 @@ export function StatusPill({ value }: { value: string }) {
   return (
     <span
       className={cn(
-        "inline-flex px-2 py-0.5 text-xs capitalize",
+        "inline-flex rounded-full px-2.5 py-0.5 text-xs capitalize",
         TONES[value] ?? "border border-espresso/10 text-taupe",
       )}
     >

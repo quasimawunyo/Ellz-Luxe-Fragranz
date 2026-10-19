@@ -49,41 +49,45 @@ export default async function AdminDashboardPage() {
   ];
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
+      <header>
+        <h1 className="font-serif text-4xl">Overview</h1>
+        <p className="mt-2 text-sm text-taupe">Paid orders, packing, and the live catalog.</p>
+      </header>
       {(!launch.canSaveCatalog || launch.checkout === "WhatsApp") && (
-        <p className="border border-espresso/10 bg-white px-4 py-3 text-sm">
+        <p className="rounded-2xl border border-espresso/10 bg-white px-4 py-3 text-sm">
           {launch.canSaveCatalog
             ? "Catalog saves are on. Card checkout waits on Moolre keys."
             : "Product saves need the service role key. Checkout stays on WhatsApp until Moolre keys are set."}{" "}
-          <Link href="/admin/settings" className="underline underline-offset-4">
+          <Link href="/admin/settings" className="text-leaf underline underline-offset-4">
             Settings
           </Link>
         </p>
       )}
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {cards.map((card) => (
-          <article key={card.label} className="border border-espresso/10 bg-white p-5">
-            <p className="text-sm text-taupe">{card.label}</p>
-            <p className="mt-3 text-2xl font-semibold leading-none">{card.value}</p>
+          <article key={card.label} className="rounded-[1.25rem] border border-espresso/10 bg-white p-5">
+            <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-taupe">{card.label}</p>
+            <p className="mt-3 font-serif text-3xl leading-tight">{card.value}</p>
             <p className="mt-2 text-sm text-taupe">{card.hint}</p>
           </article>
         ))}
       </section>
 
       <section className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
-        <article className="border border-espresso/10 bg-white p-5">
+        <article className="rounded-[1.25rem] border border-espresso/10 bg-white p-5">
           <div className="flex items-end justify-between gap-4">
             <div>
-              <h2 className="text-lg font-semibold">Last 7 days</h2>
+              <h2 className="font-serif text-2xl">Last 7 days</h2>
               <p className="mt-1 text-sm text-taupe">Paid only · Africa/Accra</p>
             </div>
-            <p className="text-lg font-semibold">{formatMoney(metrics.weekRevenue)}</p>
+            <p className="font-serif text-2xl">{formatMoney(metrics.weekRevenue)}</p>
           </div>
           <div className="mt-8 flex h-36 items-end gap-2">
             {metrics.weekSeries.map((point) => (
               <div key={point.label} className="flex h-full flex-1 flex-col justify-end">
                 <div
-                  className="w-full bg-champagne"
+                  className="w-full rounded-t-md bg-leaf"
                   style={{ height: `${Math.max(6, (point.amountMinor / metrics.weekPeak) * 100)}%` }}
                   title={`${point.label}: ${formatMoney(point.amountMinor)}`}
                 />
@@ -93,30 +97,24 @@ export default async function AdminDashboardPage() {
           </div>
         </article>
 
-        <article className="border border-espresso/10 bg-white p-5">
-          <h2 className="text-lg font-semibold">Open</h2>
-          <ul className="mt-5 space-y-3 text-sm">
-            <li>
-              <Link href="/admin/products/new" className="underline underline-offset-4">
-                New bottle
+        <article className="rounded-[1.25rem] border border-espresso/10 bg-white p-5">
+          <h2 className="font-serif text-2xl">Open</h2>
+          <div className="mt-5 grid grid-cols-2 gap-2">
+            {[
+              ["New bottle", "/admin/products/new"],
+              ["Unpaid orders", "/admin/orders?payment=pending"],
+              ["Inbox", "/admin/inbox"],
+              ["Settings", "/admin/settings"],
+            ].map(([label, href]) => (
+              <Link
+                key={href}
+                href={href}
+                className="rounded-2xl border border-espresso/10 px-3 py-3 text-sm hover:border-leaf"
+              >
+                {label}
               </Link>
-            </li>
-            <li>
-              <Link href="/admin/orders?payment=pending" className="underline underline-offset-4">
-                Unpaid orders
-              </Link>
-            </li>
-            <li>
-              <Link href="/admin/inbox" className="underline underline-offset-4">
-                Inbox
-              </Link>
-            </li>
-            <li>
-              <Link href="/admin/settings" className="underline underline-offset-4">
-                Settings
-              </Link>
-            </li>
-          </ul>
+            ))}
+          </div>
           <p className="mt-6 text-sm text-taupe">
             {metrics.subscribers} newsletter {metrics.subscribers === 1 ? "address" : "addresses"} · {metrics.messages}{" "}
             contact {metrics.messages === 1 ? "note" : "notes"}.
@@ -125,9 +123,9 @@ export default async function AdminDashboardPage() {
       </section>
 
       <section className="grid gap-6 lg:grid-cols-2">
-        <article className="border border-espresso/10 bg-white">
-          <div className="flex items-center justify-between border-b border-espresso/10 px-5 py-3">
-            <h2 className="text-lg font-semibold">Recent orders</h2>
+        <article className="overflow-hidden rounded-[1.25rem] border border-espresso/10 bg-white">
+          <div className="flex items-center justify-between border-b border-espresso/10 px-5 py-4">
+            <h2 className="font-serif text-2xl">Recent orders</h2>
             <Link href="/admin/orders" className="text-sm text-taupe hover:text-espresso">
               All orders
             </Link>
@@ -164,9 +162,9 @@ export default async function AdminDashboardPage() {
           </ul>
         </article>
 
-        <article className="border border-espresso/10 bg-white">
-          <div className="flex items-center justify-between border-b border-espresso/10 px-5 py-3">
-            <h2 className="text-lg font-semibold">Needs attention</h2>
+        <article className="overflow-hidden rounded-[1.25rem] border border-espresso/10 bg-white">
+          <div className="flex items-center justify-between border-b border-espresso/10 px-5 py-4">
+            <h2 className="font-serif text-2xl">Needs attention</h2>
           </div>
           <div className="space-y-6 px-6 py-5 text-sm">
             <div>
@@ -232,9 +230,9 @@ export default async function AdminDashboardPage() {
         </article>
       </section>
 
-      <section className="border border-espresso/10 bg-white">
-        <div className="flex items-center justify-between border-b border-espresso/10 px-5 py-3">
-          <h2 className="text-lg font-semibold">Latest messages</h2>
+      <section className="overflow-hidden rounded-[1.25rem] border border-espresso/10 bg-white">
+        <div className="flex items-center justify-between border-b border-espresso/10 px-5 py-4">
+          <h2 className="font-serif text-2xl">Latest messages</h2>
           <Link href="/admin/inbox" className="text-sm text-taupe hover:text-espresso">
             Inbox
           </Link>

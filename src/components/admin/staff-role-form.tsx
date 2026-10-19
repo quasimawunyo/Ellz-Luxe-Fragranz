@@ -10,7 +10,7 @@ export function StaffRoleForm({ userId, role }: { userId: string; role: UserRole
         name="role"
         defaultValue={role}
         aria-label="Role"
-        className="min-h-11 border border-espresso/15 bg-white px-3 text-sm"
+        className="min-h-11 rounded-xl border border-espresso/15 bg-white px-3 text-sm"
       >
         {USER_ROLES.map((value) => (
           <option key={value} value={value}>
@@ -18,7 +18,7 @@ export function StaffRoleForm({ userId, role }: { userId: string; role: UserRole
           </option>
         ))}
       </select>
-      <button type="submit" className="min-h-11 px-3 text-sm underline underline-offset-4">
+      <button type="submit" className="min-h-11 rounded-full bg-leaf px-4 text-sm text-white hover:bg-leaf/90">
         Save
       </button>
     </ActionForm>
