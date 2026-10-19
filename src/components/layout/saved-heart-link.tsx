@@ -15,7 +15,7 @@ export function SavedHeartLink({ className }: { className?: string }) {
   return (
     <Link href="/saved" className={className} aria-label={count ? `Saved, ${count}` : "Saved"}>
       <span className="relative inline-flex">
-        <Heart className="size-5" />
+        <Heart className="size-[18px]" strokeWidth={1.75} />
         {count > 0 ? (
           <span className="absolute -right-2 -top-2 grid size-5 place-items-center rounded-full bg-leaf text-[10px] font-medium text-white">
             {count}

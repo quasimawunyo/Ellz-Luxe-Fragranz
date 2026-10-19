@@ -36,11 +36,11 @@ export function ThemeToggle({ className }: { className?: string }) {
   return (
     <button
       type="button"
-      className={`grid size-10 place-items-center sm:size-11 ${className ?? "text-espresso"}`}
+      className={`grid size-9 shrink-0 place-items-center sm:size-10 ${className ?? "text-espresso"}`}
       aria-label={mounted && theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
       onClick={toggle}
     >
-      {mounted && theme === "dark" ? <Sun className="size-5" /> : <Moon className="size-5" />}
+      {mounted && theme === "dark" ? <Sun className="size-[18px]" strokeWidth={1.75} /> : <Moon className="size-[18px]" strokeWidth={1.75} />}
     </button>
   );
 }

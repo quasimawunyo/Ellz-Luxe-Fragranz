@@ -72,14 +72,14 @@ export function Header({
           <div className="flex min-w-0 flex-1 items-center">
             <button
               type="button"
-              className="grid size-10 place-items-center sm:size-11 lg:hidden"
+              className="grid size-9 shrink-0 place-items-center sm:size-10 lg:hidden"
               aria-label={open ? "Close menu" : "Open menu"}
               onClick={() => {
                 setPanelTop(headerRef.current?.getBoundingClientRect().bottom ?? 0);
                 setOpen((value) => !value);
               }}
             >
-              {open ? <X /> : <Menu />}
+              {open ? <X className="size-[18px]" strokeWidth={1.75} /> : <Menu className="size-[18px]" strokeWidth={1.75} />}
             </button>
             <BrandLogo className="ml-1 w-[3.75rem] shrink-0 sm:ml-0 sm:w-24 md:w-28" size={224} priority />
           </div>
@@ -90,35 +90,35 @@ export function Header({
               </Link>
             ))}
           </nav>
-          <div className="flex shrink-0 items-center justify-end gap-0.5 sm:gap-2">
+          <div className="ml-auto flex shrink-0 items-center">
             <button
               type="button"
-              className="grid size-10 place-items-center text-espresso sm:size-11"
+              className="grid size-9 shrink-0 place-items-center text-espresso sm:size-10"
               aria-label="Search"
               onClick={() => router.push("/search")}
             >
-              <Search className="size-5" />
+              <Search className="size-[18px]" strokeWidth={1.75} />
             </button>
             <ThemeToggle className="text-espresso hover:text-champagne" />
             {ready ? (
               <>
                 {isAdmin ? (
-                  <Link href="/admin" className="hidden text-[11px] uppercase tracking-[0.22em] hover:text-champagne lg:inline">
+                  <Link href="/admin" className="hidden px-2 text-[11px] uppercase tracking-[0.22em] hover:text-champagne lg:inline">
                     Admin
                   </Link>
                 ) : null}
-                <Link href={signedIn ? "/account" : "/login"} className="grid size-10 place-items-center hover:text-champagne sm:size-11" aria-label={signedIn ? "Account" : "Log in"}>
-                  <User className="size-5" />
+                <Link href={signedIn ? "/account" : "/login"} className="grid size-9 shrink-0 place-items-center hover:text-champagne sm:size-10" aria-label={signedIn ? "Account" : "Log in"}>
+                  <User className="size-[18px]" strokeWidth={1.75} />
                 </Link>
               </>
             ) : (
-              <span className="inline-block size-5" aria-hidden />
+              <span className="inline-block size-9 sm:size-10" aria-hidden />
             )}
-            <SavedHeartLink className="grid size-10 place-items-center hover:text-champagne sm:size-11" />
-            <Link href="/cart" className="relative grid size-10 place-items-center sm:size-11" aria-label={`Cart, ${cartCount} ${cartCount === 1 ? "item" : "items"}`}>
-              <ShoppingBag className="size-5" />
+            <SavedHeartLink className="grid size-9 shrink-0 place-items-center hover:text-champagne sm:size-10" />
+            <Link href="/cart" className="relative grid size-9 shrink-0 place-items-center sm:size-10" aria-label={`Cart, ${cartCount} ${cartCount === 1 ? "item" : "items"}`}>
+              <ShoppingBag className="size-[18px]" strokeWidth={1.75} />
               {ready && cartCount > 0 ? (
-                <span className="absolute -right-2 -top-2 grid size-5 place-items-center rounded-full bg-leaf text-[10px] font-medium text-snow">
+                <span className="absolute right-0 top-0 grid size-4 place-items-center rounded-full bg-leaf text-[9px] font-medium text-snow">
                   {cartCount}
                 </span>
               ) : null}
