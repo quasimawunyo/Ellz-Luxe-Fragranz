@@ -10,22 +10,22 @@ export function NewsletterForm({ compact = false }: { compact?: boolean }) {
 
   if (!compact) {
     return (
-      <form action={formAction} className="mx-auto mt-10 w-full max-w-xl">
+      <form action={formAction} className="mx-auto mt-5 w-full max-w-md">
         <label className="sr-only" htmlFor="newsletter-email">
           Email address
         </label>
-        <div className="flex items-center rounded-full border border-[#7dcea0]/35 bg-[#0a2e26] p-1.5 pl-6">
+        <div className="flex items-center rounded-full border border-[#7dcea0]/35 bg-[#0a2e26] p-1 pl-4">
           <input
             id="newsletter-email"
             name="email"
             type="email"
             required
             placeholder="Enter your email address"
-            className="min-h-12 min-w-0 flex-1 bg-transparent text-sm text-snow outline-none placeholder:text-[#8fb8a4]"
+            className="min-h-10 min-w-0 flex-1 bg-transparent text-sm text-snow outline-none placeholder:text-[#8fb8a4]"
           />
           <button
             type="submit"
-            className="shrink-0 rounded-full bg-[#2fce7a] px-7 py-3 text-sm font-semibold text-[#06281c] hover:bg-[#46d98b]"
+            className="shrink-0 rounded-full bg-[#2fce7a] px-5 py-2 text-sm font-semibold text-[#06281c] hover:bg-[#46d98b]"
           >
             Join
           </button>
