@@ -22,7 +22,10 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
       <p className="mt-3 max-w-2xl text-taupe">{collection.description}</p>
       <div className="mt-12">
         {products.length ? (
-          <ProductGrid products={products} />
+          <ProductGrid
+            products={products}
+            className="grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-6 lg:grid-cols-4 lg:gap-y-12"
+          />
         ) : (
           <EmptyState title="Nothing in this collection yet" />
         )}
