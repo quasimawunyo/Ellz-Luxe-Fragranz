@@ -33,6 +33,7 @@ export function MobileNav({
             <li key={item.href + item.label}>
               <Link
                 href={item.href}
+                prefetch
                 className={cn(
                   "flex flex-col items-center gap-1 py-2.5 text-[10px] tracking-wide",
                   item.current ? "text-espresso" : "text-taupe",

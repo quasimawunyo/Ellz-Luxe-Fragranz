@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { createServiceClient } from "@/lib/supabase/admin";
@@ -71,6 +71,7 @@ export async function saveSettingsAction(_prev: { error?: string; ok?: boolean; 
     },
   ];
   await admin.from("store_settings").upsert({ key: "delivery_methods", value: deliveryMethods });
+  updateTag("storefront");
   revalidatePath("/");
   revalidatePath("/checkout");
   revalidatePath("/faq");
@@ -173,6 +174,7 @@ export async function saveProductAction(_prev: { error?: string; ok?: boolean; m
     });
   }
 
+  updateTag("storefront");
   revalidatePath("/admin/products");
   revalidatePath("/shop");
   revalidatePath(`/product/${parsed.data.slug}`);

@@ -1,5 +1,6 @@
 "use server";
 
+import { updateTag } from "next/cache";
 import { checkoutSchema } from "@/lib/validations";
 import { createPendingOrder } from "@/lib/orders/store";
 import { getAuthContext } from "@/lib/auth/session";
@@ -24,6 +25,7 @@ export async function placeOrderAction(_prev: { error?: string } | null, formDat
   try {
     const auth = await getAuthContext();
     const order = await createPendingOrder(parsed.data, auth.user?.id ?? null);
+    updateTag("storefront");
     try {
       await notifyAnnexOfOrder(order);
     } catch {

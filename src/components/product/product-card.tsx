@@ -25,7 +25,7 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
   return (
     <article className="group">
       <div className="relative">
-        <Link href={`/product/${product.slug}`} className="block">
+        <Link href={`/product/${product.slug}`} prefetch className="block">
           <div className="relative aspect-square overflow-hidden rounded-[1.5rem] bg-espresso/5">
             {image ? (
               <Image
@@ -58,7 +58,7 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
       </div>
       <p className="mt-4 text-xs uppercase tracking-[0.18em] text-taupe">{product.brand}</p>
       <h3 className="mt-1 font-serif text-xl leading-snug">
-        <Link href={`/product/${product.slug}`}>{product.name}</Link>
+        <Link href={`/product/${product.slug}`} prefetch>{product.name}</Link>
       </h3>
       {product.isDemonstration && badge !== "Tester" ? (
         <p className="mt-1 text-xs text-taupe">Tester</p>

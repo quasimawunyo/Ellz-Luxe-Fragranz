@@ -85,7 +85,7 @@ export function Header({
           </div>
           <nav className="hidden items-center gap-9 text-[11px] uppercase tracking-[0.32em] text-taupe lg:flex" aria-label="Main navigation">
             {NAV.map((item) => (
-              <Link key={item.href} href={item.href} className="hover:text-espresso">
+              <Link key={item.href} href={item.href} prefetch className="hover:text-espresso">
                 {item.label}
               </Link>
             ))}
@@ -157,6 +157,7 @@ export function Header({
               <Link
                 key={item.href}
                 href={item.href}
+                prefetch
                 className="block border-b border-espresso/10 py-4 font-serif text-3xl"
                 onClick={() => setOpen(false)}
               >
@@ -170,6 +171,7 @@ export function Header({
               <Link
                 key={link.href + link.label}
                 href={link.href}
+                prefetch
                 className="border-b border-espresso/10 py-3 text-sm"
                 onClick={() => setOpen(false)}
               >

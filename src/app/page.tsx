@@ -54,6 +54,7 @@ export default async function HomePage() {
               <Link
                 key={collection.id}
                 href={`/collections/${collection.slug}`}
+                prefetch
                 className="group relative aspect-[4/5] overflow-hidden rounded-[1.25rem] sm:rounded-[1.75rem]"
               >
                 <Image

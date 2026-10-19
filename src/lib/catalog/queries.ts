@@ -1,4 +1,5 @@
 import { cache } from "react";
+import { unstable_cache } from "next/cache";
 import { DEMO_CATEGORIES, DEMO_COLLECTIONS, DEMO_FAQS, DEMO_PRODUCTS, DEMO_SETTINGS } from "@/lib/catalog/seed";
 import { filterProducts, isDiscounted, paginate, relatedProducts } from "@/lib/catalog/helpers";
 import type { CatalogProduct, StoreSettings } from "@/lib/catalog/types";
@@ -41,10 +42,9 @@ function withCategoryNames(
   }));
 }
 
-export const getStoreSettings = cache(async (): Promise<StoreSettings> => {
-  if (!isSupabaseConfigured()) return DEMO_SETTINGS;
-  const supabase = await createUserSupabase();
-  if (!supabase) return DEMO_SETTINGS;
+const STOREFRONT_CACHE = { revalidate: 60, tags: ["storefront"] };
+
+async function readStoreSettings(supabase: NonNullable<Awaited<ReturnType<typeof createUserSupabase>>> | NonNullable<ReturnType<typeof createServiceClient>>): Promise<StoreSettings> {
   const { data } = await supabase.from("store_settings").select("key, value");
   if (!data?.length) return DEMO_SETTINGS;
   const map = Object.fromEntries(data.map((row) => [row.key, row.value]));
@@ -68,7 +68,26 @@ export const getStoreSettings = cache(async (): Promise<StoreSettings> => {
     aboutStory: String(map.about_story ?? DEMO_SETTINGS.aboutStory),
     deliveryMethods: (map.delivery_methods as StoreSettings["deliveryMethods"]) ?? DEMO_SETTINGS.deliveryMethods,
   };
-});
+}
+
+const cachedStoreSettings = unstable_cache(
+  async () => {
+    const supabase = createServiceClient();
+    if (!supabase) return null;
+    return readStoreSettings(supabase);
+  },
+  ["elf-settings"],
+  STOREFRONT_CACHE,
+);
+
+export async function getStoreSettings(): Promise<StoreSettings> {
+  if (!isSupabaseConfigured()) return DEMO_SETTINGS;
+  const cached = await cachedStoreSettings();
+  if (cached) return cached;
+  const supabase = await createUserSupabase();
+  if (!supabase) return DEMO_SETTINGS;
+  return readStoreSettings(supabase);
+}
 
 export async function getFaqs() {
   if (!isSupabaseConfigured()) return DEMO_FAQS;
@@ -84,8 +103,28 @@ export async function getFaqs() {
   }));
 }
 
+const cachedCollections = unstable_cache(
+  async () => {
+    const supabase = createServiceClient();
+    if (!supabase) return null;
+    const { data } = await supabase.from("collections").select("*").order("name");
+    if (!data?.length) return null;
+    return data.map((row) => ({
+      id: row.id,
+      slug: row.slug,
+      name: row.name,
+      description: row.description,
+      imageUrl: row.image_url as string,
+    }));
+  },
+  ["elf-collections"],
+  STOREFRONT_CACHE,
+);
+
 export async function getCollections() {
   if (!isSupabaseConfigured()) return DEMO_COLLECTIONS;
+  const cached = await cachedCollections();
+  if (cached) return cached;
   const supabase = await createUserSupabase();
   if (!supabase) return DEMO_COLLECTIONS;
   const { data } = await supabase.from("collections").select("*").order("name");
@@ -99,8 +138,22 @@ export async function getCollections() {
   }));
 }
 
+const cachedCategories = unstable_cache(
+  async () => {
+    const supabase = createServiceClient();
+    if (!supabase) return null;
+    const { data } = await supabase.from("categories").select("*").order("name");
+    if (!data?.length) return null;
+    return data.map((row) => ({ id: row.id as string, slug: row.slug as string, name: row.name as string }));
+  },
+  ["elf-categories"],
+  STOREFRONT_CACHE,
+);
+
 export async function getCategories() {
   if (!isSupabaseConfigured()) return DEMO_CATEGORIES;
+  const cached = await cachedCategories();
+  if (cached) return cached;
   const supabase = await createUserSupabase();
   if (!supabase) return DEMO_CATEGORIES;
   const { data } = await supabase.from("categories").select("*").order("name");
@@ -108,17 +161,7 @@ export async function getCategories() {
   return data.map((row) => ({ id: row.id, slug: row.slug, name: row.name }));
 }
 
-const loadAllProducts = cache(async (): Promise<CatalogProduct[]> => {
-  if (!isSupabaseConfigured()) {
-    const overlay = await demoStockOverlay();
-    return withCategoryNames(applyStock(DEMO_PRODUCTS, overlay), DEMO_CATEGORIES);
-  }
-  const supabase = createServiceClient() ?? (await createUserSupabase());
-  if (!supabase) {
-    const overlay = await demoStockOverlay();
-    return withCategoryNames(applyStock(DEMO_PRODUCTS, overlay), DEMO_CATEGORIES);
-  }
-
+async function fetchCatalog(supabase: NonNullable<ReturnType<typeof createServiceClient>>): Promise<CatalogProduct[] | null> {
   const [{ data: products }, { data: variants }, { data: images }, { data: links }, { data: categories }] = await Promise.all([
     supabase.from("products").select("*"),
     supabase.from("product_variants").select("*"),
@@ -126,10 +169,7 @@ const loadAllProducts = cache(async (): Promise<CatalogProduct[]> => {
     supabase.from("collection_products").select("*"),
     supabase.from("categories").select("id, name"),
   ]);
-  if (!products?.length) {
-    const overlay = await demoStockOverlay();
-    return withCategoryNames(applyStock(DEMO_PRODUCTS, overlay), DEMO_CATEGORIES);
-  }
+  if (!products?.length) return null;
 
   return withCategoryNames(products.map((product) => ({
     id: product.id,
@@ -173,6 +213,31 @@ const loadAllProducts = cache(async (): Promise<CatalogProduct[]> => {
       })),
     createdAt: product.created_at,
   })), categories ?? []);
+}
+
+const cachedCatalog = unstable_cache(
+  async () => {
+    const supabase = createServiceClient();
+    if (!supabase) return null;
+    return fetchCatalog(supabase);
+  },
+  ["elf-catalog"],
+  STOREFRONT_CACHE,
+);
+
+const loadAllProducts = cache(async (): Promise<CatalogProduct[]> => {
+  if (!isSupabaseConfigured()) {
+    const overlay = await demoStockOverlay();
+    return withCategoryNames(applyStock(DEMO_PRODUCTS, overlay), DEMO_CATEGORIES);
+  }
+  const cached = await cachedCatalog();
+  if (cached) return cached;
+  const supabase = await createUserSupabase();
+  if (!supabase) {
+    const overlay = await demoStockOverlay();
+    return withCategoryNames(applyStock(DEMO_PRODUCTS, overlay), DEMO_CATEGORIES);
+  }
+  return (await fetchCatalog(supabase as NonNullable<ReturnType<typeof createServiceClient>>)) ?? withCategoryNames(applyStock(DEMO_PRODUCTS, await demoStockOverlay()), DEMO_CATEGORIES);
 });
 
 export async function getPublishedProducts() {
@@ -242,11 +307,14 @@ export async function queryShop(raw: Record<string, string | string[] | undefine
     ? parsed.data
     : { sort: "featured", page: 1 };
 
-  const collections = await getCollections();
+  const [collections, products, categories] = await Promise.all([
+    getCollections(),
+    getPublishedProducts(),
+    getCategories(),
+  ]);
   const collection = collections.find(
     (item) => item.slug === filters.collection || item.id === filters.collection,
   );
-  const products = await getPublishedProducts();
   const filtered = filterProducts(
     products,
     { ...filters, collection: collection?.id ?? filters.collection },
@@ -254,7 +322,7 @@ export async function queryShop(raw: Record<string, string | string[] | undefine
   return {
     filters,
     collections,
-    categories: await getCategories(),
+    categories,
     ...paginate(filtered, filters.page),
   };
 }

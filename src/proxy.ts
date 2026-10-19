@@ -3,6 +3,25 @@ import { createServerClient } from "@supabase/ssr";
 import { env, isSupabaseConfigured } from "@/lib/env";
 import { contentSecurityPolicy } from "@/lib/security/csp";
 
+function sessionNeedsRefresh(request: NextRequest) {
+  const chunks = request.cookies
+    .getAll()
+    .filter((cookie) => cookie.name.includes("-auth-token"))
+    .sort((a, b) => a.name.localeCompare(b.name));
+  if (!chunks.length) return false;
+  try {
+    const raw = chunks.map((cookie) => cookie.value).join("");
+    const json = raw.startsWith("base64-")
+      ? Buffer.from(raw.slice("base64-".length), "base64url").toString("utf8")
+      : raw;
+    const session = JSON.parse(json) as { expires_at?: number };
+    if (typeof session.expires_at !== "number") return true;
+    return session.expires_at * 1000 < Date.now() + 60_000;
+  } catch {
+    return true;
+  }
+}
+
 function withCsp(request: NextRequest, nonce: string) {
   const requestHeaders = new Headers(request.headers);
   const csp = contentSecurityPolicy(nonce);
@@ -25,6 +44,10 @@ export async function proxy(request: NextRequest) {
       login.searchParams.set("next", pathname);
       return NextResponse.redirect(login);
     }
+    return response;
+  }
+
+  if (!isProtected && !sessionNeedsRefresh(request)) {
     return response;
   }
 
