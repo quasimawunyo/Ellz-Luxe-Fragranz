@@ -18,12 +18,12 @@ export function PasswordInput({ className, ...props }: ComponentProps<typeof Inp
       />
       <button
         type="button"
-        className="absolute right-1.5 top-1/2 grid size-9 -translate-y-1/2 place-items-center text-taupe hover:text-espresso"
+        className="absolute right-1.5 top-1/2 grid size-9 -translate-y-1/2 place-items-center text-espresso"
         aria-label={visible ? "Hide password" : "Show password"}
         aria-pressed={visible}
         onClick={() => setVisible((value) => !value)}
       >
-        <Icon className="size-[18px]" strokeWidth={1.75} aria-hidden />
+        <Icon className="size-5" strokeWidth={1.75} aria-hidden />
       </button>
     </div>
   );
