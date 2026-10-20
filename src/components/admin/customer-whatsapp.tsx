@@ -28,7 +28,7 @@ export function CustomerWhatsApp({
       target="_blank"
       rel="noreferrer"
       className={cn(
-        "inline-flex items-center gap-2 text-sm text-espresso hover:text-[#075E54]",
+        "inline-flex min-h-11 items-center gap-2 text-sm text-espresso hover:text-[#075E54]",
         className,
       )}
     >

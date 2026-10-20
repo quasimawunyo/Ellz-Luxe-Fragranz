@@ -100,7 +100,20 @@ export default async function SuperAdminPage() {
         {staff.length === 0 ? (
           <p className="mt-6 text-sm text-taupe">No accounts loaded. Add SUPABASE_SERVICE_ROLE_KEY to list staff.</p>
         ) : (
-          <div className="mt-6 overflow-x-auto">
+          <>
+          <ul className="mt-6 space-y-5 lg:hidden">
+            {staff.map((member) => (
+              <li key={member.id} className="border-b border-espresso/10 pb-5">
+                <p className="font-medium">{member.fullName || member.email || member.id}</p>
+                <p className="mt-1 text-sm text-taupe">{member.email ?? "No email"}</p>
+                <p className="mt-1 text-sm">{roleLabel(member.role)}</p>
+                <div className="mt-3">
+                  <StaffRoleForm userId={member.id} role={member.role} />
+                </div>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-6 hidden overflow-x-auto lg:block">
             <table className="w-full min-w-[36rem] text-left text-sm">
               <thead>
                 <tr className="border-b border-espresso/10 text-[11px] uppercase tracking-[0.16em] text-taupe">
@@ -125,6 +138,7 @@ export default async function SuperAdminPage() {
               </tbody>
             </table>
           </div>
+          </>
         )}
       </section>
     </div>

@@ -18,11 +18,42 @@ export default async function AdminProductsPage() {
           <h1 className="text-2xl font-semibold">Products</h1>
           <p className="mt-1 text-sm text-taupe">{products.length} products. Uncheck tester when a bottle is live stock.</p>
         </div>
-        <Link href="/admin/products/new" className={cn(buttonVariants({ variant: "gold", size: "sm" }))}>
+        <Link href="/admin/products/new" className={cn(buttonVariants({ variant: "shop" }), "w-full sm:w-auto")}>
           New bottle
         </Link>
       </div>
-      <div className="luxe-panel mt-8 overflow-x-auto">
+      <ul className="mt-6 space-y-3 lg:hidden">
+        {products.map((product) => {
+          const image = primaryImage(product);
+          const prices = [...product.variants]
+            .sort((a, b) => (a.sizeMl ?? 0) - (b.sizeMl ?? 0))
+            .map((variant) => `${variant.label} ${formatMoney(variant.priceMinor)}`)
+            .join(" · ");
+          return (
+            <li key={product.id}>
+              <Link
+                href={`/admin/products/${product.id}`}
+                className="flex min-h-11 items-center gap-3 rounded-[1.25rem] border border-espresso/10 bg-white p-3"
+              >
+                <span className="relative size-16 shrink-0 overflow-hidden rounded-xl bg-espresso/5">
+                  {image ? <Image src={image.url} alt="" fill className="object-cover" sizes="64px" /> : null}
+                </span>
+                <span className="min-w-0">
+                  <span className="block font-medium">{product.name}</span>
+                  <span className="mt-0.5 block text-sm text-taupe">{product.brand}</span>
+                  <span className="mt-1 block text-sm">{prices}</span>
+                  <span className="mt-2 flex flex-wrap items-center gap-2">
+                    <StatusPill value={product.status} />
+                    <StatusPill value={product.isDemonstration ? "demonstration" : "live"} />
+                    <span className="text-xs text-taupe">{totalStock(product)} in stock</span>
+                  </span>
+                </span>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+      <div className="luxe-panel mt-8 hidden overflow-x-auto lg:block">
         <table className="w-full min-w-[44rem] text-left text-sm">
           <thead>
             <tr className="border-b border-espresso/10 text-xs text-taupe">

@@ -130,7 +130,7 @@ export default async function AdminSettingsPage() {
             defaultValue={settings.deliveryMethods.find((method) => method.id === "pickup")?.description ?? ""}
           />
         </div>
-        <Button type="submit">Save</Button>
+        <Button type="submit" className="w-full sm:w-auto">Save</Button>
       </ActionForm>
     </div>
   );

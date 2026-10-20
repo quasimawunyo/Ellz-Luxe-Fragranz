@@ -80,7 +80,7 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
       {order.paymentStatus === "pending" ? (
         <ActionForm action={markOrderPaidAction} className="mt-8">
           <input type="hidden" name="orderId" value={order.id} />
-          <Button type="submit">Mark paid</Button>
+          <Button type="submit" className="w-full sm:w-auto">Mark paid</Button>
           <p className="mt-2 text-sm text-taupe">
             Use this after you have received MoMo or cash on WhatsApp. Card payments wait for Moolre.
           </p>
@@ -102,7 +102,7 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
           <Label htmlFor="trackingNumber">Tracking</Label>
           <Input id="trackingNumber" name="trackingNumber" defaultValue={order.trackingNumber ?? ""} />
         </div>
-        <Button type="submit">Update fulfillment</Button>
+        <Button type="submit" className="w-full sm:w-auto">Update fulfillment</Button>
       </ActionForm>
       {order.paymentProvider === "paystack" ? (
         <ActionForm action={refundOrderAction} className="mt-6">

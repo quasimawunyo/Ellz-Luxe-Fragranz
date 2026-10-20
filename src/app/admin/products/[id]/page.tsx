@@ -68,19 +68,20 @@ export default async function AdminProductPage({ params }: { params: Promise<{ i
           <Label htmlFor="baseNotes">Base notes</Label>
           <Input id="baseNotes" name="baseNotes" defaultValue={product?.notes.base.join(", ")} />
         </div>
-        <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" name="featured" defaultChecked={product?.featured} /> Featured
+        <label className="flex min-h-11 items-center gap-3 text-sm">
+          <input type="checkbox" name="featured" defaultChecked={product?.featured} className="size-5" /> Featured
         </label>
-        <label className="flex items-center gap-2 text-sm">
+        <label className="flex min-h-11 items-center gap-3 text-sm">
           <input
             type="checkbox"
             name="newArrival"
             defaultChecked={isNew ? true : product?.newArrival}
+            className="size-5"
           />{" "}
           New arrival
         </label>
-        <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" name="isDemonstration" defaultChecked={product?.isDemonstration ?? false} />
+        <label className="flex min-h-11 items-center gap-3 text-sm">
+          <input type="checkbox" name="isDemonstration" defaultChecked={product?.isDemonstration ?? false} className="size-5" />
           Tester (not for sale)
         </label>
         <div>
@@ -149,7 +150,7 @@ export default async function AdminProductPage({ params }: { params: Promise<{ i
           <Label htmlFor="stock">Stock</Label>
           <Input id="stock" name="stock" type="number" defaultValue={variant?.stock ?? 0} />
         </div>
-        <Button type="submit">Save</Button>
+        <Button type="submit" className="w-full sm:w-auto">Save</Button>
       </ActionForm>
     </div>
   );

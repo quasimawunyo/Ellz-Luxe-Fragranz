@@ -18,11 +18,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <div className="flex-1 px-3 pb-4">
             <AdminNav showControl={isSuperAdminRole(auth.role)} />
           </div>
-          <div className="flex flex-col gap-2 border-t border-espresso/10 p-4 text-sm">
-            <Link href="/admin/products/new" className="rounded-full bg-leaf px-4 py-2.5 text-center text-white hover:bg-leaf/90">
+          <div className="grid grid-cols-2 gap-2 border-t border-espresso/10 p-4 text-sm lg:grid-cols-1">
+            <Link href="/admin/products/new" className="inline-flex min-h-11 items-center justify-center rounded-full bg-leaf px-4 text-center text-white hover:bg-leaf/90">
               New bottle
             </Link>
-            <Link href="/shop" className="rounded-full border border-espresso/15 px-4 py-2.5 text-center hover:border-espresso/40">
+            <Link href="/shop" className="inline-flex min-h-11 items-center justify-center rounded-full border border-espresso/15 px-4 text-center hover:border-espresso/40">
               View shop
             </Link>
           </div>
