@@ -29,7 +29,7 @@ export function AdminNav({ showControl = false }: { showControl?: boolean }) {
   const isClient = useIsClient();
   const links = showControl ? [CONTROL, ...LINKS] : LINKS;
   return (
-    <nav aria-label="Admin" className="flex gap-1 overflow-x-auto lg:flex-col lg:overflow-visible">
+    <nav aria-label="Admin" className="flex flex-wrap gap-1 lg:flex-col lg:flex-nowrap">
       {links.map((link) => {
         const active = isClient && (link.exact ? pathname === link.href : pathname.startsWith(link.href));
         const Icon = link.icon;

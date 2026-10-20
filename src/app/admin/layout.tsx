@@ -13,7 +13,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <aside className="border-b border-espresso/10 bg-white lg:sticky lg:top-0 lg:flex lg:min-h-screen lg:w-72 lg:shrink-0 lg:flex-col lg:border-b-0 lg:border-r">
           <div className="px-4 py-5 lg:px-5">
             <Link href="/" className="flex min-h-11 items-center gap-3">
-              <BrandLogo href={false} label="" className="w-16" size={160} priority />
+              <BrandLogo href={false} label="" className="w-20" size={200} priority />
               <span className="min-w-0">
                 <span className="block font-serif text-xl leading-tight">EllzLuxe Fragranz</span>
                 <span className="mt-1 block text-[11px] font-medium uppercase tracking-[0.2em] text-taupe">Admin</span>
