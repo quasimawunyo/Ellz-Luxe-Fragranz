@@ -22,9 +22,10 @@ export default async function ShopPage({
       <div className="mt-10 grid gap-10 lg:grid-cols-[16rem_1fr]">
         <aside>
           <details className="rounded-[1.25rem] border border-espresso/10 bg-white p-4 lg:hidden">
-            <summary className="cursor-pointer text-sm font-medium">Filters</summary>
+            <summary className="flex min-h-11 cursor-pointer items-center text-sm font-medium">Filters</summary>
             <div className="mt-4">
               <ShopFilters
+                idPrefix="mobile"
                 filters={result.filters}
                 collections={result.collections}
                 categories={result.categories}
@@ -33,6 +34,7 @@ export default async function ShopPage({
           </details>
           <div className="hidden lg:block">
             <ShopFilters
+              idPrefix="desktop"
               filters={result.filters}
               collections={result.collections}
               categories={result.categories}
@@ -66,7 +68,7 @@ export default async function ShopPage({
                   <Link
                     key={page}
                     href={`/shop?${params.toString()}`}
-                    className={`grid size-10 place-items-center border ${
+                    className={`grid size-11 place-items-center border ${
                       page === result.page ? "border-espresso bg-espresso text-ivory" : "border-espresso/20"
                     }`}
                   >

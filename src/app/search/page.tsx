@@ -26,7 +26,7 @@ export default async function SearchPage({
           Search
         </label>
         <Input id="search-q" name="q" defaultValue={q} placeholder="Name, description, brand, notes" />
-        <Button type="submit">Search</Button>
+        <Button type="submit" className="w-full sm:w-auto">Search</Button>
         <Link href="/search" className="grid place-items-center px-3 text-sm text-taupe">
           Reset
         </Link>

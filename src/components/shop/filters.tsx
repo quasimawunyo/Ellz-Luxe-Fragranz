@@ -9,21 +9,25 @@ export function ShopFilters({
   filters,
   collections,
   categories,
+  idPrefix,
 }: {
   filters: ShopFilters;
   collections: CatalogCollection[];
   categories: CatalogCategory[];
+  idPrefix: string;
 }) {
+  const fieldId = (name: string) => `${idPrefix}-${name}`;
+
   return (
     <form className="space-y-6" method="get">
       <div>
-        <Label htmlFor="q">Search</Label>
-        <Input id="q" name="q" defaultValue={filters.q ?? ""} placeholder="Name, notes, brand" />
+        <Label htmlFor={fieldId("q")}>Search</Label>
+        <Input id={fieldId("q")} name="q" defaultValue={filters.q ?? ""} placeholder="Name, notes, brand" />
       </div>
       <div>
-        <Label htmlFor="collection">Collection</Label>
+        <Label htmlFor={fieldId("collection")}>Collection</Label>
         <select
-          id="collection"
+          id={fieldId("collection")}
           name="collection"
           defaultValue={filters.collection ?? ""}
           className="min-h-11 w-full border border-espresso/15 bg-white px-3 text-sm"
@@ -37,9 +41,9 @@ export function ShopFilters({
         </select>
       </div>
       <div>
-        <Label htmlFor="brand">Brand</Label>
+        <Label htmlFor={fieldId("brand")}>Brand</Label>
         <select
-          id="brand"
+          id={fieldId("brand")}
           name="brand"
           defaultValue={filters.brand ?? ""}
           className="min-h-11 w-full border border-espresso/15 bg-white px-3 text-sm"
@@ -53,9 +57,9 @@ export function ShopFilters({
         </select>
       </div>
       <div>
-        <Label htmlFor="category">Category</Label>
+        <Label htmlFor={fieldId("category")}>Category</Label>
         <select
-          id="category"
+          id={fieldId("category")}
           name="category"
           defaultValue={filters.category ?? ""}
           className="min-h-11 w-full border border-espresso/15 bg-white px-3 text-sm"
@@ -68,14 +72,14 @@ export function ShopFilters({
           ))}
         </select>
       </div>
-      <label className="flex items-center gap-2 text-sm">
-        <input type="checkbox" name="arrival" value="1" defaultChecked={filters.arrival === "1"} />
+      <label className="flex min-h-11 items-center gap-3 text-sm">
+        <input type="checkbox" name="arrival" value="1" defaultChecked={filters.arrival === "1"} className="size-5" />
         New arrivals
       </label>
       <div>
-        <Label htmlFor="sort">Sort</Label>
+        <Label htmlFor={fieldId("sort")}>Sort</Label>
         <select
-          id="sort"
+          id={fieldId("sort")}
           name="sort"
           defaultValue={filters.sort}
           className="min-h-11 w-full border border-espresso/15 bg-white px-3 text-sm"
@@ -89,7 +93,7 @@ export function ShopFilters({
       <Button type="submit" className="w-full">
         Apply
       </Button>
-      <Link href="/shop" className="block text-center text-sm text-taupe">
+      <Link href="/shop" className="flex min-h-11 items-center justify-center text-sm text-taupe">
         Reset
       </Link>
     </form>

@@ -45,7 +45,7 @@ export default async function HomePage() {
         <div className="mx-auto max-w-7xl">
           <div className="flex items-end justify-between gap-4">
             <h2 className="font-serif text-3xl md:text-4xl">Shop by category</h2>
-            <Link href="/collections" className="shrink-0 text-sm text-taupe hover:text-espresso">
+            <Link href="/collections" className="inline-flex min-h-11 shrink-0 items-center text-sm text-taupe hover:text-espresso">
               All categories
             </Link>
           </div>

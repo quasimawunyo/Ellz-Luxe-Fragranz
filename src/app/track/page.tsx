@@ -22,7 +22,7 @@ export default function TrackOrderPage() {
           <Label htmlFor="email">Email</Label>
           <Input id="email" name="email" type="email" required autoComplete="email" />
         </div>
-        <Button type="submit">Find order</Button>
+        <Button type="submit" className="w-full sm:w-auto">Find order</Button>
       </ActionForm>
       <p className="mt-8 text-sm text-taupe">
         Have an account? <Link href="/account/orders">Order history</Link>

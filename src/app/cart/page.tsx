@@ -59,7 +59,7 @@ export default async function CartPage() {
                       min={0}
                       max={line.maxQuantity}
                       defaultValue={line.quantity}
-                      className="h-10 w-16 border border-espresso/15 px-2 text-sm"
+                      className="h-11 w-16 border border-espresso/15 px-2 text-sm"
                     />
                     <Button type="submit" variant="outline">
                       Update

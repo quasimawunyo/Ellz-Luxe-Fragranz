@@ -18,7 +18,7 @@ export function PasswordInput({ className, ...props }: ComponentProps<typeof Inp
       />
       <button
         type="button"
-        className="absolute right-1.5 top-1/2 grid size-9 -translate-y-1/2 place-items-center text-espresso"
+        className="absolute right-0 top-0 grid h-full w-11 place-items-center text-espresso"
         aria-label={visible ? "Hide password" : "Show password"}
         aria-pressed={visible}
         onClick={() => setVisible((value) => !value)}

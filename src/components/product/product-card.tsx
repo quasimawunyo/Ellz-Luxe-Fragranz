@@ -46,7 +46,7 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
         <LikeButton
           productId={product.id}
           name={product.name}
-          className="absolute right-3 top-3 size-9 rounded-full bg-white/90 text-espresso hover:bg-white"
+          className="absolute right-2 top-2 size-11 rounded-full bg-white/90 text-espresso hover:bg-white sm:right-3 sm:top-3"
         />
         <div className="absolute inset-x-3 bottom-3 hidden opacity-0 transition group-hover:opacity-100 lg:block lg:group-hover:opacity-100">
           {soldOut ? (
@@ -57,7 +57,7 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
         </div>
       </div>
       <p className="mt-4 text-xs uppercase tracking-[0.18em] text-taupe">{product.brand}</p>
-      <h3 className="mt-1 font-serif text-xl leading-snug">
+      <h3 className="mt-1 font-serif text-lg leading-snug sm:text-xl">
         <Link href={`/product/${product.slug}`} prefetch>{product.name}</Link>
       </h3>
       {product.isDemonstration && badge !== "Tester" ? (
@@ -67,7 +67,7 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
         <Price
           amountMinor={variant.priceMinor}
           compareAtMinor={variant.compareAtMinor}
-          className="mt-3 text-2xl font-semibold tracking-tight text-leaf sm:text-[1.75rem]"
+          className="mt-3 text-xl font-semibold tracking-tight text-leaf sm:text-[1.75rem]"
         />
       ) : null}
       <div className="mt-3 lg:hidden">
@@ -93,7 +93,7 @@ export function ProductGrid({
   return (
     <div
       className={cn(
-        "grid gap-x-6 gap-y-12 sm:grid-cols-2",
+        "grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-6 lg:gap-y-12",
         viewAllHref ? "lg:grid-cols-4" : "lg:grid-cols-3",
         className,
       )}

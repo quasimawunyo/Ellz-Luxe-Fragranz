@@ -36,7 +36,7 @@ export function ThemeToggle({ className }: { className?: string }) {
   return (
     <button
       type="button"
-      className={`grid size-9 shrink-0 place-items-center sm:size-10 ${className ?? "text-espresso"}`}
+      className={`grid size-11 shrink-0 place-items-center ${className ?? "text-espresso"}`}
       aria-label={mounted && theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
       onClick={toggle}
     >

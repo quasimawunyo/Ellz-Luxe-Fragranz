@@ -72,7 +72,7 @@ export function Header({
           <div className="flex min-w-0 flex-1 items-center">
             <button
               type="button"
-              className="grid size-9 shrink-0 place-items-center sm:size-10 lg:hidden"
+              className="grid size-11 shrink-0 place-items-center lg:hidden"
               aria-label={open ? "Close menu" : "Open menu"}
               onClick={() => {
                 setPanelTop(headerRef.current?.getBoundingClientRect().bottom ?? 0);
@@ -85,7 +85,7 @@ export function Header({
           </div>
           <nav className="hidden items-center gap-9 text-[11px] uppercase tracking-[0.32em] text-taupe lg:flex" aria-label="Main navigation">
             {NAV.map((item) => (
-              <Link key={item.href} href={item.href} prefetch className="hover:text-espresso">
+              <Link key={item.href} href={item.href} prefetch className="inline-flex min-h-11 items-center hover:text-espresso">
                 {item.label}
               </Link>
             ))}
@@ -93,7 +93,7 @@ export function Header({
           <div className="ml-auto flex shrink-0 items-center">
             <button
               type="button"
-              className="grid size-9 shrink-0 place-items-center text-espresso sm:size-10"
+              className="grid size-11 shrink-0 place-items-center text-espresso"
               aria-label="Search"
               onClick={() => router.push("/search")}
             >
@@ -107,15 +107,15 @@ export function Header({
                     Admin
                   </Link>
                 ) : null}
-                <Link href={signedIn ? "/account" : "/login"} className="grid size-9 shrink-0 place-items-center hover:text-champagne sm:size-10" aria-label={signedIn ? "Account" : "Log in"}>
+                <Link href={signedIn ? "/account" : "/login"} className="grid size-11 shrink-0 place-items-center hover:text-champagne" aria-label={signedIn ? "Account" : "Log in"}>
                   <User className="size-[18px]" strokeWidth={1.75} />
                 </Link>
               </>
             ) : (
-              <span className="inline-block size-9 sm:size-10" aria-hidden />
+              <span className="inline-block size-11" aria-hidden />
             )}
-            <SavedHeartLink className="grid size-9 shrink-0 place-items-center hover:text-champagne sm:size-10" />
-            <Link href="/cart" className="relative grid size-9 shrink-0 place-items-center sm:size-10" aria-label={`Cart, ${cartCount} ${cartCount === 1 ? "item" : "items"}`}>
+            <SavedHeartLink className="grid size-11 shrink-0 place-items-center hover:text-champagne" />
+            <Link href="/cart" className="relative grid size-11 shrink-0 place-items-center" aria-label={`Cart, ${cartCount} ${cartCount === 1 ? "item" : "items"}`}>
               <ShoppingBag className="size-[18px]" strokeWidth={1.75} />
               {ready && cartCount > 0 ? (
                 <span className="absolute right-0 top-0 grid size-4 place-items-center rounded-full bg-leaf text-[9px] font-medium text-snow">

@@ -12,8 +12,8 @@ export default async function FaqPage() {
         {faqs
           .filter((item) => !item.requiresOwnerReview)
           .map((item) => (
-          <details key={item.id} className="border border-espresso/10 bg-white p-5">
-            <summary className="cursor-pointer text-base font-medium">{item.question}</summary>
+          <details key={item.id} className="border border-espresso/10 bg-white px-5 py-2">
+            <summary className="flex min-h-11 cursor-pointer items-center text-base font-medium">{item.question}</summary>
             <p className="mt-3 leading-7 text-taupe">{item.answer}</p>
           </details>
         ))}
