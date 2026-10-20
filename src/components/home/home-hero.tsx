@@ -89,8 +89,10 @@ export function HomeHero() {
                 setRestLoaded(true);
                 setIndex(slideIndex);
               }}
-              className={cn("h-1.5 rounded-full", active ? "w-8 bg-champagne" : "w-3 bg-snow/50")}
-            />
+              className="grid h-11 min-w-11 place-items-center"
+            >
+              <span className={cn("h-1.5 rounded-full", active ? "w-8 bg-champagne" : "w-3 bg-snow/50")} />
+            </button>
           );
         })}
       </div>

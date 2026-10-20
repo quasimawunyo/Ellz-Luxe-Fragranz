@@ -61,14 +61,14 @@ export default async function CartPage() {
                       defaultValue={line.quantity}
                       className="h-10 w-16 border border-espresso/15 px-2 text-sm"
                     />
-                    <Button type="submit" size="sm" variant="outline">
+                    <Button type="submit" variant="outline">
                       Update
                     </Button>
                   </ActionForm>
                   <ActionForm action={updateCartAction}>
                     <input type="hidden" name="variantId" value={line.variantId} />
                     <input type="hidden" name="quantity" value="0" />
-                    <button type="submit" className="mt-2 text-sm text-taupe">
+                    <button type="submit" className="mt-1 inline-flex min-h-11 items-center text-sm text-taupe">
                       Remove
                     </button>
                   </ActionForm>
