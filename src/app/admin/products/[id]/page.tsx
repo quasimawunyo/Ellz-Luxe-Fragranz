@@ -4,7 +4,8 @@ import { saveProductAction } from "@/app/actions/admin";
 import { ActionForm } from "@/components/forms/form-status";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/input";
-import { cedisInputFromMinor } from "@/lib/money";
+import { sellingVariant } from "@/lib/catalog/helpers";
+import { cedisInputFromMinor, formatMoney } from "@/lib/money";
 import { notFound } from "next/navigation";
 
 export default async function AdminProductPage({ params }: { params: Promise<{ id: string }> }) {
@@ -13,7 +14,8 @@ export default async function AdminProductPage({ params }: { params: Promise<{ i
   const product = isNew ? null : await getProductById(id);
   if (!isNew && !product) notFound();
   const categories = await getCategories();
-  const variant = product?.variants[0];
+  const variant = product ? sellingVariant(product) ?? product.variants[0] : undefined;
+  const otherVariants = product?.variants.filter((item) => item.id !== variant?.id) ?? [];
   const image = product?.images[0];
 
   return (
@@ -110,7 +112,19 @@ export default async function AdminProductPage({ params }: { params: Promise<{ i
           <Label htmlFor="imageAlt">Image description</Label>
           <Input id="imageAlt" name="imageAlt" defaultValue={image?.alt ?? ""} />
         </div>
-        <h2 className="pt-4 font-serif text-2xl">Primary variant</h2>
+        <h2 className="pt-4 font-serif text-2xl">Size on the shop</h2>
+        {otherVariants.length ? (
+          <div className="text-sm text-taupe">
+            <p>This form saves the size shown on the shop. Other sizes stay as they are:</p>
+            <ul className="mt-2 space-y-1">
+              {otherVariants.map((item) => (
+                <li key={item.id}>
+                  {item.label} · {formatMoney(item.priceMinor)} · {item.stock} left
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
         <div>
           <Label htmlFor="sku">SKU</Label>
           <Input id="sku" name="sku" defaultValue={variant?.sku} />

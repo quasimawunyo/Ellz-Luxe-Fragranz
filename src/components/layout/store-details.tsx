@@ -36,17 +36,23 @@ export function StoreContact({
       ) : null}
       {settings.contactPhone ? (
         <ContactRow icon={Phone}>
-          <a href={`tel:${settings.contactPhone}`}>{settings.contactPhone}</a>
+          <a href={`tel:${settings.contactPhone}`} className="inline-flex min-h-11 items-center">{settings.contactPhone}</a>
         </ContactRow>
       ) : null}
       {wa ? (
         <ContactRow icon={WhatsAppIcon}>
-          <a href={wa} target="_blank" rel="noreferrer">
+          <a href={wa} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center">
             {settings.contactPhone}
           </a>
         </ContactRow>
       ) : null}
-      {settings.contactEmail ? <p>{settings.contactEmail}</p> : null}
+      {settings.contactEmail ? (
+        <p>
+          <a href={`mailto:${settings.contactEmail}`} className="inline-flex min-h-11 items-center">
+            {settings.contactEmail}
+          </a>
+        </p>
+      ) : null}
     </div>
   );
 }
@@ -84,7 +90,7 @@ export function StoreSocials({ settings }: { settings: StoreSettings }) {
             rel="noreferrer"
             aria-label={link.label}
             title={link.label}
-            className="grid size-10 place-items-center rounded-full border border-current/25 text-current transition-colors hover:border-champagne hover:text-champagne"
+            className="grid size-11 place-items-center rounded-full border border-current/25 text-current transition-colors hover:border-champagne hover:text-champagne"
           >
             <link.Icon />
           </a>

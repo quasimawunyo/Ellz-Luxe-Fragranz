@@ -10,23 +10,21 @@ export default function BrandsPage() {
     <div className="mx-auto max-w-7xl px-4 py-10">
       <Breadcrumbs items={[{ href: "/", label: "Home" }, { label: "Brands" }]} />
       <h1 className="mt-6 font-serif text-4xl">Brands</h1>
-      <ul className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-5">
+      <ul className="mt-8 grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-5">
         {HOUSE_BRANDS.map((brand) => (
           <li key={brand.slug}>
-            <Link href={`/brands/${brand.slug}`} className="flex flex-col items-center gap-3 border border-espresso/10 bg-ivory px-4 py-8">
+            <Link href={`/brands/${brand.slug}`} className="flex min-h-32 flex-col items-center justify-center gap-2 rounded-2xl border border-espresso/10 bg-ivory px-3 py-5 text-center">
               {brand.logo ? (
                 <Image
                   src={brand.logo}
-                  alt={brand.name}
+                  alt=""
                   width={180}
                   height={72}
                   unoptimized
-                  className="h-20 w-auto max-w-56 object-contain"
+                  className="h-12 w-auto max-w-full object-contain sm:h-16"
                 />
-              ) : (
-                <span className="font-serif text-2xl text-espresso">{brand.name}</span>
-              )}
-              <span className="text-sm">{brand.name}</span>
+              ) : null}
+              <span className={brand.logo ? "text-sm" : "font-serif text-xl leading-tight"}>{brand.name}</span>
             </Link>
           </li>
         ))}
