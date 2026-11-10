@@ -21,10 +21,22 @@ export default async function AdminSettingsPage() {
           <li>Checkout: {launch.checkout}</li>
           <li>Moolre: {launch.moolre ? "Ready" : "Not set"}</li>
           <li>Paystack: {launch.paystack ? "Ready" : "Not set"}</li>
-          <li>Order email ping: {launch.orderEmail ? "Ready" : "Not set"}</li>
+          <li>Order email ping: {launch.orderEmail ? "Ready — annex and customer" : "Add RESEND_API_KEY in Vercel"}</li>
           <li>Order WhatsApp ping: {launch.orderWhatsAppApi ? "Ready" : "Customer WhatsApp opens"}</li>
           <li>Order phone ping: {launch.orderPush ? "Ready" : "Not set"}</li>
         </ul>
+        <p className="mt-4 text-taupe">
+          Leaked password protection is an Auth dashboard switch. Open{" "}
+          <a
+            href="https://supabase.com/dashboard/project/rarcmcpiaykuzdfpbwlh/auth/providers"
+            className="underline underline-offset-4"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Email sign-in
+          </a>
+          , turn on Prevent use of leaked passwords, and save. It needs the Pro plan.
+        </p>
         {launch.orderPushUrl ? (
           <p className="mt-4">
             Open this on your phone once, then allow notifications:{" "}

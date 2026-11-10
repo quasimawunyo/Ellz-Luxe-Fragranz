@@ -3,6 +3,7 @@ import "server-only";
 import { env } from "@/lib/env";
 import { getStoreSettings } from "@/lib/catalog/queries";
 import { annexOrderNotice, ghanaWaDigits, type AnnexOrderNotice } from "@/lib/whatsapp";
+import { customerOrderEmailText } from "@/lib/notify/messages";
 import type { StoreOrder } from "@/lib/orders/types";
 
 export function orderToAnnexNotice(order: StoreOrder): AnnexOrderNotice {
@@ -43,15 +44,15 @@ async function postJson(url: string, body: unknown, headers: Record<string, stri
   }
 }
 
-async function emailAnnex(to: string, notice: string, orderNumber: string) {
+async function sendResend(to: string, subject: string, text: string) {
   if (!env.resendApiKey || !to) return;
   await postJson(
     "https://api.resend.com/emails",
     {
       from: env.orderNotifyFrom,
       to: [to],
-      subject: `New EllzLuxe order ${orderNumber}`,
-      text: notice,
+      subject,
+      text,
     },
     { authorization: `Bearer ${env.resendApiKey}` },
   );
@@ -100,8 +101,13 @@ export async function notifyAnnexOfOrder(order: StoreOrder) {
   const settings = await getStoreSettings();
   const notice = orderToAnnexNotice(order);
   const body = annexOrderNotice(notice);
+  const customerText = customerOrderEmailText(notice, {
+    siteUrl: env.siteUrl,
+    contactPhone: settings.contactPhone,
+  });
   const jobs = [
-    emailAnnex(settings.contactEmail, body, order.orderNumber),
+    sendResend(settings.contactEmail, `New EllzLuxe order ${order.orderNumber}`, body),
+    sendResend(order.email, `EllzLuxe Fragranz order ${order.orderNumber}`, customerText),
     webhookAnnex(notice, body),
     callMeBot(settings.contactPhone, body),
     ntfyAnnex(body, order.orderNumber),

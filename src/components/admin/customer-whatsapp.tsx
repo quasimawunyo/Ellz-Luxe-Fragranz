@@ -28,11 +28,11 @@ export function CustomerWhatsApp({
       target="_blank"
       rel="noreferrer"
       className={cn(
-        "inline-flex min-h-11 items-center gap-2 text-sm text-espresso hover:text-[#075E54]",
+        "inline-flex min-h-11 items-center gap-2 text-sm text-channel hover:text-[#128C7E]",
         className,
       )}
     >
-      <WhatsAppIcon className="size-5 shrink-0 text-[#25D366]" />
+      <WhatsAppIcon className="size-5 shrink-0 text-channel" />
       <span>{label}</span>
       <span className="sr-only">Open WhatsApp chat with {name ?? "customer"}</span>
     </a>

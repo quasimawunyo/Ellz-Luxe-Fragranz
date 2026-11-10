@@ -16,6 +16,8 @@ const buttonVariants = cva(
           "bg-transparent px-4 py-3.5 text-[11px] font-medium uppercase tracking-[0.28em] text-snow/90 hover:text-snow",
         danger: "bg-red-900 text-ivory hover:bg-red-800 px-5 py-2.5",
         shop: "rounded-full bg-leaf px-5 py-2.5 text-white shadow-[0_1px_0_rgba(255,255,255,0.18)_inset] hover:bg-leaf/90",
+        whatsapp:
+          "rounded-full bg-channel px-5 py-2.5 text-white shadow-[0_1px_0_rgba(255,255,255,0.22)_inset] hover:bg-channel/90",
       },
       size: {
         default: "min-h-11",

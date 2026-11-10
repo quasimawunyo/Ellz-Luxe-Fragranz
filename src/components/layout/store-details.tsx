@@ -1,7 +1,9 @@
 import type { ComponentType, ReactNode, SVGProps } from "react";
 import { MapPin, Phone } from "lucide-react";
 import { InstagramIcon, SnapchatIcon, TikTokIcon, WhatsAppIcon } from "@/components/brand/social-icons";
+import { buttonVariants } from "@/components/ui/button";
 import type { StoreSettings } from "@/lib/catalog/types";
+import { cn } from "@/lib/utils";
 import { whatsappHref } from "@/lib/whatsapp";
 
 function ContactRow({
@@ -41,7 +43,7 @@ export function StoreContact({
       ) : null}
       {wa ? (
         <ContactRow icon={WhatsAppIcon}>
-          <a href={wa} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center">
+          <a href={wa} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center text-channel">
             {settings.contactPhone}
           </a>
         </ContactRow>
@@ -80,6 +82,13 @@ export function StoreSocials({ settings }: { settings: StoreSettings }) {
 
   if (!links.length) return null;
 
+  const tone: Record<string, string> = {
+    Instagram: "border-[#E4405F]/40 text-[#E4405F] hover:bg-[#E4405F] hover:text-white",
+    TikTok: "border-espresso/20 text-espresso hover:bg-espresso hover:text-[#25F4EE]",
+    Snapchat: "border-[#FFFC00] bg-[#FFFC00] text-espresso hover:brightness-95",
+    WhatsApp: "border-channel bg-channel text-white hover:bg-channel/90",
+  };
+
   return (
     <ul className="mt-3 flex flex-wrap items-center gap-3">
       {links.map((link) => (
@@ -90,12 +99,25 @@ export function StoreSocials({ settings }: { settings: StoreSettings }) {
             rel="noreferrer"
             aria-label={link.label}
             title={link.label}
-            className="grid size-11 place-items-center rounded-full border border-current/25 text-current transition-colors hover:border-champagne hover:text-champagne"
+            className={cn(
+              "grid size-11 place-items-center rounded-full border transition-colors",
+              tone[link.label] ?? "border-espresso/20 text-espresso hover:border-champagne hover:text-champagne",
+            )}
           >
             <link.Icon />
           </a>
         </li>
       ))}
     </ul>
+  );
+}
+
+export function WhatsAppCta({ phone, message }: { phone: string; message?: string }) {
+  const href = whatsappHref(phone, message);
+  if (!href) return null;
+  return (
+    <a href={href} target="_blank" rel="noreferrer" className={cn(buttonVariants({ variant: "whatsapp" }), "px-8")}>
+      WhatsApp
+    </a>
   );
 }

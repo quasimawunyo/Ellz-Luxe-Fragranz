@@ -32,6 +32,7 @@ export default function SignupPage() {
               autoComplete="new-password"
               className="rounded-xl px-4"
             />
+            <p className="mt-2 text-xs text-taupe">At least 8 characters. Avoid a password that has been leaked.</p>
           </div>
           <Button type="submit" variant="shop" className="w-full">
             Create account

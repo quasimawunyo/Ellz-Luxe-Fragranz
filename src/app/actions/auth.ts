@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { createUserSupabase } from "@/lib/supabase/server";
 import { env, isSupabaseConfigured } from "@/lib/env";
 import { profileSchema, signInSchema, signUpSchema } from "@/lib/validations";
+import { publicAuthError } from "@/lib/auth/errors";
 import { safeInternalPath } from "@/lib/security/paths";
 
 export async function signInAction(_prev: { error?: string } | null, formData: FormData) {
@@ -17,7 +18,7 @@ export async function signInAction(_prev: { error?: string } | null, formData: F
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Invalid details." };
   const supabase = await createUserSupabase();
   const { error } = await supabase!.auth.signInWithPassword(parsed.data);
-  if (error) return { error: error.message };
+  if (error) return { error: publicAuthError(error.message) };
   redirect(safeInternalPath(formData.get("next")));
 }
 
@@ -40,7 +41,7 @@ export async function signUpAction(_prev: { error?: string; ok?: boolean; messag
       emailRedirectTo: `${env.siteUrl}/auth/callback`,
     },
   });
-  if (error) return { error: error.message };
+  if (error) return { error: publicAuthError(error.message) };
   return { ok: true as const, message: "Check your email to confirm your account." };
 }
 
@@ -59,7 +60,7 @@ export async function recoverPasswordAction(_prev: { error?: string; ok?: boolea
   const { error } = await supabase!.auth.resetPasswordForEmail(email, {
     redirectTo: `${env.siteUrl}/auth/callback?next=/account`,
   });
-  if (error) return { error: error.message };
+  if (error) return { error: publicAuthError(error.message) };
   return { ok: true as const, message: "If that account exists, a reset email is on its way." };
 }
 

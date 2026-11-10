@@ -1,6 +1,6 @@
 import { submitContact } from "@/app/actions/commerce";
 import { ActionForm } from "@/components/forms/form-status";
-import { StoreContact, StoreSocials } from "@/components/layout/store-details";
+import { StoreContact, StoreSocials, WhatsAppCta } from "@/components/layout/store-details";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/input";
 import { getStoreSettings } from "@/lib/catalog/queries";
@@ -15,6 +15,9 @@ export default async function ContactPage() {
         <h1 className="font-serif text-4xl">Contact</h1>
         <p className="mt-4 text-taupe">Visit {settings.location}, call, or send a WhatsApp message.</p>
         <StoreContact settings={settings} className="mt-8 space-y-2 text-sm" />
+        <div className="mt-6">
+          <WhatsAppCta phone={settings.contactPhone} message="Hello, I have a question about EllzLuxe Fragranz." />
+        </div>
         <h2 className="mt-10 text-lg font-semibold">Social</h2>
         <StoreSocials settings={settings} />
       </div>

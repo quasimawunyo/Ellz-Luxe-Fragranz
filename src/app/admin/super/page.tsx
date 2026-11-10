@@ -80,6 +80,10 @@ export default async function SuperAdminPage() {
             <dt className="text-taupe">Site URL</dt>
             <dd className="mt-1 break-all">{launch.siteUrl}</dd>
           </div>
+          <div>
+            <dt className="text-taupe">Order email</dt>
+            <dd className="mt-1">{launch.orderEmail ? "Annex and customer" : "Add RESEND_API_KEY"}</dd>
+          </div>
           <div className="sm:col-span-2">
             <dt className="text-taupe">Moolre callback</dt>
             <dd className="mt-1 break-all">{launch.moolreWebhook}</dd>

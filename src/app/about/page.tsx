@@ -34,7 +34,7 @@ export default async function AboutPage() {
             Shop
           </Link>
           {wa ? (
-            <a href={wa} target="_blank" rel="noreferrer" className={cn(buttonVariants({ variant: "outline" }))}>
+            <a href={wa} target="_blank" rel="noreferrer" className={cn(buttonVariants({ variant: "whatsapp" }))}>
               WhatsApp
             </a>
           ) : null}
