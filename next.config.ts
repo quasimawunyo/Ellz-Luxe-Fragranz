@@ -15,6 +15,9 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  experimental: {
+    agentUpgrade: "security",
+  },
   allowedDevOrigins: ["127.0.0.1"],
   turbopack: {
     rules: {
