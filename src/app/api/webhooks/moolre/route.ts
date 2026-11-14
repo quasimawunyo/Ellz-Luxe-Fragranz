@@ -50,13 +50,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ received: true, paid: false });
     }
     const amountSource = live.amount ?? live.value ?? data.amount;
-    if (!moolreAmountMatches(amountSource, order.totalMinor)) {
+    const expected = order.payments.find((payment) => payment.reference === data.externalref)?.amountMinor ?? order.totalMinor;
+    if (!moolreAmountMatches(amountSource, expected)) {
       return NextResponse.json({ error: "Amount mismatch" }, { status: 400 });
     }
     await markOrderPaid(
       data.externalref,
       String(data.transactionid ?? data.externalref),
-      order.totalMinor,
+      expected,
     );
   }
 

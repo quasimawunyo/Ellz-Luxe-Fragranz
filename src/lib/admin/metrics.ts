@@ -1,3 +1,4 @@
+import { amountPaidMinor } from "@/lib/orders/desk";
 import { isPaidRevenue } from "@/lib/orders/transitions";
 import type { CatalogProduct } from "@/lib/catalog/types";
 import type { StoreOrder } from "@/lib/orders/types";
@@ -20,13 +21,20 @@ export function buildDashboardMetrics(
   extras?: { messages?: number; subscribers?: number },
   now = new Date(),
 ) {
-  const paid = orders.filter((order) => isPaidRevenue(order.paymentStatus));
-  const pending = orders.filter((order) => order.paymentStatus === "pending");
-  const paidRevenue = paid.reduce((sum, order) => sum + order.totalMinor, 0);
+  const countable = orders.filter((order) => !order.isTest);
+  const paid = countable.filter((order) => isPaidRevenue(order.paymentStatus));
+  const pending = countable.filter((order) => order.paymentStatus === "pending");
+  const paidRevenue = paid.reduce((sum, order) => {
+    const received = amountPaidMinor(order.payments);
+    return sum + (received > 0 ? received : order.totalMinor);
+  }, 0);
   const pendingValue = pending.reduce((sum, order) => sum + order.totalMinor, 0);
   const weekStart = now.getTime() - 7 * DAY_MS;
   const paidThisWeek = paid.filter((order) => new Date(order.createdAt).getTime() >= weekStart);
-  const weekRevenue = paidThisWeek.reduce((sum, order) => sum + order.totalMinor, 0);
+  const weekRevenue = paidThisWeek.reduce((sum, order) => {
+    const received = amountPaidMinor(order.payments);
+    return sum + (received > 0 ? received : order.totalMinor);
+  }, 0);
 
   const sales = new Map<string, number>();
   for (const order of paid) {
@@ -39,11 +47,12 @@ export function buildDashboardMetrics(
     .slice(0, 5)
     .map(([name, quantity]) => ({ name, quantity }));
 
-  const toPack = orders.filter(
+  const toPack = countable.filter(
     (order) =>
       isPaidRevenue(order.paymentStatus) &&
-      (order.fulfillmentStatus === "unfulfilled" || order.fulfillmentStatus === "processing"),
+      (order.fulfillmentStatus === "new" || order.fulfillmentStatus === "packed"),
   );
+  const awaitingReview = countable.filter((order) => order.awaitingReview);
 
   const variantRows = products.flatMap((product) =>
     product.variants.map((variant) => ({
@@ -59,7 +68,7 @@ export function buildDashboardMetrics(
   const inStock = tracked.filter((row) => row.state === "in_stock");
   const lowStock = tracked.filter((row) => row.state === "low_stock");
   const outOfStock = tracked.filter((row) => row.state === "out_of_stock");
-  const needsAttention = orders.filter((order) => order.needsAttention);
+  const needsAttention = countable.filter((order) => order.needsAttention);
   const drafts = products.filter((product) => product.status === "draft");
   const demonstration = products.filter((product) => product.isDemonstration);
   const live = products.filter((product) => !product.isDemonstration && product.status === "published");
@@ -71,7 +80,10 @@ export function buildDashboardMetrics(
   const byDay = new Map(dayKeys.map((key) => [key, 0]));
   for (const order of paidThisWeek) {
     const key = ghanaDayKey(order.createdAt);
-    if (byDay.has(key)) byDay.set(key, (byDay.get(key) ?? 0) + order.totalMinor);
+    if (byDay.has(key)) {
+      const received = amountPaidMinor(order.payments);
+      byDay.set(key, (byDay.get(key) ?? 0) + (received > 0 ? received : order.totalMinor));
+    }
   }
   const weekSeries = dayKeys.map((label) => ({ label, amountMinor: byDay.get(label) ?? 0 }));
   const weekPeak = Math.max(1, ...weekSeries.map((point) => point.amountMinor));
@@ -87,6 +99,7 @@ export function buildDashboardMetrics(
     weekPeak,
     bestSellers,
     toPack,
+    awaitingReview,
     needsAttention,
     variantCount: variantRows.length,
     inStockCount: inStock.length,

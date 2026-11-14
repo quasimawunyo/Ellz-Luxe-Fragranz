@@ -6,9 +6,6 @@ import { requireAdmin } from "@/lib/auth/require-admin";
 import { createServiceClient } from "@/lib/supabase/admin";
 import { isSupabaseAdminConfigured } from "@/lib/env";
 import { productInputSchema, variantInputSchema } from "@/lib/validations";
-import { getOrderById, markWhatsAppOrderPaid, returnStockForOrder, updateFulfillment } from "@/lib/orders/store";
-import { fulfillmentStatuses, type FulfillmentStatus } from "@/lib/orders/transitions";
-import { refundPaystackTransaction } from "@/lib/payments/paystack";
 import { minorFromCedisInput } from "@/lib/money";
 import type { DeliveryMethod } from "@/lib/catalog/types";
 
@@ -224,73 +221,6 @@ export async function saveProductAction(_prev: { error?: string; ok?: boolean; m
     : "Product saved.";
   if (creating) redirect(`/admin/products/${id}${photoMissing ? "?notice=photo" : ""}`);
   return { ok: true as const, message, id };
-}
-
-export async function updateFulfillmentAction(_prev: { error?: string; ok?: boolean; message?: string } | null, formData: FormData) {
-  const auth = await requireAdmin();
-  const orderId = String(formData.get("orderId"));
-  const next = String(formData.get("status")) as FulfillmentStatus;
-  if (!fulfillmentStatuses.includes(next)) return { error: "Invalid status." };
-  const tracking = String(formData.get("trackingNumber") ?? "") || undefined;
-  const returnToStock = formData.get("returnToStock") === "on";
-  try {
-    const before = await getOrderById(orderId);
-    await updateFulfillment(orderId, next, tracking, { returnToStock, actorId: auth.user.id });
-    revalidatePath("/admin/orders");
-    revalidatePath(`/admin/orders/${orderId}`);
-    updateTag("storefront");
-    if (returnToStock && next === "cancelled") {
-      return {
-        ok: true as const,
-        message: before?.stockApplied
-          ? "Order cancelled. Bottles were returned to stock."
-          : "Order cancelled. Stock was not held for this order, so nothing was returned.",
-      };
-    }
-    return { ok: true as const, message: "Fulfillment updated." };
-  } catch (error) {
-    return { error: error instanceof Error ? error.message : "Update failed." };
-  }
-}
-
-export async function markOrderPaidAction(_prev: { error?: string; ok?: boolean; message?: string } | null, formData: FormData) {
-  const auth = await requireAdmin();
-  const orderId = String(formData.get("orderId"));
-  try {
-    await markWhatsAppOrderPaid(orderId, auth.user?.id ?? "admin");
-    updateTag("storefront");
-    revalidatePath("/admin/orders");
-    revalidatePath(`/admin/orders/${orderId}`);
-    revalidatePath("/admin");
-    return { ok: true as const, message: "Marked paid. This records that you received payment on WhatsApp." };
-  } catch (error) {
-    return { error: error instanceof Error ? error.message : "Could not mark paid." };
-  }
-}
-
-export async function refundOrderAction(_prev: { error?: string; ok?: boolean; message?: string } | null, formData: FormData) {
-  const auth = await requireAdmin();
-  const orderId = String(formData.get("orderId"));
-  const order = await getOrderById(orderId);
-  if (!order?.paystackReference) return { error: "No Paystack reference on this order." };
-  if (order.paymentStatus !== "paid") return { error: "Only paid orders can be refunded through Paystack." };
-  const returnToStock = formData.get("returnToStock") === "on";
-  try {
-    await refundPaystackTransaction({ transactionReference: order.paystackReference });
-    if (!returnToStock) {
-      return { ok: true as const, message: "Refund requested with Paystack. Status updates via webhook." };
-    }
-    const returned = await returnStockForOrder(orderId, auth.user.id);
-    updateTag("storefront");
-    return {
-      ok: true as const,
-      message: returned
-        ? "Refund requested. Bottles were returned to stock."
-        : "Refund requested. Stock was not held for this order, so nothing was returned.",
-    };
-  } catch (error) {
-    return { error: error instanceof Error ? error.message : "Refund failed." };
-  }
 }
 
 export async function adjustStockAction(_prev: { error?: string; ok?: boolean; message?: string } | null, formData: FormData) {

@@ -63,7 +63,7 @@ async function webhookAnnex(notice: AnnexOrderNotice, body: string) {
   await postJson(env.orderNotifyWebhookUrl, { text: body, order: notice });
 }
 
-async function ntfyAnnex(body: string, orderNumber: string) {
+async function ntfyAnnex(body: string, orderId: string, orderNumber: string) {
   if (!env.orderNtfyTopic) return;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 4000);
@@ -72,7 +72,7 @@ async function ntfyAnnex(body: string, orderNumber: string) {
       method: "POST",
       headers: {
         title: `EllzLuxe order ${orderNumber}`,
-        click: `${env.siteUrl.replace(/\/$/, "")}/admin/orders`,
+        click: `${env.siteUrl.replace(/\/$/, "")}/admin/orders/${orderId}`,
         priority: "high",
         tags: "package",
       },
@@ -100,7 +100,8 @@ async function callMeBot(phone: string, body: string) {
 export async function notifyAnnexOfOrder(order: StoreOrder) {
   const settings = await getStoreSettings();
   const notice = orderToAnnexNotice(order);
-  const body = annexOrderNotice(notice);
+  const adminUrl = `${env.siteUrl.replace(/\/$/, "")}/admin/orders/${order.id}`;
+  const body = `${annexOrderNotice(notice)}\nAdmin: ${adminUrl}`;
   const customerText = customerOrderEmailText(notice, {
     siteUrl: env.siteUrl,
     contactPhone: settings.contactPhone,
@@ -110,7 +111,18 @@ export async function notifyAnnexOfOrder(order: StoreOrder) {
     sendResend(order.email, `EllzLuxe Fragranz order ${order.orderNumber}`, customerText),
     webhookAnnex(notice, body),
     callMeBot(settings.contactPhone, body),
-    ntfyAnnex(body, order.orderNumber),
+    ntfyAnnex(body, order.id, order.orderNumber),
   ];
   await Promise.allSettled(jobs);
+}
+
+export async function notifyCustomerOfFulfilment(order: StoreOrder, status: "out_for_delivery" | "ready_for_pickup") {
+  const ready = status === "ready_for_pickup";
+  const subject = ready
+    ? `EllzLuxe Fragranz order ${order.orderNumber} is ready for pickup`
+    : `EllzLuxe Fragranz order ${order.orderNumber} is on the way`;
+  const text = ready
+    ? `Your order ${order.orderNumber} is ready for pickup at Ells Luxe Annex, Pantang. WhatsApp 0593634512 when you are on the way.`
+    : `Your order ${order.orderNumber} is out for delivery. WhatsApp 0593634512 if you need to meet the rider.`;
+  await sendResend(order.email, subject, text);
 }

@@ -10,7 +10,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <div className="min-h-full bg-ivory">
       <div className="flex min-h-screen flex-col lg:flex-row">
-        <aside className="border-b border-espresso/10 bg-white lg:sticky lg:top-0 lg:flex lg:min-h-screen lg:w-72 lg:shrink-0 lg:flex-col lg:border-b-0 lg:border-r">
+        <aside className="border-b border-espresso/10 bg-white print:hidden lg:sticky lg:top-0 lg:flex lg:min-h-screen lg:w-72 lg:shrink-0 lg:flex-col lg:border-b-0 lg:border-r">
           <div className="px-4 py-5 lg:px-5">
             <Link href="/" className="flex min-h-11 items-center gap-3">
               <BrandLogo href={false} label="" className="w-20" size={200} priority />

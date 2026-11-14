@@ -10,6 +10,28 @@ export type OrderItemSnapshot = {
   variantId: string | null;
 };
 
+export type OrderPayment = {
+  id: string;
+  provider: string;
+  method: string | null;
+  reference: string;
+  amountMinor: number;
+  status: PaymentStatus;
+  note: string | null;
+  linkUrl: string | null;
+  createdAt: string;
+};
+
+export type OrderEvent = {
+  id: string;
+  eventType: string;
+  fromValue: string | null;
+  toValue: string | null;
+  note: string | null;
+  actorEmail: string | null;
+  createdAt: string;
+};
+
 export type StoreOrder = {
   id: string;
   orderNumber: string;
@@ -33,8 +55,12 @@ export type StoreOrder = {
   needsAttention: boolean;
   attentionNote: string | null;
   stockApplied: boolean;
+  isTest: boolean;
+  awaitingReview: boolean;
   createdAt: string;
   items: OrderItemSnapshot[];
+  payments: OrderPayment[];
+  events: OrderEvent[];
   paystackReference: string | null;
   paymentProvider?: string | null;
 };

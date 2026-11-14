@@ -1,28 +1,78 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getOrderById } from "@/lib/orders/store";
-import { markOrderPaidAction, refundOrderAction, updateFulfillmentAction } from "@/app/actions/admin";
+import {
+  advanceOrderAction,
+  cancelOrderAction,
+  dismissReviewAction,
+  recordManualPaymentAction,
+  recordRefundAction,
+  requestDeliveryFeeLinkAction,
+  setDeliveryFeeAction,
+  setOrderTestAction,
+} from "@/app/actions/order-desk";
+import { CopyText } from "@/components/admin/copy-text";
+import { CustomerWhatsApp } from "@/components/admin/customer-whatsapp";
+import { StatusPill } from "@/components/admin/status-pill";
 import { ActionForm } from "@/components/forms/form-status";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
-import { orderShippingIsQuoted } from "@/lib/catalog/helpers";
 import { Price } from "@/components/ui/price";
-import { StatusPill } from "@/components/admin/status-pill";
-import { CustomerWhatsApp } from "@/components/admin/customer-whatsapp";
+import { cedisInputFromMinor, formatMoney } from "@/lib/money";
+import { amountPaidMinor, balanceDueMinor } from "@/lib/orders/desk";
+import { getOrderById } from "@/lib/orders/store";
+import {
+  canCancelFulfillment,
+  customerEmailForFulfilment,
+  fulfilmentLabel,
+  isPickupOrder,
+  nextFulfillmentStatus,
+} from "@/lib/orders/transitions";
 
 export default async function AdminOrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const order = await getOrderById(id);
   if (!order) notFound();
+  const pickup = isPickupOrder(order.deliveryMethod);
+  const next = nextFulfillmentStatus(order.fulfillmentStatus, order.deliveryMethod);
+  const paid = amountPaidMinor(order.payments);
+  const balance = balanceDueMinor(order.totalMinor, order.payments);
+  const feeLink = [...order.payments].reverse().find((payment) => payment.status === "pending" && payment.linkUrl);
+
   return (
-    <div className="max-w-2xl">
-      <h1 className="text-2xl font-semibold">{order.orderNumber}</h1>
+    <div className="max-w-3xl">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <h1 className="text-2xl font-semibold">{order.orderNumber}</h1>
+        <Link href={`/admin/orders/${order.id}/slip`} className="text-sm underline underline-offset-4">
+          Print packing slip
+        </Link>
+      </div>
       <div className="mt-3 flex flex-wrap items-center gap-2">
         <StatusPill value={order.paymentStatus} />
         <StatusPill value={order.fulfillmentStatus} />
+        {order.isTest ? <StatusPill value="test" /> : null}
       </div>
-      {order.paystackReference ? (
-        <p className="mt-3 text-sm text-taupe">Reference {order.paystackReference}</p>
+      {order.awaitingReview ? (
+        <section className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm">
+          <p>This paid order was already on the shop. It is still a real sale. Mark it as a test only if it should be left out of revenue and stock.</p>
+          <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+            <ActionForm action={dismissReviewAction}>
+              <input type="hidden" name="orderId" value={order.id} />
+              <Button type="submit" variant="outline">Keep as a real sale</Button>
+            </ActionForm>
+            <ActionForm action={setOrderTestAction}>
+              <input type="hidden" name="orderId" value={order.id} />
+              <input type="hidden" name="isTest" value="on" />
+              <Button type="submit" variant="outline">Mark as test</Button>
+            </ActionForm>
+          </div>
+        </section>
       ) : null}
+      {order.needsAttention ? (
+        <p role="status" className="mt-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900">
+          Needs attention. {order.attentionNote}
+        </p>
+      ) : null}
+
       <section className="luxe-panel mt-8 p-6">
         <p className="text-sm text-taupe">Customer</p>
         <h2 className="mt-1 text-xl font-semibold">{order.fullName}</h2>
@@ -40,14 +90,16 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
             </dd>
           </div>
           <div>
-            <dt className="text-sm text-taupe">Deliver to</dt>
+            <dt className="text-sm text-taupe">Address</dt>
             <dd className="mt-1">
               {order.addressLine}
               <br />
               {order.locality}, {order.region}
-              <br />
-              {order.deliveryMethod}
             </dd>
+          </div>
+          <div>
+            <dt className="text-sm text-taupe">Delivery method</dt>
+            <dd className="mt-1">{order.deliveryMethod}</dd>
           </div>
           {order.notes ? (
             <div>
@@ -57,75 +109,201 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
           ) : null}
         </dl>
       </section>
-      <ul className="mt-6 space-y-2 text-sm">
-        {order.items.map((item) => (
-          <li key={item.sku}>
-            {item.productName} · {item.variantLabel} · {item.sku} × {item.quantity} ·{" "}
-            <Price amountMinor={item.unitPriceMinor * item.quantity} currencyCode={order.currencyCode} />
-          </li>
-        ))}
-        <li>
-          Delivery ·{" "}
-          {orderShippingIsQuoted(order)
-            ? `Quoted for ${order.locality}, ${order.region}`
-            : /pickup/i.test(order.deliveryMethod)
-              ? "Free"
-              : <Price amountMinor={order.shippingMinor} currencyCode={order.currencyCode} />}
-        </li>
-        <li>
-          {orderShippingIsQuoted(order) ? "Goods total" : "Total"} ·{" "}
-          <Price amountMinor={order.totalMinor} currencyCode={order.currencyCode} />
-        </li>
-      </ul>
-      {order.paymentStatus === "pending" ? (
-        <ActionForm action={markOrderPaidAction} className="mt-8">
+
+      <section className="mt-6">
+        <h2 className="font-serif text-2xl">Items</h2>
+        <ul className="mt-3 space-y-2 text-sm">
+          {order.items.map((item) => (
+            <li key={`${item.sku}-${item.variantLabel}`}>
+              {item.productName} · {item.variantLabel} × {item.quantity} ·{" "}
+              <Price amountMinor={item.unitPriceMinor * item.quantity} currencyCode={order.currencyCode} />
+            </li>
+          ))}
+        </ul>
+        <dl className="mt-4 space-y-2 text-sm">
+          <div className="flex justify-between gap-4">
+            <dt>Goods</dt>
+            <dd>{formatMoney(order.subtotalMinor, order.currencyCode)}</dd>
+          </div>
+          <div className="flex justify-between gap-4">
+            <dt>Delivery fee</dt>
+            <dd>{pickup ? "GH₵0.00" : formatMoney(order.shippingMinor, order.currencyCode)}</dd>
+          </div>
+          <div className="flex justify-between gap-4 font-medium">
+            <dt>Order total</dt>
+            <dd>{formatMoney(order.totalMinor, order.currencyCode)}</dd>
+          </div>
+          <div className="flex justify-between gap-4">
+            <dt>Amount paid</dt>
+            <dd>{formatMoney(paid, order.currencyCode)}</dd>
+          </div>
+          <div className="flex justify-between gap-4">
+            <dt>Balance due</dt>
+            <dd>{formatMoney(balance, order.currencyCode)}</dd>
+          </div>
+        </dl>
+      </section>
+
+      <ActionForm action={setDeliveryFeeAction} className="mt-8 space-y-3 rounded-[1.25rem] border border-espresso/10 bg-white p-5">
+        <input type="hidden" name="orderId" value={order.id} />
+        <h2 className="font-serif text-2xl">Delivery fee</h2>
+        <p className="text-sm text-taupe">
+          {pickup ? "Pickup stays at GH₵0.00." : "Enter the fee you quoted on WhatsApp. The order total becomes goods plus this fee."}
+        </p>
+        <div>
+          <Label htmlFor="deliveryFee">Fee (GH₵)</Label>
+          <Input
+            id="deliveryFee"
+            name="deliveryFee"
+            type="number"
+            min="0"
+            step="0.01"
+            defaultValue={cedisInputFromMinor(order.shippingMinor)}
+            readOnly={pickup}
+          />
+        </div>
+        {pickup ? null : <Button type="submit">Save delivery fee</Button>}
+      </ActionForm>
+
+      {balance > 0 && !pickup && order.shippingMinor > 0 && !order.isTest ? (
+        <ActionForm action={requestDeliveryFeeLinkAction} className="mt-4 rounded-[1.25rem] border border-espresso/10 bg-white p-5">
           <input type="hidden" name="orderId" value={order.id} />
-          <Button type="submit" className="w-full sm:w-auto">Mark paid</Button>
+          <h2 className="font-serif text-2xl">Collect the balance</h2>
           <p className="mt-2 text-sm text-taupe">
-            Use this after you have received MoMo or cash on WhatsApp. Card payments wait for Moolre.
+            This creates a Moolre payment for {formatMoney(balance, order.currencyCode)}. Copy the link into WhatsApp.
           </p>
+          <Button type="submit" className="mt-4">Request delivery fee payment</Button>
+          {feeLink?.linkUrl ? <CopyText value={feeLink.linkUrl} /> : null}
         </ActionForm>
       ) : null}
-      {order.needsAttention ? (
-        <p role="status" className="mt-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900">
-          Needs attention. {order.attentionNote}
-        </p>
-      ) : null}
-      <ActionForm action={updateFulfillmentAction} className="mt-8 space-y-3">
+
+      <ActionForm action={recordManualPaymentAction} className="mt-4 space-y-3 rounded-[1.25rem] border border-espresso/10 bg-white p-5">
         <input type="hidden" name="orderId" value={order.id} />
+        <h2 className="font-serif text-2xl">Record manual payment</h2>
+        <p className="text-sm text-taupe">Use this when the customer paid you by mobile money, cash, or card outside a payment link.</p>
         <div>
-          <Label htmlFor="status">Fulfillment</Label>
-          <select id="status" name="status" defaultValue={order.fulfillmentStatus} className="min-h-11 w-full border border-espresso/15 px-3 text-sm">
-            <option value="unfulfilled">Unfulfilled</option>
-            <option value="processing">Processing</option>
-            <option value="shipped">Shipped</option>
-            <option value="delivered">Delivered</option>
-            <option value="cancelled">Cancelled</option>
+          <Label htmlFor="method">Method</Label>
+          <select id="method" name="method" className="h-11 w-full border border-espresso/15 px-3 text-sm" defaultValue="mobile_money">
+            <option value="mobile_money">Mobile money</option>
+            <option value="cash">Cash</option>
+            <option value="card">Card</option>
           </select>
         </div>
         <div>
-          <Label htmlFor="trackingNumber">Tracking</Label>
-          <Input id="trackingNumber" name="trackingNumber" defaultValue={order.trackingNumber ?? ""} />
+          <Label htmlFor="reference">Reference</Label>
+          <Input id="reference" name="reference" required />
         </div>
-        <label className="flex items-start gap-3 text-sm">
-          <input name="returnToStock" type="checkbox" className="mt-1 size-4" />
-          <span>Return to stock when this order is cancelled.</span>
-        </label>
-        <Button type="submit" className="w-full sm:w-auto">Update fulfillment</Button>
+        <div>
+          <Label htmlFor="amount">Amount (GH₵)</Label>
+          <Input id="amount" name="amount" type="number" min="0.01" step="0.01" required />
+        </div>
+        <div>
+          <Label htmlFor="paymentNote">Note</Label>
+          <Input id="paymentNote" name="note" required />
+        </div>
+        <Button type="submit">Record payment</Button>
       </ActionForm>
-      {order.paymentProvider === "paystack" ? (
-        <ActionForm action={refundOrderAction} className="mt-6">
+
+      <section className="mt-8">
+        <h2 className="font-serif text-2xl">Payment history</h2>
+        {order.payments.length ? (
+          <ul className="mt-3 divide-y divide-espresso/10 rounded-[1.25rem] border border-espresso/10 bg-white">
+            {order.payments.map((payment) => (
+              <li key={payment.id} className="px-4 py-3 text-sm">
+                <p>
+                  {formatMoney(payment.amountMinor, order.currencyCode)} · {payment.status} · {payment.method?.replaceAll("_", " ") || payment.provider}
+                </p>
+                <p className="text-taupe">{payment.reference}</p>
+                {payment.note ? <p>{payment.note}</p> : null}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-3 text-sm text-taupe">No payments yet.</p>
+        )}
+      </section>
+
+      {next ? (
+        <ActionForm action={advanceOrderAction} className="mt-8 space-y-3 rounded-[1.25rem] border border-espresso/10 bg-white p-5">
           <input type="hidden" name="orderId" value={order.id} />
-          <label className="mb-3 flex items-start gap-3 text-sm">
-            <input name="returnToStock" type="checkbox" className="mt-1 size-4" />
-            <span>Return to stock with this refund.</span>
-          </label>
-          <Button type="submit" variant="danger">
-            Request Paystack refund
-          </Button>
-          <p className="mt-3 text-xs text-taupe">Refunds go through Paystack.</p>
+          <h2 className="font-serif text-2xl">Next step</h2>
+          <p className="text-sm text-taupe">Move this order to {fulfilmentLabel(next)}.</p>
+          <div>
+            <Label htmlFor="stepNote">Note</Label>
+            <Input id="stepNote" name="note" />
+          </div>
+          {customerEmailForFulfilment(next) ? (
+            <label className="flex items-start gap-3 text-sm">
+              <input name="emailCustomer" type="checkbox" defaultChecked className="mt-1 size-4" />
+              <span>Email the customer.</span>
+            </label>
+          ) : null}
+          <Button type="submit">Mark {fulfilmentLabel(next).toLowerCase()}</Button>
         </ActionForm>
       ) : null}
+
+      {canCancelFulfillment(order.fulfillmentStatus) ? (
+        <ActionForm action={cancelOrderAction} className="mt-4 space-y-3 rounded-[1.25rem] border border-espresso/10 bg-white p-5">
+          <input type="hidden" name="orderId" value={order.id} />
+          <h2 className="font-serif text-2xl">Cancel order</h2>
+          <div>
+            <Label htmlFor="reason">Reason</Label>
+            <Input id="reason" name="reason" required />
+          </div>
+          <label className="flex items-start gap-3 text-sm">
+            <input name="returnToStock" type="checkbox" className="mt-1 size-4" />
+            <span>Return to stock</span>
+          </label>
+          <Button type="submit" variant="danger">Cancel order</Button>
+        </ActionForm>
+      ) : null}
+
+      {order.paymentStatus === "paid" ? (
+        <ActionForm action={recordRefundAction} className="mt-4 space-y-3 rounded-[1.25rem] border border-espresso/10 bg-white p-5">
+          <input type="hidden" name="orderId" value={order.id} />
+          <h2 className="font-serif text-2xl">Record refund</h2>
+          <div>
+            <Label htmlFor="refundNote">Note</Label>
+            <Input id="refundNote" name="note" required />
+          </div>
+          <label className="flex items-start gap-3 text-sm">
+            <input name="returnToStock" type="checkbox" className="mt-1 size-4" />
+            <span>Return to stock</span>
+          </label>
+          <Button type="submit" variant="danger">Record refund</Button>
+        </ActionForm>
+      ) : null}
+
+      {!order.awaitingReview ? (
+        <ActionForm action={setOrderTestAction} className="mt-4">
+          <input type="hidden" name="orderId" value={order.id} />
+          <input type="hidden" name="isTest" value={order.isTest ? "" : "on"} />
+          <Button type="submit" variant="outline">{order.isTest ? "Mark as a real sale" : "Mark as test"}</Button>
+        </ActionForm>
+      ) : null}
+
+      <section className="mt-8">
+        <h2 className="font-serif text-2xl">Timeline</h2>
+        {order.events.length ? (
+          <ol className="mt-3 space-y-3">
+            {order.events.map((event) => (
+              <li key={event.id} className="rounded-2xl border border-espresso/10 bg-white px-4 py-3 text-sm">
+                <p>
+                  {event.eventType.replaceAll("_", " ")}
+                  {event.fromValue || event.toValue ? ` · ${event.fromValue ?? "—"} → ${event.toValue ?? "—"}` : ""}
+                </p>
+                {event.note ? <p className="mt-1">{event.note}</p> : null}
+                <p className="mt-1 text-xs text-taupe">
+                  {event.actorEmail ?? "Staff"} ·{" "}
+                  {new Intl.DateTimeFormat("en-GH", { dateStyle: "medium", timeStyle: "short", timeZone: "Africa/Accra" }).format(new Date(event.createdAt))}
+                </p>
+              </li>
+            ))}
+          </ol>
+        ) : (
+          <p className="mt-3 text-sm text-taupe">No changes yet.</p>
+        )}
+      </section>
     </div>
   );
 }

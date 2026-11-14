@@ -38,7 +38,7 @@ export default async function AdminDashboardPage() {
     {
       label: "To pack",
       value: String(metrics.toPack.length),
-      hint: "Paid, still unfulfilled",
+      hint: "Paid, still to pack",
     },
     {
       label: "Catalog",
@@ -140,7 +140,7 @@ export default async function AdminDashboardPage() {
         <article className="overflow-hidden rounded-[1.25rem] border border-espresso/10 bg-white">
           <div className="flex items-center justify-between border-b border-espresso/10 px-5 py-4">
             <h2 className="font-serif text-2xl">Recent orders</h2>
-            <Link href="/admin/orders" className="text-sm text-taupe hover:text-espresso">
+            <Link href="/admin/orders?view=all" className="text-sm text-taupe hover:text-espresso">
               All orders
             </Link>
           </div>
@@ -181,6 +181,20 @@ export default async function AdminDashboardPage() {
             <h2 className="font-serif text-2xl">Needs attention</h2>
           </div>
           <div className="space-y-6 px-6 py-5 text-sm">
+            {metrics.awaitingReview.length ? (
+              <div>
+                <p className="text-sm font-medium text-taupe">Review</p>
+                <ul className="mt-2 space-y-2">
+                  {metrics.awaitingReview.map((order) => (
+                    <li key={order.id}>
+                      <Link href={`/admin/orders/${order.id}`} className="hover:text-champagne">
+                        {order.orderNumber} · decide if this paid order is a real sale or a test
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
             <div>
               <p className="text-sm font-medium text-taupe">Packing</p>
               {metrics.toPack.length ? (

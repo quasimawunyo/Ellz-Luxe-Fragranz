@@ -149,8 +149,10 @@ export type Database = {
           total_minor: number;
           order_status: "open" | "completed" | "cancelled";
           payment_status: "pending" | "paid" | "failed" | "refunded";
-          fulfillment_status: "unfulfilled" | "processing" | "shipped" | "delivered" | "cancelled";
+          fulfillment_status: "new" | "packed" | "out_for_delivery" | "ready_for_pickup" | "delivered" | "collected" | "cancelled";
           tracking_number: string | null;
+          is_test: boolean;
+          awaiting_review: boolean;
           created_at: string;
         };
         Insert: Omit<Database["public"]["Tables"]["orders"]["Row"], "created_at"> & {
@@ -183,6 +185,9 @@ export type Database = {
           amount_minor: number;
           currency_code: string;
           status: "pending" | "paid" | "failed" | "refunded";
+          method: string | null;
+          note: string | null;
+          link_url: string | null;
           raw_event_id: string | null;
           created_at: string;
         };

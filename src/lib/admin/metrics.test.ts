@@ -22,13 +22,17 @@ function order(partial: Partial<StoreOrder>): StoreOrder {
     totalMinor: 42000,
     orderStatus: "open",
     paymentStatus: "pending",
-    fulfillmentStatus: "unfulfilled",
+    fulfillmentStatus: "new",
     trackingNumber: null,
     needsAttention: false,
     attentionNote: null,
     stockApplied: false,
+    isTest: false,
+    awaitingReview: false,
     createdAt: new Date().toISOString(),
     items: [{ productName: "Citrus Veil", sku: "CV", variantLabel: "50 ml", quantity: 1, unitPriceMinor: 42000, productId: null, variantId: null }],
+    payments: [],
+    events: [],
     paystackReference: "elf_1",
     ...partial,
   };
@@ -48,7 +52,7 @@ describe("admin metrics", () => {
   it("flags paid orders that still need packing", () => {
     const metrics = buildDashboardMetrics(
       [
-        order({ paymentStatus: "paid", fulfillmentStatus: "unfulfilled" }),
+        order({ paymentStatus: "paid", fulfillmentStatus: "new" }),
         order({ id: "2", orderNumber: "ELF-2", paymentStatus: "paid", fulfillmentStatus: "delivered" }),
       ],
       DEMO_PRODUCTS.slice(0, 1),

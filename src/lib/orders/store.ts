@@ -11,9 +11,11 @@ import type { CheckoutInput } from "@/lib/validations";
 import type { StoreOrder } from "@/lib/orders/types";
 import {
   assertFulfillmentTransition,
+  normalizeFulfillmentStatus,
   type FulfillmentStatus,
   type PaymentStatus,
 } from "@/lib/orders/transitions";
+import type { OrderEvent, OrderPayment } from "@/lib/orders/types";
 import {
   getMoolrePaymentStatus,
   isMoolreConfigured,
@@ -28,7 +30,15 @@ import { revalidatePath } from "next/cache";
 const ORDERS_COOKIE = "elf_orders";
 
 async function demoOrders() {
-  return readJsonCookie<StoreOrder[]>(ORDERS_COOKIE, []);
+  const rows = await readJsonCookie<StoreOrder[]>(ORDERS_COOKIE, []);
+  return rows.map((order) => ({
+    ...order,
+    fulfillmentStatus: normalizeFulfillmentStatus(order.fulfillmentStatus, order.deliveryMethod),
+    isTest: order.isTest ?? false,
+    awaitingReview: order.awaitingReview ?? false,
+    payments: order.payments ?? [],
+    events: order.events ?? [],
+  }));
 }
 
 async function saveDemoOrders(orders: StoreOrder[]) {
@@ -58,8 +68,10 @@ function mapOrder(row: {
   needs_attention?: boolean | null;
   attention_note?: string | null;
   stock_applied?: boolean | null;
+  is_test?: boolean | null;
+  awaiting_review?: boolean | null;
   created_at: string;
-}, items: StoreOrder["items"], paystackReference: string | null, paymentProvider: string | null = null): StoreOrder {
+}, items: StoreOrder["items"], paystackReference: string | null, paymentProvider: string | null = null, payments: OrderPayment[] = [], events: OrderEvent[] = []): StoreOrder {
   return {
     id: row.id,
     orderNumber: row.order_number,
@@ -78,13 +90,17 @@ function mapOrder(row: {
     totalMinor: row.total_minor,
     orderStatus: row.order_status,
     paymentStatus: row.payment_status,
-    fulfillmentStatus: row.fulfillment_status,
+    fulfillmentStatus: normalizeFulfillmentStatus(row.fulfillment_status, row.delivery_method),
     trackingNumber: row.tracking_number,
     needsAttention: Boolean(row.needs_attention),
     attentionNote: row.attention_note ?? null,
     stockApplied: Boolean(row.stock_applied),
+    isTest: Boolean(row.is_test),
+    awaitingReview: Boolean(row.awaiting_review),
     createdAt: row.created_at,
     items,
+    payments,
+    events,
     paystackReference,
     paymentProvider,
   };
@@ -181,11 +197,15 @@ export async function createPendingOrder(input: CheckoutInput, userId: string | 
     totalMinor,
     orderStatus: "open",
     paymentStatus: "pending",
-    fulfillmentStatus: "unfulfilled",
+    fulfillmentStatus: "new",
     trackingNumber: null,
     needsAttention: false,
     attentionNote: null,
     stockApplied: false,
+    isTest: false,
+    awaitingReview: false,
+    payments: [],
+    events: [],
     createdAt: new Date().toISOString(),
     items: cart.lines.map((line) => ({
       productName: line.productName,
@@ -207,6 +227,72 @@ export async function createPendingOrder(input: CheckoutInput, userId: string | 
   return order;
 }
 
+function mapPayment(row: {
+  id: string;
+  provider: string;
+  method?: string | null;
+  provider_reference: string;
+  amount_minor: number;
+  status: PaymentStatus;
+  note?: string | null;
+  link_url?: string | null;
+  created_at: string;
+}): OrderPayment {
+  return {
+    id: row.id,
+    provider: row.provider,
+    method: row.method ?? null,
+    reference: row.provider_reference,
+    amountMinor: row.amount_minor,
+    status: row.status,
+    note: row.note ?? null,
+    linkUrl: row.link_url ?? null,
+    createdAt: row.created_at,
+  };
+}
+
+function mapEvent(row: {
+  id: string;
+  event_type: string;
+  from_value?: string | null;
+  to_value?: string | null;
+  note?: string | null;
+  actor_email?: string | null;
+  created_at: string;
+}): OrderEvent {
+  return {
+    id: row.id,
+    eventType: row.event_type,
+    fromValue: row.from_value ?? null,
+    toValue: row.to_value ?? null,
+    note: row.note ?? null,
+    actorEmail: row.actor_email ?? null,
+    createdAt: row.created_at,
+  };
+}
+
+export async function recordOrderEvent(input: {
+  orderId: string;
+  eventType: "fulfilment" | "payment" | "delivery_fee" | "test" | "refund" | "note";
+  fromValue?: string | null;
+  toValue?: string | null;
+  note?: string | null;
+  actorId?: string | null;
+  actorEmail?: string | null;
+}) {
+  const admin = createServiceClient();
+  if (!admin) return;
+  await admin.from("order_events").insert({
+    order_id: input.orderId,
+    event_type: input.eventType,
+    from_value: input.fromValue ?? null,
+    to_value: input.toValue ?? null,
+    note: input.note ?? null,
+    created_by: input.actorId ?? null,
+    actor_email: input.actorEmail ?? null,
+  });
+}
+
 export async function getOrderById(id: string) {
   if (isSupabaseAdminConfigured()) {
     const admin = createServiceClient();
@@ -214,11 +300,13 @@ export async function getOrderById(id: string) {
       const { data: row } = await admin.from("orders").select("*").eq("id", id).maybeSingle();
       if (!row) return null;
       const { data: items } = await admin.from("order_items").select("*").eq("order_id", id);
-      const { data: payment } = await admin
-        .from("payments")
-        .select("provider_reference, provider")
-        .eq("order_id", id)
-        .maybeSingle();
+      const [{ data: paymentRows }, { data: eventRows }] = await Promise.all([
+        admin.from("payments").select("*").eq("order_id", id).order("created_at", { ascending: true }),
+        admin.from("order_events").select("*").eq("order_id", id).order("created_at", { ascending: true }),
+      ]);
+      const payments = (paymentRows ?? []).map(mapPayment);
+      const events = (eventRows ?? []).map(mapEvent);
+      const latest = payments.at(-1);
       return mapOrder(
         row,
         (items ?? []).map((item) => ({
@@ -230,8 +318,10 @@ export async function getOrderById(id: string) {
           productId: item.product_id,
           variantId: item.variant_id,
         })),
-        payment?.provider_reference ?? null,
-        payment?.provider ?? null,
+        latest?.reference ?? null,
+        latest?.provider ?? null,
+        payments,
+        events,
       );
     }
   }
@@ -287,6 +377,10 @@ export async function listOrders(filter?: { userId?: string; email?: string }) {
   return orders;
 }
 
+export async function settlePaidOrderStock(orderId: string) {
+  await applyOnlineSale(orderId);
+}
+
 async function applyOnlineSale(orderId: string) {
   const admin = createServiceClient();
   if (!admin) return;
@@ -298,6 +392,10 @@ async function applyOnlineSale(orderId: string) {
   if (!orderRow || orderRow.stock_applied) return;
   const order = await getOrderById(orderId);
   if (!order) return;
+  if (order.isTest) {
+    await admin.from("orders").update({ stock_applied: true }).eq("id", orderId);
+    return;
+  }
   const short: string[] = [];
   for (const item of order.items) {
     if (!item.variantId) continue;
@@ -332,7 +430,7 @@ async function applyOnlineSale(orderId: string) {
 export async function returnStockForOrder(orderId: string, actorId: string | null) {
   const order = await getOrderById(orderId);
   if (!order) throw new Error("Order not found.");
-  if (!order.stockApplied) return false;
+  if (order.isTest || !order.stockApplied) return false;
   const admin = createServiceClient();
   if (!admin) return false;
   for (const item of order.items) {
@@ -380,6 +478,14 @@ export async function markOrderPaid(
         .from("orders")
         .update({ payment_status: "paid", order_status: "completed" })
         .eq("id", payment.order_id);
+      await recordOrderEvent({
+        orderId: payment.order_id,
+        eventType: "payment",
+        fromValue: payment.status,
+        toValue: "paid",
+        note: `Payment ${payment.provider_reference} confirmed.`,
+        actorEmail: payment.provider === "moolre" ? "Moolre" : payment.provider,
+      });
     }
     await applyOnlineSale(payment.order_id);
     try {
@@ -402,13 +508,15 @@ export async function markOrderPaid(
 }
 
 export async function confirmMoolreIfPaid(order: StoreOrder) {
-  if (!isMoolreConfigured() || order.paymentStatus === "paid" || !order.paystackReference) {
-    return order;
-  }
-  const live = await getMoolrePaymentStatus(order.paystackReference);
+  if (!isMoolreConfigured() || order.paymentStatus === "paid") return order;
+  const checkout = order.payments.find(
+    (payment) => payment.status === "pending" && payment.provider === "moolre" && payment.note !== "Delivery fee",
+  );
+  if (!checkout) return order;
+  const live = await getMoolrePaymentStatus(checkout.reference);
   if (!moolrePaymentSucceeded(live) || !live) return order;
-  if (!moolreAmountMatches(live.amount ?? live.value, order.totalMinor)) return order;
-  await markOrderPaid(order.paystackReference, String(live.transactionid ?? order.paystackReference));
+  if (!moolreAmountMatches(live.amount ?? live.value, checkout.amountMinor)) return order;
+  await markOrderPaid(checkout.reference, String(live.transactionid ?? checkout.reference));
   return (await getOrderById(order.id)) ?? order;
 }
 
@@ -459,7 +567,7 @@ export async function updateFulfillment(
   orderId: string,
   next: FulfillmentStatus,
   trackingNumber?: string,
-  options?: { returnToStock?: boolean; actorId?: string | null },
+  options?: { returnToStock?: boolean; actorId?: string | null; actorEmail?: string | null; note?: string | null },
 ) {
   const order = await getOrderById(orderId);
   if (!order) throw new Error("Order not found.");
@@ -475,7 +583,16 @@ export async function updateFulfillment(
         order_status: next === "cancelled" ? "cancelled" : order.orderStatus,
       })
       .eq("id", orderId);
-    if (options?.returnToStock && next === "cancelled") {
+    await recordOrderEvent({
+      orderId,
+      eventType: next === "cancelled" ? "fulfilment" : "fulfilment",
+      fromValue: order.fulfillmentStatus,
+      toValue: next,
+      note: options?.note ?? null,
+      actorId: options?.actorId ?? null,
+      actorEmail: options?.actorEmail ?? null,
+    });
+    if (options?.returnToStock && next === "cancelled" && !order.isTest) {
       await returnStockForOrder(orderId, options.actorId ?? null);
     }
     return getOrderById(orderId);

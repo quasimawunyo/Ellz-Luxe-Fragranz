@@ -24,13 +24,14 @@ export async function POST(request: Request) {
     if (typeof event.data.amount !== "number" || !event.data.currency) {
       return NextResponse.json({ error: "Amount or currency missing" }, { status: 400 });
     }
-    if (event.data.currency !== order.currencyCode || event.data.amount !== order.totalMinor) {
+    const expected = order.payments.find((payment) => payment.reference === event.data?.reference)?.amountMinor ?? order.totalMinor;
+    if (event.data.currency !== order.currencyCode || event.data.amount !== expected) {
       return NextResponse.json({ error: "Amount or currency mismatch" }, { status: 400 });
     }
     await markOrderPaid(
       event.data.reference,
       String(event.data.id ?? event.data.reference),
-      order.totalMinor,
+      expected,
     );
   }
 
