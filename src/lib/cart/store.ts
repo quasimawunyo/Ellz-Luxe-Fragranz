@@ -6,6 +6,7 @@ import type { CartItem, CartState, ResolvedCart } from "@/lib/cart/types";
 import { getVariantById, getStoreSettings } from "@/lib/catalog/queries";
 import { lineTotalMinor } from "@/lib/money";
 import { assertPurchasableQuantity } from "@/lib/inventory";
+import { assertAvailableQuantity, isSoldOut, maxPurchasable } from "@/lib/stock";
 
 const CART_ITEMS_COOKIE = "elf_cart";
 const CART_ID_COOKIE = "elf_cart_id";
@@ -91,16 +92,14 @@ export async function addItemToCart(variantId: string, quantity: number) {
   if (!match || match.product.status !== "published") {
     throw new Error("That product is unavailable.");
   }
-  if (match.variant.stock < 1) {
-    throw new Error("This size is currently out of stock.");
+  if (isSoldOut(match.variant)) {
+    throw new Error(`${match.product.name} (${match.variant.label}) is out of stock.`);
   }
   const items = await getCartItems();
   const existing = items.find((item) => item.variantId === variantId);
   const nextQty = (existing?.quantity ?? 0) + quantity;
-  assertPurchasableQuantity(nextQty);
-  if (nextQty > match.variant.stock) {
-    throw new Error("Not enough stock for that quantity.");
-  }
+  assertPurchasableQuantity(quantity);
+  assertAvailableQuantity(match.variant, nextQty, match.product.name);
   if (existing) existing.quantity = nextQty;
   else items.push({ variantId, quantity: nextQty });
   await saveCartItems(items);
@@ -112,14 +111,11 @@ export async function updateCartQuantity(variantId: string, quantity: number) {
     await saveCartItems(items.filter((item) => item.variantId !== variantId));
     return;
   }
-  assertPurchasableQuantity(quantity);
   const match = await getVariantById(variantId);
   if (!match || match.product.status !== "published") {
     throw new Error("That product is unavailable.");
   }
-  if (quantity > match.variant.stock) {
-    throw new Error("Not enough stock for that quantity.");
-  }
+  assertAvailableQuantity(match.variant, quantity, match.product.name);
   const existing = items.find((item) => item.variantId === variantId);
   if (!existing) items.push({ variantId, quantity });
   else existing.quantity = quantity;
@@ -150,8 +146,9 @@ export async function resolveCart(): Promise<ResolvedCart> {
       imageAlt: image?.alt ?? match.product.name,
       unitMinor: match.variant.priceMinor,
       lineMinor: lineTotalMinor(match.variant.priceMinor, item.quantity),
-      stock: match.variant.stock,
-      maxQuantity: Math.min(6, match.variant.stock),
+      stock: match.variant.trackStock ? match.variant.stockQuantity : maxPurchasable(match.variant),
+      available: match.variant.trackStock ? match.variant.stockQuantity : null,
+      maxQuantity: maxPurchasable(match.variant),
     });
   }
   return {

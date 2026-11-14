@@ -1,6 +1,7 @@
 import { brandMatches } from "@/lib/catalog/brands";
 import type { ShopFilters } from "@/lib/validations";
 import type { CatalogProduct as Product } from "@/lib/catalog/types";
+import { isSoldOut } from "@/lib/stock";
 
 export const PAGE_SIZE = 9;
 
@@ -31,7 +32,7 @@ export function sellingVariant(product: Product) {
     return new RegExp(`\\b${variant.sizeMl}\\s*ml\\b`, "i").test(product.description);
   });
   const choices = named ? [named] : variants;
-  return choices.find((variant) => variant.stock > 0) ?? choices[0] ?? variants[0];
+  return choices.find((variant) => !isSoldOut(variant)) ?? choices[0] ?? variants[0];
 }
 
 export function lowestPrice(product: Product) {
@@ -39,7 +40,7 @@ export function lowestPrice(product: Product) {
 }
 
 export function totalStock(product: Product) {
-  return product.variants.reduce((sum, variant) => sum + variant.stock, 0);
+  return product.variants.reduce((sum, variant) => sum + (variant.trackStock ? variant.stockQuantity : 0), 0);
 }
 
 export function primaryImage(product: Product) {

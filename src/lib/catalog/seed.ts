@@ -94,7 +94,7 @@ function juice(input: {
   description: string;
   notes?: CatalogProduct["notes"];
   image: [string, string, string];
-  variants: CatalogProduct["variants"];
+  variants: Array<Omit<CatalogProduct["variants"][number], "trackStock" | "stockQuantity" | "lowStockThreshold">>;
 }): CatalogProduct {
   return {
     id: input.id,
@@ -112,7 +112,12 @@ function juice(input: {
     description: input.description,
     notes: input.notes ?? { top: [], heart: [], base: [] },
     images: img(...input.image),
-    variants: input.variants,
+    variants: input.variants.map((variant) => ({
+      ...variant,
+      trackStock: false,
+      stockQuantity: 0,
+      lowStockThreshold: null,
+    })),
   };
 }
 

@@ -9,6 +9,7 @@ import { Price } from "@/components/ui/price";
 import { LikeButton } from "@/components/product/like-button";
 import { WaitlistButton } from "@/components/product/waitlist-button";
 import type { ProductVariant } from "@/lib/catalog/types";
+import { isSoldOut, maxPurchasable, storefrontStockLabel } from "@/lib/stock";
 
 export function PurchaseForm({
   variants,
@@ -23,8 +24,8 @@ export function PurchaseForm({
 }) {
   const [state, formAction] = useActionState(addToCartAction, null);
   const selected = variants[0];
-  const max = Math.min(6, selected?.stock || 1);
-  const soldOut = !selected || selected.stock < 1;
+  const soldOut = !selected || isSoldOut(selected);
+  const max = selected ? maxPurchasable(selected) : 1;
 
   return (
     <form action={formAction} className="mt-8 space-y-5">
@@ -37,13 +38,12 @@ export function PurchaseForm({
         />
       ) : null}
       {selected ? <input type="hidden" name="variantId" value={selected.id} /> : null}
-      {soldOut ? null : <QuantitySelector max={max} />}
+      {selected ? (
+        <p className={soldOut ? "text-sm text-red-800" : "text-sm text-leaf"}>{storefrontStockLabel(selected)}</p>
+      ) : null}
+      {selected ? <QuantitySelector max={soldOut ? 1 : max} disabled={soldOut} /> : null}
       <div className="flex flex-wrap items-center gap-3">
-        {soldOut ? (
-          <WaitlistButton productId={productId} />
-        ) : (
-          <AddToCartButton className="w-full sm:w-auto" />
-        )}
+        {soldOut ? <WaitlistButton productId={productId} /> : <AddToCartButton className="w-full sm:w-auto" />}
         <LikeButton productId={productId} name={productName} />
       </div>
       {soldOut ? <p className="text-sm text-taupe">Out of stock. Join the restock list to be notified.</p> : null}

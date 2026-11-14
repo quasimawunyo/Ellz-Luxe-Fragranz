@@ -6,7 +6,7 @@ import { rateLimit } from "@/lib/rate-limit";
 import { isSupabaseAdminConfigured } from "@/lib/env";
 import { createServiceClient } from "@/lib/supabase/admin";
 import { getProductById } from "@/lib/catalog/queries";
-import { totalStock } from "@/lib/catalog/helpers";
+import { productHasSellableVariant } from "@/lib/stock";
 
 export async function joinWaitlistAction(
   _prev: { error?: string; ok?: boolean; message?: string } | null,
@@ -24,7 +24,7 @@ export async function joinWaitlistAction(
   if (!product || product.status !== "published") {
     return { error: "That bottle is not on the shop." };
   }
-  if (totalStock(product) > 0) {
+  if (productHasSellableVariant(product)) {
     return { error: "This bottle is in stock. Add it to your cart instead." };
   }
 

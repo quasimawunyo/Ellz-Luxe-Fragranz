@@ -5,11 +5,21 @@ import { ActionForm } from "@/components/forms/form-status";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/input";
 import { sellingVariant } from "@/lib/catalog/helpers";
+import { stockState } from "@/lib/stock";
+import { StockBadge } from "@/components/admin/stock-badge";
+import Link from "next/link";
 import { cedisInputFromMinor, formatMoney } from "@/lib/money";
 import { notFound } from "next/navigation";
 
-export default async function AdminProductPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function AdminProductPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ notice?: string }>;
+}) {
   const { id } = await params;
+  const { notice } = await searchParams;
   const isNew = id === "new";
   const product = isNew ? null : await getProductById(id);
   if (!isNew && !product) notFound();
@@ -24,6 +34,11 @@ export default async function AdminProductPage({ params }: { params: Promise<{ i
       <p className="mt-2 text-sm text-taupe">
         Prices are Ghana cedis. Saving requires a Supabase service role. Leave tester unchecked for bottles you sell.
       </p>
+      {notice === "photo" ? (
+        <p role="status" className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm">
+          Product saved. Add a photo before this bottle goes on the shop.
+        </p>
+      ) : null}
       <ActionForm action={saveProductAction} encType="multipart/form-data" className="mt-8 space-y-4">
         <input type="hidden" name="id" value={product?.id ?? ""} />
         <input type="hidden" name="variantId" value={variant?.id ?? ""} />
@@ -119,7 +134,11 @@ export default async function AdminProductPage({ params }: { params: Promise<{ i
             <ul className="mt-2 space-y-1">
               {otherVariants.map((item) => (
                 <li key={item.id}>
-                  {item.label} · {formatMoney(item.priceMinor)} · {item.stock} left
+                  {item.label} · {formatMoney(item.priceMinor)} ·{" "}
+                  <StockBadge state={stockState(item)} />{" "}
+                  <Link href={`/admin/products/stock/${item.id}`} className="text-leaf underline underline-offset-4">
+                    Adjust stock
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -160,9 +179,27 @@ export default async function AdminProductPage({ params }: { params: Promise<{ i
             defaultValue={variant?.compareAtMinor != null ? cedisInputFromMinor(variant.compareAtMinor) : ""}
           />
         </div>
+        <div className="flex items-center gap-3">
+          <input id="trackStock" name="trackStock" type="checkbox" defaultChecked={variant?.trackStock ?? false} className="size-4" />
+          <Label htmlFor="trackStock">Track stock</Label>
+        </div>
         <div>
-          <Label htmlFor="stock">Stock</Label>
-          <Input id="stock" name="stock" type="number" defaultValue={variant?.stock ?? 0} />
+          <Label htmlFor="stockQuantity">Quantity</Label>
+          <Input id="stockQuantity" name="stockQuantity" type="number" min={0} step={1} defaultValue={variant?.stockQuantity ?? 0} />
+          <p className="mt-1 text-xs text-taupe">Changing this records a stock movement. Leave tracking off until the count is the real opening stock.</p>
+        </div>
+        <div>
+          <Label htmlFor="lowStockThreshold">Low-stock threshold</Label>
+          <Input
+            id="lowStockThreshold"
+            name="lowStockThreshold"
+            type="number"
+            min={0}
+            step={1}
+            defaultValue={variant?.lowStockThreshold ?? ""}
+            placeholder="3"
+          />
+          <p className="mt-1 text-xs text-taupe">Empty uses the store default of 3.</p>
         </div>
         <Button type="submit" className="w-full sm:w-auto">Save</Button>
       </ActionForm>

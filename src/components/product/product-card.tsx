@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { CatalogProduct } from "@/lib/catalog/types";
 import { isDiscounted, isNewProduct, primaryImage, sellingVariant } from "@/lib/catalog/helpers";
+import { isSoldOut } from "@/lib/stock";
 import { Price } from "@/components/ui/price";
 import { QuickAdd } from "@/components/product/quick-add";
 import { LikeButton } from "@/components/product/like-button";
@@ -13,14 +14,16 @@ import { cn } from "@/lib/utils";
 export function ProductCard({ product }: { product: CatalogProduct }) {
   const image = primaryImage(product);
   const variant = sellingVariant(product);
-  const soldOut = !variant || variant.stock < 1;
-  const badge = isDiscounted(product)
-    ? "Sale"
-    : isNewProduct(product)
-      ? "New"
-      : product.isDemonstration
-        ? "Tester"
-        : null;
+  const soldOut = !variant || isSoldOut(variant);
+  const badge = soldOut
+    ? "Sold out"
+    : isDiscounted(product)
+      ? "Sale"
+      : isNewProduct(product)
+        ? "New"
+        : product.isDemonstration
+          ? "Tester"
+          : null;
 
   return (
     <article className="group">
@@ -39,7 +42,12 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
           </div>
         </Link>
         {badge ? (
-          <span className="absolute left-3 top-3 rounded-full bg-white px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-espresso">
+          <span
+            className={cn(
+              "absolute left-3 top-3 rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em]",
+              soldOut ? "bg-red-800 text-white" : "bg-white text-espresso",
+            )}
+          >
             {badge}
           </span>
         ) : null}

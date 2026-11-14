@@ -20,6 +20,7 @@ export type ResolvedCartLine = {
   unitMinor: number;
   lineMinor: number;
   stock: number;
+  available: number | null;
   maxQuantity: number;
 };
 

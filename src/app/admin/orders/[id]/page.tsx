@@ -86,6 +86,11 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
           </p>
         </ActionForm>
       ) : null}
+      {order.needsAttention ? (
+        <p role="status" className="mt-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900">
+          Needs attention. {order.attentionNote}
+        </p>
+      ) : null}
       <ActionForm action={updateFulfillmentAction} className="mt-8 space-y-3">
         <input type="hidden" name="orderId" value={order.id} />
         <div>
@@ -102,11 +107,19 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
           <Label htmlFor="trackingNumber">Tracking</Label>
           <Input id="trackingNumber" name="trackingNumber" defaultValue={order.trackingNumber ?? ""} />
         </div>
+        <label className="flex items-start gap-3 text-sm">
+          <input name="returnToStock" type="checkbox" className="mt-1 size-4" />
+          <span>Return to stock when this order is cancelled.</span>
+        </label>
         <Button type="submit" className="w-full sm:w-auto">Update fulfillment</Button>
       </ActionForm>
       {order.paymentProvider === "paystack" ? (
         <ActionForm action={refundOrderAction} className="mt-6">
           <input type="hidden" name="orderId" value={order.id} />
+          <label className="mb-3 flex items-start gap-3 text-sm">
+            <input name="returnToStock" type="checkbox" className="mt-1 size-4" />
+            <span>Return to stock with this refund.</span>
+          </label>
           <Button type="submit" variant="danger">
             Request Paystack refund
           </Button>

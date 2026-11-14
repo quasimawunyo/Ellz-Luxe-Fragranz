@@ -27,6 +27,7 @@ function applyStock(products: CatalogProduct[], overlay: Record<string, number>)
     variants: product.variants.map((variant) => ({
       ...variant,
       stock: overlay[variant.id] ?? variant.stock,
+      stockQuantity: variant.trackStock ? (overlay[variant.id] ?? variant.stockQuantity) : variant.stockQuantity,
     })),
   }));
 }
@@ -210,6 +211,9 @@ async function fetchCatalog(supabase: NonNullable<ReturnType<typeof createServic
         priceMinor: variant.price_minor,
         compareAtMinor: variant.compare_at_minor,
         stock: variant.stock,
+        trackStock: Boolean(variant.track_stock),
+        stockQuantity: Number(variant.stock_quantity ?? 0),
+        lowStockThreshold: variant.low_stock_threshold == null ? null : Number(variant.low_stock_threshold),
       })),
     createdAt: product.created_at,
   })), categories ?? []);

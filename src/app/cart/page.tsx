@@ -85,6 +85,11 @@ export default async function CartPage() {
                       Update
                     </Button>
                   </ActionForm>
+                  {line.available != null && line.quantity > line.available ? (
+                    <p className="mt-2 text-sm text-red-800">
+                      Only {line.available} of {line.productName} ({line.label}) {line.available === 1 ? "is" : "are"} available.
+                    </p>
+                  ) : null}
                   <ActionForm action={updateCartAction}>
                     <input type="hidden" name="variantId" value={line.variantId} />
                     <input type="hidden" name="quantity" value="0" />

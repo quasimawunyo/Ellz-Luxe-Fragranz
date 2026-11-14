@@ -15,6 +15,9 @@ export type ProductVariant = {
   priceMinor: number;
   compareAtMinor: number | null;
   stock: number;
+  trackStock: boolean;
+  stockQuantity: number;
+  lowStockThreshold: number | null;
 };
 
 export type FragranceNotes = {

@@ -1,7 +1,7 @@
-import { totalStock } from "@/lib/catalog/helpers";
 import { isPaidRevenue } from "@/lib/orders/transitions";
 import type { CatalogProduct } from "@/lib/catalog/types";
 import type { StoreOrder } from "@/lib/orders/types";
+import { stockState } from "@/lib/stock";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -45,11 +45,21 @@ export function buildDashboardMetrics(
       (order.fulfillmentStatus === "unfulfilled" || order.fulfillmentStatus === "processing"),
   );
 
-  const lowStock = products.filter((product) => {
-    const stock = totalStock(product);
-    return stock > 0 && stock <= 5;
-  });
-  const outOfStock = products.filter((product) => totalStock(product) < 1);
+  const variantRows = products.flatMap((product) =>
+    product.variants.map((variant) => ({
+      variantId: variant.id,
+      productId: product.id,
+      productName: product.name,
+      label: variant.label,
+      quantity: variant.stockQuantity,
+      state: stockState(variant),
+    })),
+  );
+  const tracked = variantRows.filter((row) => row.state !== "not_tracked");
+  const inStock = tracked.filter((row) => row.state === "in_stock");
+  const lowStock = tracked.filter((row) => row.state === "low_stock");
+  const outOfStock = tracked.filter((row) => row.state === "out_of_stock");
+  const needsAttention = orders.filter((order) => order.needsAttention);
   const drafts = products.filter((product) => product.status === "draft");
   const demonstration = products.filter((product) => product.isDemonstration);
   const live = products.filter((product) => !product.isDemonstration && product.status === "published");
@@ -77,6 +87,11 @@ export function buildDashboardMetrics(
     weekPeak,
     bestSellers,
     toPack,
+    needsAttention,
+    variantCount: variantRows.length,
+    inStockCount: inStock.length,
+    lowStockCount: lowStock.length,
+    outOfStockCount: outOfStock.length,
     lowStock,
     outOfStock,
     drafts,

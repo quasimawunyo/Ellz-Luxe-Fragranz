@@ -4,7 +4,6 @@ import { getAllProductsForAdmin } from "@/lib/catalog/queries";
 import { countContactMessages, countNewsletterSubscribers, listContactMessages } from "@/lib/admin/inbox";
 import { buildDashboardMetrics } from "@/lib/admin/metrics";
 import { formatMoney } from "@/lib/money";
-import { totalStock } from "@/lib/catalog/helpers";
 import { StatusPill } from "@/components/admin/status-pill";
 import { CustomerWhatsApp } from "@/components/admin/customer-whatsapp";
 import { getLaunchStatus } from "@/lib/launch/status";
@@ -71,6 +70,21 @@ export default async function AdminDashboardPage() {
             <p className="mt-3 font-serif text-3xl leading-tight">{card.value}</p>
             <p className="mt-2 text-sm text-taupe">{card.hint}</p>
           </article>
+        ))}
+      </section>
+
+      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        {[
+          { label: "Products total", value: metrics.variantCount, href: "/admin/products", hint: "Every size" },
+          { label: "In stock", value: metrics.inStockCount, href: "/admin/products?status=in_stock", hint: "Tracked and available" },
+          { label: "Low stock", value: metrics.lowStockCount, href: "/admin/products?status=low_stock", hint: "At or below the threshold" },
+          { label: "Out of stock", value: metrics.outOfStockCount, href: "/admin/products?status=out_of_stock", hint: "Tracked and none left" },
+        ].map((card) => (
+          <Link key={card.label} href={card.href} className="rounded-[1.25rem] border border-espresso/10 bg-white p-5 hover:border-champagne">
+            <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-taupe">{card.label}</p>
+            <p className="mt-3 font-serif text-3xl leading-tight">{card.value}</p>
+            <p className="mt-2 text-sm text-taupe">{card.hint}</p>
+          </Link>
         ))}
       </section>
 
@@ -190,26 +204,39 @@ export default async function AdminDashboardPage() {
               )}
             </div>
             <div>
-              <p className="text-sm font-medium text-taupe">Stock</p>
-              {metrics.lowStock.length || metrics.outOfStock.length ? (
+              <p className="text-sm font-medium text-taupe">Needs attention</p>
+              {metrics.needsAttention.length ? (
                 <ul className="mt-2 space-y-2">
-                  {metrics.outOfStock.slice(0, 3).map((product) => (
-                    <li key={product.id}>
-                      <Link href={`/admin/products/${product.id}`}>
-                        {product.name} · out of stock
+                  {metrics.needsAttention.slice(0, 4).map((order) => (
+                    <li key={order.id}>
+                      <Link href={`/admin/orders/${order.id}`} className="hover:text-champagne">
+                        {order.orderNumber} · paid, stock short
                       </Link>
+                      {order.attentionNote ? <p className="text-taupe">{order.attentionNote}</p> : null}
                     </li>
                   ))}
-                  {metrics.lowStock.slice(0, 4).map((product) => (
-                    <li key={product.id}>
-                      <Link href={`/admin/products/${product.id}`}>
-                        {product.name} · {totalStock(product)} left
+                </ul>
+              ) : (
+                <p className="mt-2 text-taupe">No paid orders are short of stock.</p>
+              )}
+            </div>
+            <div>
+              <p className="text-sm font-medium text-taupe">Low stock</p>
+              {metrics.lowStock.length ? (
+                <ul className="mt-2 space-y-2">
+                  {metrics.lowStock.slice(0, 6).map((row) => (
+                    <li key={row.variantId} className="flex flex-wrap items-center justify-between gap-2">
+                      <span>
+                        {row.productName} · {row.label} · {row.quantity} left
+                      </span>
+                      <Link href={`/admin/products/stock/${row.variantId}`} className="text-leaf underline underline-offset-4">
+                        Adjust stock
                       </Link>
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p className="mt-2 text-taupe">No low-stock alerts.</p>
+                <p className="mt-2 text-taupe">No low-stock bottles.</p>
               )}
             </div>
             <div>

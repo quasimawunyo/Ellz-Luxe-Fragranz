@@ -3,6 +3,7 @@ import { isSupabaseAdminConfigured } from "@/lib/env";
 import { readJsonCookie, writeJsonCookie } from "@/lib/cookies/json-cookie";
 import { decrementStock } from "@/lib/inventory";
 import { getVariantById, setDemoStock } from "@/lib/catalog/queries";
+import { stockLimitMessage } from "@/lib/stock";
 import { resolveCart, clearCart } from "@/lib/cart/store";
 import { getStoreSettings } from "@/lib/catalog/queries";
 import { orderGrandTotal } from "@/lib/money";
@@ -22,6 +23,7 @@ import {
 import { isPaystackConfigured } from "@/lib/payments/paystack";
 import { rememberPlacedOrderId } from "@/lib/orders/placed-cookie";
 import { normalizeOrderNumber } from "@/lib/orders/lookup";
+import { revalidatePath } from "next/cache";
 
 const ORDERS_COOKIE = "elf_orders";
 
@@ -53,6 +55,9 @@ function mapOrder(row: {
   payment_status: PaymentStatus;
   fulfillment_status: FulfillmentStatus;
   tracking_number: string | null;
+  needs_attention?: boolean | null;
+  attention_note?: string | null;
+  stock_applied?: boolean | null;
   created_at: string;
 }, items: StoreOrder["items"], paystackReference: string | null, paymentProvider: string | null = null): StoreOrder {
   return {
@@ -75,6 +80,9 @@ function mapOrder(row: {
     paymentStatus: row.payment_status,
     fulfillmentStatus: row.fulfillment_status,
     trackingNumber: row.tracking_number,
+    needsAttention: Boolean(row.needs_attention),
+    attentionNote: row.attention_note ?? null,
+    stockApplied: Boolean(row.stock_applied),
     createdAt: row.created_at,
     items,
     paystackReference,
@@ -97,8 +105,8 @@ export async function createPendingOrder(input: CheckoutInput, userId: string | 
     if (live.variant.priceMinor !== line.unitMinor) {
       throw new Error("A price changed. Refresh your cart and try again.");
     }
-    if (line.quantity > live.variant.stock) {
-      throw new Error(`${live.product.name} does not have enough stock.`);
+    if (live.variant.trackStock && line.quantity > live.variant.stockQuantity) {
+      throw new Error(stockLimitMessage(live.product.name, live.variant.label, live.variant.stockQuantity));
     }
   }
 
@@ -151,8 +159,8 @@ export async function createPendingOrder(input: CheckoutInput, userId: string | 
 
   for (const line of cart.lines) {
     const live = await getVariantById(line.variantId);
-    if (!live) throw new Error("A cart item is no longer available.");
-    await setDemoStock(line.variantId, decrementStock(live.variant.stock, line.quantity));
+    if (!live?.variant.trackStock) continue;
+    await setDemoStock(line.variantId, decrementStock(live.variant.stockQuantity, line.quantity));
   }
 
   const order: StoreOrder = {
@@ -175,6 +183,9 @@ export async function createPendingOrder(input: CheckoutInput, userId: string | 
     paymentStatus: "pending",
     fulfillmentStatus: "unfulfilled",
     trackingNumber: null,
+    needsAttention: false,
+    attentionNote: null,
+    stockApplied: false,
     createdAt: new Date().toISOString(),
     items: cart.lines.map((line) => ({
       productName: line.productName,
@@ -276,6 +287,69 @@ export async function listOrders(filter?: { userId?: string; email?: string }) {
   return orders;
 }
 
+async function applyOnlineSale(orderId: string) {
+  const admin = createServiceClient();
+  if (!admin) return;
+  const { data: orderRow } = await admin
+    .from("orders")
+    .select("stock_applied")
+    .eq("id", orderId)
+    .maybeSingle();
+  if (!orderRow || orderRow.stock_applied) return;
+  const order = await getOrderById(orderId);
+  if (!order) return;
+  const short: string[] = [];
+  for (const item of order.items) {
+    if (!item.variantId) continue;
+    const { error } = await admin.rpc("adjust_stock", {
+      p_variant_id: item.variantId,
+      p_change: -item.quantity,
+      p_reason: "sale_online",
+      p_order_id: orderId,
+      p_note: order.orderNumber,
+      p_created_by: null,
+    });
+    if (error && /insufficient_stock/i.test(error.message)) {
+      short.push(`${item.productName} (${item.variantLabel})`);
+      continue;
+    }
+    if (error) throw new Error(error.message);
+  }
+  await admin
+    .from("orders")
+    .update({
+      stock_applied: true,
+      ...(short.length
+        ? {
+            needs_attention: true,
+            attention_note: `Paid, but not enough stock for ${short.join(", ")}.`,
+          }
+        : {}),
+    })
+    .eq("id", orderId);
+}
+
+export async function returnStockForOrder(orderId: string, actorId: string | null) {
+  const order = await getOrderById(orderId);
+  if (!order) throw new Error("Order not found.");
+  if (!order.stockApplied) return false;
+  const admin = createServiceClient();
+  if (!admin) return false;
+  for (const item of order.items) {
+    if (!item.variantId) continue;
+    const { error } = await admin.rpc("adjust_stock", {
+      p_variant_id: item.variantId,
+      p_change: item.quantity,
+      p_reason: "order_cancelled",
+      p_order_id: orderId,
+      p_note: "Returned to stock",
+      p_created_by: actorId,
+    });
+    if (error) throw new Error(error.message);
+  }
+  return true;
+}
+
 export async function markOrderPaid(
   reference: string,
   eventId: string,
@@ -296,16 +370,23 @@ export async function markOrderPaid(
     ) {
       return null;
     }
-    if (payment.status === "paid") return payment.order_id;
-    await admin
-      .from("payments")
-      .update({ status: "paid", raw_event_id: eventId })
-      .eq("id", payment.id)
-      .eq("status", "pending");
-    await admin
-      .from("orders")
-      .update({ payment_status: "paid", order_status: "completed" })
-      .eq("id", payment.order_id);
+    if (payment.status !== "paid") {
+      await admin
+        .from("payments")
+        .update({ status: "paid", raw_event_id: eventId })
+        .eq("id", payment.id)
+        .eq("status", "pending");
+      await admin
+        .from("orders")
+        .update({ payment_status: "paid", order_status: "completed" })
+        .eq("id", payment.order_id);
+    }
+    await applyOnlineSale(payment.order_id);
+    try {
+      revalidatePath("/", "layout");
+    } catch {
+      // A webhook can confirm payment outside a page render. The sale is already recorded.
+    }
     return payment.order_id;
   }
   const orders = await demoOrders();
@@ -334,7 +415,10 @@ export async function confirmMoolreIfPaid(order: StoreOrder) {
 export async function markWhatsAppOrderPaid(orderId: string, actorId: string) {
   const order = await getOrderById(orderId);
   if (!order) throw new Error("Order not found.");
-  if (order.paymentStatus === "paid") return order;
+  if (order.paymentStatus === "paid") {
+    if (isSupabaseAdminConfigured()) await applyOnlineSale(orderId);
+    return (await getOrderById(orderId)) ?? order;
+  }
   if (order.paymentStatus !== "pending") {
     throw new Error(`Cannot mark this order paid from ${order.paymentStatus}.`);
   }
@@ -356,6 +440,7 @@ export async function markWhatsAppOrderPaid(orderId: string, actorId: string) {
       .update({ payment_status: "paid", order_status: "completed" })
       .eq("id", orderId)
       .eq("payment_status", "pending");
+    await applyOnlineSale(orderId);
     const updated = await getOrderById(orderId);
     if (!updated) throw new Error("Order could not be loaded.");
     return updated;
@@ -374,6 +459,7 @@ export async function updateFulfillment(
   orderId: string,
   next: FulfillmentStatus,
   trackingNumber?: string,
+  options?: { returnToStock?: boolean; actorId?: string | null },
 ) {
   const order = await getOrderById(orderId);
   if (!order) throw new Error("Order not found.");
@@ -389,6 +475,9 @@ export async function updateFulfillment(
         order_status: next === "cancelled" ? "cancelled" : order.orderStatus,
       })
       .eq("id", orderId);
+    if (options?.returnToStock && next === "cancelled") {
+      await returnStockForOrder(orderId, options.actorId ?? null);
+    }
     return getOrderById(orderId);
   }
   order.fulfillmentStatus = next;

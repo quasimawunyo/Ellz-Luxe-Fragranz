@@ -30,6 +30,9 @@ export type StoreOrder = {
   paymentStatus: PaymentStatus;
   fulfillmentStatus: FulfillmentStatus;
   trackingNumber: string | null;
+  needsAttention: boolean;
+  attentionNote: string | null;
+  stockApplied: boolean;
   createdAt: string;
   items: OrderItemSnapshot[];
   paystackReference: string | null;

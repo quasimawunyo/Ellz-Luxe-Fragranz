@@ -6,6 +6,7 @@ import { ProductGallery } from "@/components/product/gallery";
 import { ProductGrid } from "@/components/product/product-card";
 import { PurchaseForm } from "@/components/product/purchase-form";
 import { bottleSizeLabel, primaryImage, shelfDescription, sellingVariant } from "@/lib/catalog/helpers";
+import { isSoldOut } from "@/lib/stock";
 import { getProductBySlug, getRelated, getStoreSettings } from "@/lib/catalog/queries";
 import { pageMetadata } from "@/lib/seo";
 
@@ -48,8 +49,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           sku: variant.sku,
           priceCurrency: settings.currencyCode,
           price: (variant.priceMinor / 100).toFixed(2),
-          availability:
-            variant.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+          availability: isSoldOut(variant)
+            ? "https://schema.org/OutOfStock"
+            : "https://schema.org/InStock",
         }
       : undefined,
   };
