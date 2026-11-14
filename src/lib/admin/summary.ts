@@ -40,6 +40,7 @@ export type SalesSummary = {
     inStoreOrders: number;
   };
   profitMinor: number | null;
+  newCustomers: { current: number; previous: number };
   action: {
     toPack: number;
     needsFee: number;
@@ -84,6 +85,17 @@ export async function loadSalesSummary(preset: SalesPreset, from?: string, to?: 
   });
   if (error) throw new Error(error.message);
   const row = (data ?? {}) as Record<string, unknown>;
+  const rangeRow = (row.range ?? {}) as Record<string, unknown>;
+  const currentFrom = String(rangeRow.from ?? "");
+  const currentTo = String(rangeRow.to ?? "");
+  const previousFrom = String(rangeRow.previousFrom ?? "");
+  const previousTo = String(rangeRow.previousTo ?? "");
+  const [{ data: currentCustomers, error: currentCustomerError }, { data: previousCustomers, error: previousCustomerError }] = await Promise.all([
+    admin.rpc("admin_new_customer_count", { p_from: currentFrom, p_to: currentTo }),
+    admin.rpc("admin_new_customer_count", { p_from: previousFrom, p_to: previousTo }),
+  ]);
+  if (currentCustomerError) throw new Error(currentCustomerError.message);
+  if (previousCustomerError) throw new Error(previousCustomerError.message);
   const range = (row.range ?? {}) as Record<string, unknown>;
   const payments = (row.payments ?? {}) as Record<string, unknown>;
   const channel = (row.channel ?? {}) as Record<string, unknown>;
@@ -123,6 +135,7 @@ export async function loadSalesSummary(preset: SalesPreset, from?: string, to?: 
       inStoreOrders: num(channel.inStoreOrders),
     },
     profitMinor: row.profitMinor == null ? null : num(row.profitMinor),
+    newCustomers: { current: num(currentCustomers), previous: num(previousCustomers) },
     action: {
       toPack: num(action.toPack),
       needsFee: num(action.needsFee),

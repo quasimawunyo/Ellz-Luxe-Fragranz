@@ -27,3 +27,27 @@ export function formatAccraRange(from: string, to: string) {
   if (from === to) return formatAccraDay(from);
   return `${formatAccraDay(from)} – ${formatAccraDay(to)}`;
 }
+
+export function rangePhrase(preset: SalesPreset) {
+  if (preset === "today") return "today";
+  if (preset === "30d") return "last 30 Accra days";
+  if (preset === "month") return "this month";
+  if (preset === "custom") return "these Accra days";
+  return "last 7 Accra days";
+}
+
+export function previousCompare(preset: SalesPreset, current: number, previous: number) {
+  const phrase = rangePhrase(preset);
+  const change = periodChange(current, previous);
+  if (previous === 0) return `No previous ${phrase} to compare`;
+  if (change.direction === "up") return `Up ${change.percent}% on the previous ${phrase}`;
+  if (change.direction === "down") return `Down ${change.percent}% on the previous ${phrase}`;
+  return `Same as the previous ${phrase}`;
+}
+
+export function readSalesQuery(params: { range?: string; from?: string; to?: string }) {
+  const preset = salesPreset(params.range);
+  const from = /^\d{4}-\d{2}-\d{2}$/.test(params.from ?? "") ? params.from : undefined;
+  const to = /^\d{4}-\d{2}-\d{2}$/.test(params.to ?? "") ? params.to : undefined;
+  return { preset, from, to };
+}
