@@ -69,12 +69,6 @@ const GROUPS: { label: string; items: Item[] }[] = [
   },
 ];
 
-function initials(name: string) {
-  const parts = name.split(/\s+/).filter(Boolean);
-  const letters = parts.slice(0, 2).map((part) => part[0]?.toUpperCase() ?? "");
-  return letters.join("") || "EL";
-}
-
 function NavLinks({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
   return (
     <nav aria-label="Shop desk" className="flex flex-1 flex-col gap-6 overflow-y-auto px-3 py-4">
@@ -122,7 +116,7 @@ function Person({ name, email }: { name: string; email: string | null }) {
   return (
     <div className="border-t border-white/10 p-4">
       <div className="flex items-center gap-3">
-        <span className="grid size-10 shrink-0 place-items-center rounded-full bg-ivory text-sm font-medium text-espresso">{initials(name)}</span>
+        <BrandLogo href={false} label="EllzLuxe Fragranz" size={80} className="w-10" />
         <span className="min-w-0">
           <span className="block truncate text-sm font-medium">{name}</span>
           {email ? <span className="block truncate text-xs text-ivory/60">{email}</span> : null}
