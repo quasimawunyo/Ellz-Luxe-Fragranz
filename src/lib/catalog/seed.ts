@@ -125,7 +125,7 @@ export const DEMO_PRODUCTS: CatalogProduct[] = [
     collectionIds: ["col-unisex", "col-woody"],
     featured: true,
     createdAt: "2026-01-12T10:00:00.000Z",
-    description: "Amaran Silverado 21 eau de parfum, 100 ml. Photographed from the house bottle.",
+    description: "Amaran Silverado 21 eau de parfum, 100 ml.",
     image: ["img-citrus", "/images/products/silverado-21.jpg", "Amaran Silverado 21 eau de parfum"],
     variants: [
       { id: "var-citrus-50", sku: "ELF-CV-50", label: "50 ml", sizeMl: 50, priceMinor: 42000, compareAtMinor: null, stock: 18 },
@@ -153,10 +153,10 @@ export const DEMO_PRODUCTS: CatalogProduct[] = [
     slug: "aventos-blue-for-him",
     name: "Aventos Blue For Him",
     brand: "Fragrance World",
-    collectionIds: ["col-men", "col-woody", "col-gifts"],
+    collectionIds: ["col-men", "col-woody"],
     featured: true,
     createdAt: "2026-02-18T10:00:00.000Z",
-    description: "Fragrance World Aventos Blue For Him eau de parfum. Photographed from the house bottle and matching spray.",
+    description: "Fragrance World Aventos Blue For Him eau de parfum.",
     image: ["img-amber", "/images/products/aventos-blue.jpg", "Fragrance World Aventos Blue For Him"],
     variants: [
       { id: "var-amber-50", sku: "ELF-AA-50", label: "50 ml", sizeMl: 50, priceMinor: 54000, compareAtMinor: null, stock: 11 },
@@ -172,7 +172,7 @@ export const DEMO_PRODUCTS: CatalogProduct[] = [
     featured: true,
     newArrival: true,
     createdAt: "2026-03-01T10:00:00.000Z",
-    description: "Lattafa Yara eau de parfum. Photographed from the house bottle.",
+    description: "Lattafa Yara eau de parfum.",
     image: ["img-floral", "/images/products/yara.jpg", "Lattafa Yara eau de parfum"],
     variants: [
       { id: "var-petal-50", sku: "ELF-WP-50", label: "50 ml", sizeMl: 50, priceMinor: 48000, compareAtMinor: null, stock: 14 },
@@ -186,7 +186,7 @@ export const DEMO_PRODUCTS: CatalogProduct[] = [
     collectionIds: ["col-unisex", "col-fresh"],
     newArrival: true,
     createdAt: "2026-03-09T10:00:00.000Z",
-    description: "Khadlaj Island Sun. Photographed from the house bottle.",
+    description: "Khadlaj Island Sun.",
     image: ["img-fresh", "/images/products/island-sun.jpg", "Khadlaj Island Sun"],
     variants: [
       { id: "var-sea-50", sku: "ELF-SL-50", label: "50 ml", sizeMl: 50, priceMinor: 46000, compareAtMinor: null, stock: 16 },
@@ -200,7 +200,7 @@ export const DEMO_PRODUCTS: CatalogProduct[] = [
     brand: "L'affair",
     collectionIds: ["col-unisex", "col-woody"],
     createdAt: "2026-03-22T10:00:00.000Z",
-    description: "L'affair Pure Spirit eau de parfum. Photographed from the house bottle.",
+    description: "L'affair Pure Spirit eau de parfum.",
     image: ["img-woody", "/images/products/pure-spirit.jpg", "L'affair Pure Spirit eau de parfum"],
     variants: [
       { id: "var-ember-50", sku: "ELF-VE-50", label: "50 ml", sizeMl: 50, priceMinor: 52000, compareAtMinor: null, stock: 10 },
@@ -214,7 +214,7 @@ export const DEMO_PRODUCTS: CatalogProduct[] = [
     collectionIds: ["col-unisex", "col-fresh"],
     newArrival: true,
     createdAt: "2026-04-04T10:00:00.000Z",
-    description: "Lattafa Fire on Ice eau de parfum. Photographed from the house bottle.",
+    description: "Lattafa Fire on Ice eau de parfum.",
     image: ["img-garden", "/images/products/fire-on-ice.jpg", "Lattafa Fire on Ice eau de parfum"],
     variants: [
       { id: "var-garden-50", sku: "ELF-GQ-50", label: "50 ml", sizeMl: 50, priceMinor: 44000, compareAtMinor: null, stock: 20 },
@@ -227,7 +227,7 @@ export const DEMO_PRODUCTS: CatalogProduct[] = [
     brand: "Fragrance World",
     collectionIds: ["col-men", "col-woody"],
     createdAt: "2026-04-16T10:00:00.000Z",
-    description: "Fragrance World Night Club eau de parfum, 100 ml. Photographed from the house bottle.",
+    description: "Fragrance World Night Club eau de parfum, 100 ml.",
     image: ["img-cedar", "/images/products/night-club.jpg", "Fragrance World Night Club eau de parfum"],
     variants: [
       { id: "var-cedar-50", sku: "ELF-SC-50", label: "50 ml", sizeMl: 50, priceMinor: 58000, compareAtMinor: null, stock: 9 },
@@ -241,7 +241,7 @@ export const DEMO_PRODUCTS: CatalogProduct[] = [
     brand: "Khadlaj",
     collectionIds: ["col-unisex", "col-oud"],
     createdAt: "2026-04-28T10:00:00.000Z",
-    description: "Khadlaj Oud Noir eau de parfum. Photographed from the house bottle.",
+    description: "Khadlaj Oud Noir eau de parfum.",
     image: ["img-resin", "/images/products/oud-noir.jpg", "Khadlaj Oud Noir eau de parfum"],
     variants: [
       { id: "var-resin-50", sku: "ELF-GR-50", label: "50 ml", sizeMl: 50, priceMinor: 64000, compareAtMinor: null, stock: 8 },
@@ -254,7 +254,7 @@ export const DEMO_PRODUCTS: CatalogProduct[] = [
     brand: "Fragrance World",
     collectionIds: ["col-women", "col-floral"],
     createdAt: "2026-05-10T10:00:00.000Z",
-    description: "Fragrance World Proud of You parfum. Photographed from the house bottle.",
+    description: "Fragrance World Proud of You parfum.",
     image: ["img-linen", "/images/products/proud-of-you.jpg", "Fragrance World Proud of You parfum"],
     variants: [
       { id: "var-linen-50", sku: "ELF-LM-50", label: "50 ml", sizeMl: 50, priceMinor: 40000, compareAtMinor: null, stock: 22 },
@@ -268,7 +268,7 @@ export const DEMO_PRODUCTS: CatalogProduct[] = [
     collectionIds: ["col-unisex", "col-fresh"],
     featured: true,
     createdAt: "2026-05-21T10:00:00.000Z",
-    description: "Fragrance World Extremely Unique eau de parfum, also shown as Oudyssia. Photographed from the house bottle.",
+    description: "Fragrance World Extremely Unique eau de parfum, also shown as Oudyssia.",
     image: ["img-orchid", "/images/products/extremely-unique.jpg", "Fragrance World Extremely Unique eau de parfum"],
     variants: [
       { id: "var-orchid-50", sku: "ELF-OS-50", label: "50 ml", sizeMl: 50, priceMinor: 56000, compareAtMinor: null, stock: 12 },
@@ -282,7 +282,7 @@ export const DEMO_PRODUCTS: CatalogProduct[] = [
     collectionIds: ["col-men", "col-woody"],
     featured: true,
     createdAt: "2026-07-01T10:00:00.000Z",
-    description: "Rasasi Hawas Black for him eau de parfum, 100 ml. Photographed from the house bottle.",
+    description: "Rasasi Hawas Black for him eau de parfum, 100 ml.",
     image: ["img-gift", "/images/products/hawas-black.jpg", "Rasasi Hawas Black for him"],
     variants: [
       { id: "var-set-8", sku: "ELF-DS-8", label: "100 ml", sizeMl: 100, priceMinor: 98000, compareAtMinor: null, stock: 10 },
@@ -295,7 +295,7 @@ export const DEMO_PRODUCTS: CatalogProduct[] = [
     brand: "Kaly",
     collectionIds: ["col-women", "col-floral"],
     createdAt: "2026-08-02T10:00:00.000Z",
-    description: "Kaly Vardy eau de parfum, 50 ml. Photographed from the house bottle.",
+    description: "Kaly Vardy eau de parfum, 50 ml.",
     image: ["img-kaly", "/images/products/kaly-vardy.jpg", "Kaly Vardy eau de parfum"],
     variants: [
       { id: "var-kaly-50", sku: "ELF-KV-50", label: "50 ml", sizeMl: 50, priceMinor: 48000, compareAtMinor: null, stock: 12 },
@@ -308,7 +308,7 @@ export const DEMO_PRODUCTS: CatalogProduct[] = [
     brand: "Dolce & Gabbana",
     collectionIds: ["col-men", "col-woody"],
     createdAt: "2026-08-08T10:00:00.000Z",
-    description: "Dolce & Gabbana Intenso pour homme eau de parfum. Photographed from the house bottle.",
+    description: "Dolce & Gabbana Intenso pour homme eau de parfum.",
     image: ["img-intenso", "/images/products/intenso.jpg", "Dolce & Gabbana Intenso pour homme"],
     variants: [
       { id: "var-intenso-125", sku: "ELF-DI-125", label: "125 ml", sizeMl: 125, priceMinor: 148000, compareAtMinor: null, stock: 4 },
@@ -321,7 +321,7 @@ export const DEMO_PRODUCTS: CatalogProduct[] = [
     brand: "Jean Antoine",
     collectionIds: ["col-unisex", "col-oud"],
     createdAt: "2026-08-14T10:00:00.000Z",
-    description: "Jean Antoine Sehr Al Oud. Photographed from the house bottle.",
+    description: "Jean Antoine Sehr Al Oud.",
     image: ["img-sehr", "/images/products/sehr-al-oud.jpg", "Jean Antoine Sehr Al Oud"],
     variants: [
       { id: "var-sehr-100", sku: "ELF-SAO-100", label: "100 ml", sizeMl: 100, priceMinor: 86000, compareAtMinor: null, stock: 6 },
@@ -335,7 +335,7 @@ export const DEMO_PRODUCTS: CatalogProduct[] = [
     collectionIds: ["col-unisex", "col-oud"],
     newArrival: true,
     createdAt: "2026-08-20T10:00:00.000Z",
-    description: "Lattafa Bade'e Al Oud Sublime eau de parfum. Photographed from the house bottle.",
+    description: "Lattafa Bade'e Al Oud Sublime eau de parfum.",
     image: ["img-badee", "/images/products/badee-al-oud.jpg", "Lattafa Bade'e Al Oud Sublime"],
     variants: [
       { id: "var-badee-100", sku: "ELF-BAO-100", label: "100 ml", sizeMl: 100, priceMinor: 72000, compareAtMinor: null, stock: 8 },
@@ -361,9 +361,9 @@ export const DEMO_SETTINGS: StoreSettings = {
   returnsNote:
     "Message WhatsApp 0593634512 before returning anything. We replace or make right a bottle we sent in error or that arrived damaged. Opened fragrance is not refunded except for a packing or sending error on our side. Pickup and delivery disputes are handled from Ells Luxe Annex.",
   privacyNote:
-    "EllzLuxe Fragranz uses your name, email, phone, delivery area, and order contents to fulfill orders, answer messages, and send restock or email updates you asked for. Payment is confirmed on WhatsApp, or by card when checkout is available. We do not sell your details. Email ellzluxefragranz@gmail.com or WhatsApp 0593634512 to ask what we hold.",
+    "EllzLuxe Fragranz uses your name, email, phone, delivery area, and order contents to fulfill orders, answer messages, and send restock or email updates you asked for. Payment is taken at checkout by mobile money or card, and the order is marked paid only after that payment is confirmed. We do not sell your details. Email ellzluxefragranz@gmail.com or WhatsApp 0593634512 to ask what we hold.",
   termsNote:
-    "Prices are in Ghana cedis. An order is a request to buy. It is not paid until we confirm payment. Delivery, pickup, and fees are on the Shipping page. Ghana law applies. Questions: WhatsApp 0593634512 or ellzluxefragranz@gmail.com.",
+    "Prices are in Ghana cedis. An order is a request to buy. It is not paid until payment is confirmed. Delivery, pickup, and fees are on the Shipping page. Ghana law applies. Questions: WhatsApp 0593634512 or ellzluxefragranz@gmail.com.",
   aboutStory:
     "EllzLuxe Fragranz is a Ghana-based fragrance boutique at Ells Luxe Annex, Pantang. We carry houses including Lattafa, Armaf, Fragrance World, Khadlaj, and others listed on the Brands page.",
   deliveryMethods: [
@@ -393,7 +393,7 @@ export const DEMO_FAQS: FaqItem[] = [
     id: "faq-order",
     question: "How do I place an order?",
     answer:
-      "Add a fragrance to your cart, proceed to checkout, and complete delivery details. Confirm payment on WhatsApp 0593634512.",
+      "Add a fragrance to your cart and check out. Place the order to pay by mobile money or card. Pickup is free. Delivery is quoted from your location on WhatsApp 0593634512.",
     requiresOwnerReview: false,
   },
   {
@@ -407,7 +407,7 @@ export const DEMO_FAQS: FaqItem[] = [
     id: "faq-payment",
     question: "Which payment methods are accepted?",
     answer:
-      "Message the house on WhatsApp 0593634512 after you place an order to confirm how to pay.",
+      "Checkout accepts mobile money and card. The order is marked paid only after payment is confirmed. Delivery fees are still quoted on WhatsApp.",
     requiresOwnerReview: false,
   },
   {

@@ -7,8 +7,14 @@ import { getAuthContext } from "@/lib/auth/session";
 import { isMoolreConfigured } from "@/lib/payments/moolre";
 import { isPaystackConfigured } from "@/lib/payments/paystack";
 import Link from "next/link";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = { title: "Checkout" };
+export const metadata = pageMetadata({
+  title: "Checkout",
+  description: "Place an EllzLuxe Fragranz order and pay by mobile money or card. Pickup is free.",
+  path: "/checkout",
+  index: false,
+});
 
 export default async function CheckoutPage() {
   const [cart, settings, auth] = await Promise.all([

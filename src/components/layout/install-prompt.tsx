@@ -125,7 +125,7 @@ export function InstallPrompt() {
         <div className="mx-auto mb-5 h-1.5 w-10 rounded-full bg-espresso/15" />
         <div className="flex items-center gap-3">
           <span className="grid size-16 shrink-0 place-items-center overflow-hidden rounded-2xl bg-[#e7f6ee]">
-            <Image src="/icons/icon-192.png" alt="" width={56} height={56} className="size-14 object-contain" />
+            <Image src="/icons/icon-192.png" alt="EllzLuxe" width={56} height={56} className="size-14 object-contain" />
           </span>
           <span className="min-w-0">
             <span id="install-prompt-title" className="block text-xl font-semibold leading-tight text-espresso">

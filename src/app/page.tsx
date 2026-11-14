@@ -1,28 +1,57 @@
 import Image from "next/image";
 import Link from "next/link";
+import { headers } from "next/headers";
 import { FlashSales, picturesForFlashSales } from "@/components/home/flash-sales";
 import { HeroAnnouncement } from "@/components/home/hero-announcement";
 import { HomeHero } from "@/components/home/home-hero";
 import { NewsletterBand } from "@/components/home/newsletter-band";
 import { ProductCard, ProductGrid } from "@/components/product/product-card";
 import { buttonVariants } from "@/components/ui/button";
-import { getCollections, getDiscountedProducts, getFeaturedProducts, getNewArrivals, getStoreSettings } from "@/lib/catalog/queries";
+import { getCollectionProducts, getCollections, getDiscountedProducts, getFeaturedProducts, getNewArrivals, getStoreSettings } from "@/lib/catalog/queries";
+import { env } from "@/lib/env";
+import { pageMetadata } from "@/lib/seo";
+import { ghanaWaDigits } from "@/lib/whatsapp";
 import { cn } from "@/lib/utils";
 
+export const metadata = pageMetadata({
+  description: "Perfume boutique at Ells Luxe Annex, Pantang. Shop Lattafa, Armaf, Fragrance World, Rasasi, and the other houses on the shelf.",
+  path: "/",
+});
+
 export default async function HomePage() {
-  const [featured, discounted, arrivals, collections, settings] = await Promise.all([
+  const [featured, discounted, arrivals, collections, settings, gifts, nonce] = await Promise.all([
     getFeaturedProducts(),
     getDiscountedProducts(),
     getNewArrivals(),
     getCollections(),
     getStoreSettings(),
+    getCollectionProducts("gift-and-discovery-sets"),
+    headers().then((value) => value.get("x-nonce") ?? undefined),
   ]);
   const categoryOrder = ["col-women", "col-men", "col-unisex", "col-gifts"];
-  const shopBy = categoryOrder.flatMap((id) => collections.filter((collection) => collection.id === id));
+  const shopBy = categoryOrder
+    .flatMap((id) => collections.filter((collection) => collection.id === id))
+    .filter((collection) => collection.slug !== "gift-and-discovery-sets" || gifts.products.length > 0);
+  const telephone = ghanaWaDigits(settings.contactPhone);
+  const localBusiness = {
+    "@context": "https://schema.org",
+    "@type": "Store",
+    name: "EllzLuxe Fragranz",
+    url: env.siteUrl,
+    image: `${env.siteUrl}/images/story.jpg`,
+    telephone: telephone.startsWith("233") ? `+${telephone}` : undefined,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Ells Luxe Annex",
+      addressLocality: "Pantang",
+      addressCountry: "GH",
+    },
+  };
   const flash = picturesForFlashSales(discounted, discounted.length);
 
   return (
     <>
+      <script nonce={nonce} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusiness) }} />
       <HomeHero />
       <HeroAnnouncement location={settings.location} phone={settings.contactPhone} />
 
@@ -59,13 +88,13 @@ export default async function HomePage() {
               >
                 <Image
                   src={collection.imageUrl}
-                  alt=""
+                  alt={collection.name}
                   fill
                   sizes="(min-width: 1024px) 25vw, 50vw"
                   className="object-cover transition duration-500 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-rich/75 via-rich/20 to-transparent" />
-                <span className="absolute inset-x-2.5 bottom-2.5 font-serif text-base leading-tight text-snow sm:inset-x-4 sm:bottom-4 sm:text-xl">
+                <span aria-hidden className="absolute inset-x-2.5 bottom-2.5 font-serif text-base leading-tight text-snow sm:inset-x-4 sm:bottom-4 sm:text-xl">
                   {collection.name.replace(" fragrances", "")}
                 </span>
               </Link>

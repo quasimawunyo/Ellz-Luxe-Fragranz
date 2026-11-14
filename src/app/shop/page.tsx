@@ -4,8 +4,13 @@ import { ProductGrid } from "@/components/product/product-card";
 import { ShopFilters } from "@/components/shop/filters";
 import { EmptyState } from "@/components/ui/states";
 import { queryShop } from "@/lib/catalog/queries";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = { title: "Shop" };
+export const metadata = pageMetadata({
+  title: "Shop",
+  description: "Browse the bottles in stock at EllzLuxe Fragranz, Ells Luxe Annex, Pantang.",
+  path: "/shop",
+});
 
 export default async function ShopPage({
   searchParams,

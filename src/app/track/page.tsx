@@ -3,8 +3,13 @@ import { trackOrderAction } from "@/app/actions/orders";
 import { ActionForm } from "@/components/forms/form-status";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = { title: "Track order" };
+export const metadata = pageMetadata({
+  title: "Track order",
+  description: "Look up an EllzLuxe Fragranz order with its number and email.",
+  path: "/track",
+});
 
 export default function TrackOrderPage() {
   return (

@@ -5,8 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { queryShop } from "@/lib/catalog/queries";
 import Link from "next/link";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = { title: "Search" };
+export const metadata = pageMetadata({
+  title: "Search",
+  description: "Search the EllzLuxe Fragranz catalog.",
+  path: "/search",
+});
 
 export default async function SearchPage({
   searchParams,

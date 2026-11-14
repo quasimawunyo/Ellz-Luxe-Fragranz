@@ -1,34 +1,45 @@
 import Link from "next/link";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { ProductGallery } from "@/components/product/gallery";
 import { ProductGrid } from "@/components/product/product-card";
 import { PurchaseForm } from "@/components/product/purchase-form";
-import { sellingVariant } from "@/lib/catalog/helpers";
+import { bottleSizeLabel, primaryImage, publicDescription, sellingVariant } from "@/lib/catalog/helpers";
 import { getProductBySlug, getRelated, getStoreSettings } from "@/lib/catalog/queries";
+import { pageMetadata } from "@/lib/seo";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const product = await getProductBySlug(slug);
   if (!product) return { title: "Product" };
-  return {
+  const description = publicDescription(product.description).slice(0, 160);
+  const image = primaryImage(product);
+  return pageMetadata({
     title: product.name,
-    description: product.description.slice(0, 160),
-    openGraph: { title: product.name, description: product.description.slice(0, 160) },
-  };
+    description,
+    path: `/product/${product.slug}`,
+    image: image?.url,
+  });
 }
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const product = await getProductBySlug(slug);
   if (!product) notFound();
-  const [related, settings] = await Promise.all([getRelated(product), getStoreSettings()]);
+  const [related, settings, nonce] = await Promise.all([
+    getRelated(product),
+    getStoreSettings(),
+    headers().then((value) => value.get("x-nonce") ?? undefined),
+  ]);
   const variant = sellingVariant(product);
+  const description = publicDescription(product.description);
+  const size = bottleSizeLabel(variant);
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
-    description: product.description,
+    description,
     brand: { "@type": "Brand", name: product.brand },
     image: product.images.map((image) => image.url),
     offers: variant
@@ -45,7 +56,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script nonce={nonce} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Breadcrumbs
         items={[
           { href: "/", label: "Home" },
@@ -63,8 +74,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           <p className="mt-2 text-sm text-taupe">
             {product.brand}
             {product.concentration ? ` · ${product.concentration}` : ""}
+            {size ? ` · ${size}` : ""}
           </p>
-          <p className="mt-6 max-w-lg leading-7 text-espresso/80">{product.description}</p>
+          <p className="mt-6 max-w-lg leading-7 text-espresso/80">{description}</p>
           <PurchaseForm
             variants={variant ? [variant] : []}
             productId={product.id}

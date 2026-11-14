@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { discountedVariantOffers, filterProducts, isDiscounted, isNewProduct } from "@/lib/catalog/helpers";
+import { discountedVariantOffers, filterProducts, homepageNewArrivals, isDiscounted, isNewProduct, publicDescription } from "@/lib/catalog/helpers";
 import { DEMO_PRODUCTS } from "@/lib/catalog/seed";
 
 describe("catalog filters", () => {
@@ -27,6 +27,16 @@ describe("catalog filters", () => {
     const result = filterProducts(DEMO_PRODUCTS, { arrival: "1", sort: "featured", page: 1 });
     expect(result.length).toBeGreaterThan(0);
     expect(result.every((product) => product.newArrival || isNewProduct(product))).toBe(true);
+  });
+
+  it("hides the photography note and keeps featured bottles out of the new-arrivals rail", () => {
+    expect(publicDescription("Lattafa Yara eau de parfum. Photographed from the house bottle.")).toBe(
+      "Lattafa Yara eau de parfum.",
+    );
+    const featuredNew = { ...DEMO_PRODUCTS[0], featured: true, newArrival: true };
+    const quietNew = { ...DEMO_PRODUCTS[1], featured: false, newArrival: true };
+    const arrivals = homepageNewArrivals([featuredNew, quietNew]);
+    expect(arrivals.map((product) => product.id)).toEqual([quietNew.id]);
   });
 
   it("treats a higher compare-at price as a discount", () => {

@@ -2,8 +2,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { getCollections } from "@/lib/catalog/queries";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = { title: "Collections" };
+export const metadata = pageMetadata({
+  title: "Collections",
+  description: "Shop women's, men's, and unisex fragrances at EllzLuxe Fragranz.",
+  path: "/collections",
+});
 
 export default async function CollectionsPage() {
   const collections = await getCollections();
@@ -16,14 +21,14 @@ export default async function CollectionsPage() {
           <Link key={collection.id} href={`/collections/${collection.slug}`} className="group relative aspect-[3/4] overflow-hidden rounded-2xl sm:rounded-[1.75rem]">
             <Image
               src={collection.imageUrl}
-              alt=""
+              alt={collection.name}
               fill
               sizes="(min-width: 1024px) 25vw, 50vw"
               className="object-cover transition-transform duration-700 group-hover:scale-105"
             />
             <div className="absolute inset-0 bg-rich/45" />
             <div className="absolute inset-x-3 bottom-3 text-snow sm:inset-x-5 sm:bottom-5">
-              <h2 className="font-serif text-xl leading-tight sm:text-3xl">{collection.name}</h2>
+              <h2 aria-hidden className="font-serif text-xl leading-tight sm:text-3xl">{collection.name}</h2>
               <p className="mt-1 line-clamp-2 text-xs text-snow/80 sm:text-sm">{collection.description}</p>
             </div>
           </Link>

@@ -85,7 +85,7 @@ export function AcceptedPayMarks() {
         </svg>
       </Mark>
       <Mark label="AT Money" className="gap-1.5">
-        <Image src="/images/pay/at.png" alt="" width={22} height={22} className="h-5 w-auto" />
+        <Image src="/images/pay/at.png" alt="" aria-hidden width={22} height={22} className="h-5 w-auto" />
         <span className="text-[11px] font-semibold tracking-tight text-[#00377B]">Money</span>
       </Mark>
     </div>

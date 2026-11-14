@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { env, isSupabaseConfigured } from "@/lib/env";
 import { contentSecurityPolicy } from "@/lib/security/csp";
+import { canonicalRedirect } from "@/lib/site-url";
 
 function sessionNeedsRefresh(request: NextRequest) {
   const chunks = request.cookies
@@ -33,6 +34,12 @@ function withCsp(request: NextRequest, nonce: string) {
 }
 
 export async function proxy(request: NextRequest) {
+  const redirectTo = canonicalRedirect(
+    request.headers.get("host"),
+    `${request.nextUrl.pathname}${request.nextUrl.search}`,
+  );
+  if (redirectTo) return NextResponse.redirect(redirectTo, 308);
+
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   let response = withCsp(request, nonce);
   const { pathname } = request.nextUrl;

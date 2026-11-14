@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { getStoreSettings } from "@/lib/catalog/queries";
+import { pageMetadata } from "@/lib/seo";
 
 const PAGES = {
   privacy: { title: "Privacy policy", key: "privacyNote" as const },
@@ -11,7 +12,18 @@ const PAGES = {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const page = PAGES[slug as keyof typeof PAGES];
-  return { title: page?.title ?? "Legal" };
+  const descriptions = {
+    privacy: "How EllzLuxe Fragranz uses your name, contact details, and order information.",
+    terms: "The terms for buying from EllzLuxe Fragranz.",
+    shipping: "Delivery and pickup for EllzLuxe Fragranz at Ells Luxe Annex, Pantang.",
+    returns: "Returns and replacements for EllzLuxe Fragranz orders.",
+  };
+  if (!page) return { title: "Legal" };
+  return pageMetadata({
+    title: page.title,
+    description: descriptions[slug as keyof typeof descriptions],
+    path: `/legal/${slug}`,
+  });
 }
 
 export default async function LegalPage({ params }: { params: Promise<{ slug: string }> }) {

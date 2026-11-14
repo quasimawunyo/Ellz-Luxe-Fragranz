@@ -7,10 +7,16 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Price } from "@/components/ui/price";
 import { EmptyState } from "@/components/ui/states";
 import { resolveCart } from "@/lib/cart/store";
-import { publicVariantLabel } from "@/lib/catalog/helpers";
+import { isSizeOnlyLabel, publicVariantLabel } from "@/lib/catalog/helpers";
+import { pageMetadata } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 
-export const metadata = { title: "Cart" };
+export const metadata = pageMetadata({
+  title: "Cart",
+  description: "Review the bottles in your EllzLuxe Fragranz cart.",
+  path: "/cart",
+  index: false,
+});
 
 export default async function CartPage() {
   const cart = await resolveCart();
@@ -30,22 +36,27 @@ export default async function CartPage() {
       ) : (
         <div className="mt-10 grid gap-12 lg:grid-cols-[1fr_18rem]">
           <ul className="space-y-6">
-            {cart.lines.map((line) => (
+            {cart.lines.map((line) => {
+              const detail = publicVariantLabel(line.label) || (isSizeOnlyLabel(line.label) ? line.label : "");
+              return (
               <li key={line.variantId} className="flex gap-4 border-b border-espresso/10 pb-6">
                 <div className="relative size-28 shrink-0 overflow-hidden bg-espresso/5">
-                  <Image src={line.imageUrl} alt={line.imageAlt} fill className="object-cover" />
+                  {line.imageUrl ? (
+                    <Image src={line.imageUrl} alt={line.imageAlt || line.productName} fill sizes="112px" className="object-cover" />
+                  ) : null}
                 </div>
-                <div className="flex-1">
+                <div className="flex min-w-0 flex-1 flex-col">
                   <Link href={`/product/${line.productSlug}`} className="font-medium">
                     {line.productName}
                   </Link>
-                  {publicVariantLabel(line.label) ? (
-                    <p className="text-sm text-taupe">{publicVariantLabel(line.label)}</p>
-                  ) : null}
+                  {detail ? <p className="text-sm text-taupe">{detail}</p> : null}
+                  <p className="mt-2 text-sm text-taupe">
+                    {line.quantity} × <Price amountMinor={line.unitMinor} currencyCode={cart.currencyCode} />
+                  </p>
                   <Price
-                    amountMinor={line.unitMinor}
+                    amountMinor={line.lineMinor}
                     currencyCode={cart.currencyCode}
-                    className="mt-2 text-xl font-semibold text-leaf"
+                    className="mt-1 text-xl font-semibold text-leaf"
                   />
                   <ActionForm action={updateCartAction} className="mt-3 flex items-center gap-3">
                     <input type="hidden" name="variantId" value={line.variantId} />
@@ -74,7 +85,8 @@ export default async function CartPage() {
                   </ActionForm>
                 </div>
               </li>
-            ))}
+              );
+            })}
           </ul>
           <aside className="luxe-panel h-fit p-6">
             <p className="text-sm text-taupe">Subtotal</p>

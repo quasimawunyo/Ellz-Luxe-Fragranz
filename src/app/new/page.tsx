@@ -4,8 +4,13 @@ import { ProductGrid } from "@/components/product/product-card";
 import { EmptyState } from "@/components/ui/states";
 import { getPublishedProducts } from "@/lib/catalog/queries";
 import { isNewProduct } from "@/lib/catalog/helpers";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = { title: "New arrivals" };
+export const metadata = pageMetadata({
+  title: "New arrivals",
+  description: "Bottles recently added at EllzLuxe Fragranz.",
+  path: "/new",
+});
 
 export default async function NewArrivalsPage() {
   const products = (await getPublishedProducts()).filter((product) => isNewProduct(product));

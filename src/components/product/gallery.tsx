@@ -18,7 +18,7 @@ export function ProductGallery({ images, name }: { images: ProductImage[]; name:
           alt={active.alt || name}
           fill
           priority
-          sizes="(min-width: 1024px) 50vw, 100vw"
+          sizes="(min-width: 1024px) 36rem, (min-width: 768px) 28rem, 100vw"
           className="object-cover"
         />
       </div>
@@ -34,7 +34,7 @@ export function ProductGallery({ images, name }: { images: ProductImage[]; name:
               }`}
               aria-label={`Show image ${image.position + 1}`}
             >
-              <Image src={image.url} alt="" fill className="object-cover" />
+              <Image src={image.url} alt="" aria-hidden fill sizes="64px" className="object-cover" />
             </button>
           ))}
         </div>

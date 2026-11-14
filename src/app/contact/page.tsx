@@ -4,8 +4,13 @@ import { StoreContact, StoreSocials, WhatsAppCta } from "@/components/layout/sto
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/input";
 import { getStoreSettings } from "@/lib/catalog/queries";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = { title: "Contact" };
+export const metadata = pageMetadata({
+  title: "Contact",
+  description: "Call, WhatsApp, or visit EllzLuxe Fragranz at Ells Luxe Annex, Pantang.",
+  path: "/contact",
+});
 
 export default async function ContactPage() {
   const settings = await getStoreSettings();

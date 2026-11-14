@@ -54,6 +54,26 @@ export function isNewProduct(product: Product, now = Date.now()) {
   return Number.isFinite(created) && now - created < NEW_MS;
 }
 
+export function homepageNewArrivals(products: Product[], now = Date.now()) {
+  return products
+    .filter((product) => product.status === "published" && isNewProduct(product, now) && !product.featured)
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+}
+
+export function publicDescription(description: string) {
+  return description
+    .replace(/\s*Photographed from the house bottle(?: and matching spray)?\./gi, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
+export function bottleSizeLabel(variant: { sizeMl?: number | null; label?: string } | null | undefined) {
+  if (!variant) return "";
+  if (variant.sizeMl) return `${variant.sizeMl} ml`;
+  if (variant.label && isSizeOnlyLabel(variant.label)) return variant.label.trim();
+  return "";
+}
+
 export function isDiscounted(product: Product) {
   return discountedVariantOffers(product).length > 0;
 }

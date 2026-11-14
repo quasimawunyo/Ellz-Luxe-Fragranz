@@ -1,6 +1,11 @@
 import { getFaqs } from "@/lib/catalog/queries";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = { title: "FAQ" };
+export const metadata = pageMetadata({
+  title: "FAQ",
+  description: "Payment, delivery, and returns for EllzLuxe Fragranz.",
+  path: "/faq",
+});
 
 export default async function FaqPage() {
   const faqs = await getFaqs();

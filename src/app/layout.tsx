@@ -18,9 +18,13 @@ const playfair = Playfair_Display({
   weight: ["400", "600"],
   style: ["normal", "italic"],
   variable: "--font-playfair",
+  preload: false,
 });
 
+const homeDescription = "Perfume boutique at Ells Luxe Annex, Pantang. Shop Lattafa, Armaf, Fragrance World, Rasasi, and the other houses on the shelf.";
+
 export const metadata: Metadata = {
+  description: homeDescription,
   metadataBase: new URL(
     resolveSiteUrl({
       NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
@@ -32,11 +36,11 @@ export const metadata: Metadata = {
     default: "EllzLuxe Fragranz",
     template: "%s · EllzLuxe Fragranz",
   },
-  description: "Perfume boutique at Ells Luxe Annex, Pantang. Shop Lattafa, Armaf, Maison Alhambra, and more.",
   openGraph: {
     title: "EllzLuxe Fragranz",
-    description: "Perfume boutique at Ells Luxe Annex, Pantang.",
+    description: homeDescription,
     type: "website",
+    images: [{ url: "/images/story.jpg", alt: "Perfume bottles at EllzLuxe Fragranz" }],
   },
   appleWebApp: {
     capable: true,
@@ -59,7 +63,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       <head>
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <InstallCapture nonce={nonce} />
-        <ThemeScript />
+        <ThemeScript nonce={nonce} />
       </head>
       <body className="flex min-h-full flex-col bg-ivory text-espresso antialiased">
         <SiteShell>{children}</SiteShell>

@@ -11,7 +11,7 @@ import { BrandGrid } from "@/components/brand/brand-grid";
 import { getAuthContext } from "@/lib/auth/session";
 import { resolveCart } from "@/lib/cart/store";
 import { discountedVariantOffers, primaryImage, sellingVariant } from "@/lib/catalog/helpers";
-import { getDiscountedProducts, getStoreSettings } from "@/lib/catalog/queries";
+import { getCollectionProducts, getDiscountedProducts, getStoreSettings } from "@/lib/catalog/queries";
 
 function salePopupProducts(products: Awaited<ReturnType<typeof getDiscountedProducts>>): SalePopupProduct[] {
   return products.flatMap((product) => {
@@ -41,9 +41,11 @@ function salePopupProducts(products: Awaited<ReturnType<typeof getDiscountedProd
 }
 
 async function ChromeHeader() {
-  const [settings, session] = await Promise.all([
+  const [settings, session, discounted, gifts] = await Promise.all([
     getStoreSettings(),
     Promise.all([resolveCart(), getAuthContext()]).catch(() => null),
+    getDiscountedProducts(),
+    getCollectionProducts("gift-and-discovery-sets"),
   ]);
   const cartCount = session?.[0].itemCount ?? 0;
   const signedIn = Boolean(session?.[1].user);
@@ -52,19 +54,29 @@ async function ChromeHeader() {
   return (
     <>
       <PublicAnnouncement location={settings.location} phone={settings.contactPhone} />
-      <Header cartCount={cartCount} signedIn={signedIn} isAdmin={isAdmin} />
+      <Header
+        cartCount={cartCount}
+        signedIn={signedIn}
+        isAdmin={isAdmin}
+        showSale={discounted.length > 0}
+        showGifts={gifts.products.length > 0}
+      />
     </>
   );
 }
 
 async function ChromeExtras() {
-  const [settings, discounted] = await Promise.all([getStoreSettings(), getDiscountedProducts()]);
+  const [settings, discounted, gifts] = await Promise.all([
+    getStoreSettings(),
+    getDiscountedProducts(),
+    getCollectionProducts("gift-and-discovery-sets"),
+  ]);
   return (
     <>
       <BrandGrid />
       <AnnexPromises phone={settings.contactPhone} />
       <TrustAndPay />
-      <Footer settings={settings} />
+      <Footer settings={settings} showSale={discounted.length > 0} showGifts={gifts.products.length > 0} />
       <WhatsAppButton phone={settings.contactPhone} />
       <SalePopup products={salePopupProducts(discounted)} />
     </>

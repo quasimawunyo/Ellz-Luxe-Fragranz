@@ -15,6 +15,12 @@ export function whatsappHref(phone: string, message?: string) {
   return `https://wa.me/${digits}${text}`;
 }
 
+export function ghanaTelHref(phone: string) {
+  const digits = ghanaWaDigits(phone);
+  if (!digits.startsWith("233") || digits.length < 12) return null;
+  return `tel:+${digits}`;
+}
+
 export function formatGhanaPhone(phone: string) {
   const digits = ghanaWaDigits(phone);
   if (digits.startsWith("233") && digits.length === 12) {

@@ -14,13 +14,13 @@ export function BrandGrid() {
             <Link
               key={`${brand.slug}-${index}`}
               href={`/brands/${brand.slug}`}
-              aria-label={brand.name}
+              aria-label={brand.logo ? undefined : brand.name}
               className="flex h-16 w-40 shrink-0 items-center justify-center rounded-2xl bg-ivory px-4 sm:h-20 sm:w-48"
             >
               {brand.logo ? (
                 <Image
                   src={brand.logo}
-                  alt=""
+                  alt={brand.name}
                   width={180}
                   height={72}
                   unoptimized

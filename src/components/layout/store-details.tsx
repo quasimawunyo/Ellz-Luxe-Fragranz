@@ -4,7 +4,7 @@ import { InstagramIcon, SnapchatIcon, TikTokIcon, WhatsAppIcon } from "@/compone
 import { buttonVariants } from "@/components/ui/button";
 import type { StoreSettings } from "@/lib/catalog/types";
 import { cn } from "@/lib/utils";
-import { whatsappHref } from "@/lib/whatsapp";
+import { ghanaTelHref, whatsappHref } from "@/lib/whatsapp";
 
 function ContactRow({
   icon: Icon,
@@ -29,6 +29,7 @@ export function StoreContact({
   className?: string;
 }) {
   const wa = whatsappHref(settings.contactPhone);
+  const tel = ghanaTelHref(settings.contactPhone);
   return (
     <div className={className}>
       {settings.location ? (
@@ -38,7 +39,7 @@ export function StoreContact({
       ) : null}
       {settings.contactPhone ? (
         <ContactRow icon={Phone}>
-          <a href={`tel:${settings.contactPhone}`} className="inline-flex min-h-11 items-center">{settings.contactPhone}</a>
+          <a href={tel ?? undefined} className="inline-flex min-h-11 items-center">{settings.contactPhone}</a>
         </ContactRow>
       ) : null}
       {wa ? (

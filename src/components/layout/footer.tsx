@@ -3,7 +3,15 @@ import type { StoreSettings } from "@/lib/catalog/types";
 import { BrandLogo } from "@/components/brand/logo";
 import { StoreContact, StoreSocials } from "@/components/layout/store-details";
 
-export function Footer({ settings }: { settings: StoreSettings }) {
+export function Footer({
+  settings,
+  showSale = false,
+  showGifts = false,
+}: {
+  settings: StoreSettings;
+  showSale?: boolean;
+  showGifts?: boolean;
+}) {
   return (
     <footer className="mt-auto border-t border-espresso/10 bg-white pb-20 text-espresso lg:pb-0">
       <div className="mx-auto max-w-7xl px-4 py-8 md:py-16">
@@ -16,17 +24,18 @@ export function Footer({ settings }: { settings: StoreSettings }) {
           <div className="mt-8 grid grid-cols-3 gap-x-4 md:col-span-3 md:mt-0 md:gap-10">
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-[0.18em] md:text-xs md:tracking-[0.22em]">Shop</p>
-              <ul className="mt-3 space-y-2 text-sm text-taupe">
+              <ul className="mt-3 space-y-1 text-sm text-taupe [&_a]:inline-flex [&_a]:min-h-11 [&_a]:items-center">
                 <li><Link href="/shop">All products</Link></li>
                 <li><Link href="/collections">Collections</Link></li>
                 <li><Link href="/new">New arrivals</Link></li>
-                <li><Link href="/sale">Flash sales</Link></li>
+                {showSale ? <li><Link href="/sale">Flash sales</Link></li> : null}
+                {showGifts ? <li><Link href="/collections/gift-and-discovery-sets">Gifts</Link></li> : null}
                 <li><Link href="/brands">Brands</Link></li>
               </ul>
             </div>
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-[0.18em] md:text-xs md:tracking-[0.22em]">Help</p>
-              <ul className="mt-3 space-y-2 text-sm text-taupe">
+              <ul className="mt-3 space-y-1 text-sm text-taupe [&_a]:inline-flex [&_a]:min-h-11 [&_a]:items-center">
                 <li><Link href="/contact">Contact</Link></li>
                 <li><Link href="/track">Track order</Link></li>
                 <li><Link href="/legal/shipping">Shipping</Link></li>
@@ -35,7 +44,7 @@ export function Footer({ settings }: { settings: StoreSettings }) {
             </div>
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-[0.18em] md:text-xs md:tracking-[0.22em]">About</p>
-              <ul className="mt-3 space-y-2 text-sm text-taupe">
+              <ul className="mt-3 space-y-1 text-sm text-taupe [&_a]:inline-flex [&_a]:min-h-11 [&_a]:items-center">
                 <li><Link href="/about">Our story</Link></li>
                 <li><Link href="/faq">FAQ</Link></li>
                 <li><Link href="/legal/privacy">Privacy</Link></li>

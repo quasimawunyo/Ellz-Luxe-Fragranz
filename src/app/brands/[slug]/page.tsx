@@ -5,6 +5,7 @@ import { ProductGrid } from "@/components/product/product-card";
 import { EmptyState } from "@/components/ui/states";
 import { HOUSE_BRANDS, getHouseBrand } from "@/lib/catalog/brands";
 import { getPublishedProducts } from "@/lib/catalog/queries";
+import { pageMetadata } from "@/lib/seo";
 
 export function generateStaticParams() {
   return HOUSE_BRANDS.map((brand) => ({ slug: brand.slug }));
@@ -13,7 +14,13 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const brand = getHouseBrand(slug);
-  return { title: brand ? brand.name : "Brand" };
+  if (!brand) return { title: "Brand" };
+  return pageMetadata({
+    title: brand.name,
+    description: `Shop ${brand.name} bottles at EllzLuxe Fragranz.`,
+    path: `/brands/${brand.slug}`,
+    image: brand.logo,
+  });
 }
 
 export default async function BrandPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -39,6 +46,7 @@ export default async function BrandPage({ params }: { params: Promise<{ slug: st
           <Image
             src={brand.logo}
             alt=""
+            aria-hidden
             width={160}
             height={160}
             unoptimized

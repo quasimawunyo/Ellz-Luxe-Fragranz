@@ -32,12 +32,21 @@ export function Header({
   signedIn,
   isAdmin = false,
   ready = true,
+  showSale = false,
+  showGifts = false,
 }: {
   cartCount: number;
   signedIn: boolean;
   isAdmin?: boolean;
   ready?: boolean;
+  showSale?: boolean;
+  showGifts?: boolean;
 }) {
+  const shopLinks = SHOP.filter((link) => {
+    if (link.href === "/sale") return showSale;
+    if (link.href === "/collections/gift-and-discovery-sets") return showGifts;
+    return true;
+  });
   const [open, setOpen] = useState(false);
   const [panelTop, setPanelTop] = useState(0);
   const headerRef = useRef<HTMLElement>(null);
@@ -167,7 +176,7 @@ export function Header({
           </div>
           <p className="mt-10 text-[11px] font-medium uppercase tracking-[0.28em] text-taupe">Browse</p>
           <div className="mt-2 grid grid-cols-2 gap-x-8">
-            {SHOP.map((link) => (
+            {shopLinks.map((link) => (
               <Link
                 key={link.href + link.label}
                 href={link.href}

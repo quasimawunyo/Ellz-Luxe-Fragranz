@@ -36,7 +36,7 @@ export default async function AdminProductsPage() {
                 className="flex min-h-11 items-center gap-3 rounded-[1.25rem] border border-espresso/10 bg-white p-3"
               >
                 <span className="relative size-16 shrink-0 overflow-hidden rounded-xl bg-espresso/5">
-                  {image ? <Image src={image.url} alt="" fill className="object-cover" sizes="64px" /> : null}
+                  {image ? <Image src={image.url} alt={product.name} fill className="object-cover" sizes="64px" /> : null}
                 </span>
                 <span className="min-w-0">
                   <span className="block font-medium">{product.name}</span>
@@ -74,7 +74,7 @@ export default async function AdminProductsPage() {
                     <Link href={`/admin/products/${product.id}`} className="flex items-center gap-3">
                       <span className="relative size-12 shrink-0 overflow-hidden bg-espresso/5">
                         {image ? (
-                          <Image src={image.url} alt="" fill className="object-cover" sizes="48px" />
+                          <Image src={image.url} alt={product.name} fill className="object-cover" sizes="48px" />
                         ) : null}
                       </span>
                       <span>

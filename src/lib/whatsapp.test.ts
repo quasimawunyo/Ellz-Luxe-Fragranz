@@ -4,6 +4,7 @@ import {
   annexOrderWhatsAppHref,
   customerOrderWhatsAppMessage,
   formatGhanaPhone,
+  ghanaTelHref,
   whatsappHref,
 } from "@/lib/whatsapp";
 
@@ -14,6 +15,7 @@ describe("whatsappHref", () => {
 
   it("converts a local Ghana 0-number to an international wa.me link", () => {
     expect(whatsappHref("0593634512")).toBe("https://wa.me/233593634512");
+    expect(ghanaTelHref("0593634512")).toBe("tel:+233593634512");
   });
 
   it("skips placeholder numbers", () => {

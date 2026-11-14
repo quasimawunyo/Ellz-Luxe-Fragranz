@@ -2,8 +2,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { HOUSE_BRANDS } from "@/lib/catalog/brands";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata = { title: "Brands" };
+export const metadata = pageMetadata({
+  title: "Brands",
+  description: "Fragrance houses stocked at EllzLuxe Fragranz.",
+  path: "/brands",
+});
 
 export default function BrandsPage() {
   return (
@@ -17,14 +22,14 @@ export default function BrandsPage() {
               {brand.logo ? (
                 <Image
                   src={brand.logo}
-                  alt=""
+                  alt={brand.name}
                   width={180}
                   height={72}
                   unoptimized
                   className="h-12 w-auto max-w-full object-contain sm:h-16"
                 />
               ) : null}
-              <span className={brand.logo ? "text-sm" : "font-serif text-xl leading-tight"}>{brand.name}</span>
+              <span aria-hidden={brand.logo ? true : undefined} className={brand.logo ? "text-sm" : "font-serif text-xl leading-tight"}>{brand.name}</span>
             </Link>
           </li>
         ))}

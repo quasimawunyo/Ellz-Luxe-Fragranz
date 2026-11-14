@@ -4,9 +4,18 @@ import { FlashSales, picturesForFlashSales } from "@/components/home/flash-sales
 import { buttonVariants } from "@/components/ui/button";
 import { isDiscounted } from "@/lib/catalog/helpers";
 import { getPublishedProducts } from "@/lib/catalog/queries";
+import { pageMetadata } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 
-export const metadata = { title: "Flash sales" };
+export async function generateMetadata() {
+  const discounted = (await getPublishedProducts()).filter(isDiscounted);
+  return pageMetadata({
+    title: "Flash sales",
+    description: "Bottles currently reduced at EllzLuxe Fragranz.",
+    path: "/sale",
+    index: discounted.length > 0,
+  });
+}
 
 export default async function SalePage() {
   const discounted = (await getPublishedProducts()).filter(isDiscounted);

@@ -3,6 +3,19 @@ import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { ProductGrid } from "@/components/product/product-card";
 import { EmptyState } from "@/components/ui/states";
 import { getCollectionProducts } from "@/lib/catalog/queries";
+import { pageMetadata } from "@/lib/seo";
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const { collection } = await getCollectionProducts(slug);
+  if (!collection) return { title: "Collection" };
+  return pageMetadata({
+    title: collection.name,
+    description: collection.description,
+    path: `/collections/${collection.slug}`,
+    image: collection.imageUrl,
+  });
+}
 
 export default async function CollectionPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

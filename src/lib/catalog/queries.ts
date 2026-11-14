@@ -1,7 +1,7 @@
 import { cache } from "react";
 import { unstable_cache } from "next/cache";
 import { DEMO_CATEGORIES, DEMO_COLLECTIONS, DEMO_FAQS, DEMO_PRODUCTS, DEMO_SETTINGS } from "@/lib/catalog/seed";
-import { filterProducts, isDiscounted, paginate, relatedProducts } from "@/lib/catalog/helpers";
+import { filterProducts, homepageNewArrivals, isDiscounted, paginate, relatedProducts } from "@/lib/catalog/helpers";
 import type { CatalogProduct, StoreSettings } from "@/lib/catalog/types";
 import { readJsonCookie, writeJsonCookie } from "@/lib/cookies/json-cookie";
 import { isSupabaseConfigured } from "@/lib/env";
@@ -277,14 +277,7 @@ export async function getDiscountedProducts() {
 }
 
 export async function getNewArrivals() {
-  const products = await getPublishedProducts();
-  return [...products]
-    .sort((a, b) => {
-      const flagged = Number(b.newArrival) - Number(a.newArrival);
-      if (flagged) return flagged;
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-    })
-    .slice(0, 8);
+  return homepageNewArrivals(await getPublishedProducts());
 }
 
 export async function getRelated(product: CatalogProduct) {

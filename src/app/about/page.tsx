@@ -4,9 +4,14 @@ import { StoreContact } from "@/components/layout/store-details";
 import { buttonVariants } from "@/components/ui/button";
 import { getStoreSettings } from "@/lib/catalog/queries";
 import { cn } from "@/lib/utils";
+import { pageMetadata } from "@/lib/seo";
 import { whatsappHref } from "@/lib/whatsapp";
 
-export const metadata = { title: "About" };
+export const metadata = pageMetadata({
+  title: "About",
+  description: "EllzLuxe Fragranz is a perfume boutique at Ells Luxe Annex, Pantang.",
+  path: "/about",
+});
 
 export default async function AboutPage() {
   const settings = await getStoreSettings();

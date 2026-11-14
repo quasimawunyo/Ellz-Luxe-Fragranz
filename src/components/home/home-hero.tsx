@@ -51,7 +51,7 @@ export function HomeHero() {
               alt={active ? slide.label : ""}
               fill
               priority={slideIndex === 0}
-              sizes="100vw"
+              sizes="(min-width: 1920px) 1920px, 100vw"
               className="object-cover"
             />
           </div>
