@@ -1,5 +1,5 @@
 import type { ComponentType, ReactNode, SVGProps } from "react";
-import { MapPin, Phone } from "lucide-react";
+import { Mail, MapPin, Phone } from "lucide-react";
 import { InstagramIcon, SnapchatIcon, TikTokIcon, WhatsAppIcon } from "@/components/brand/social-icons";
 import { buttonVariants } from "@/components/ui/button";
 import type { StoreSettings } from "@/lib/catalog/types";
@@ -14,9 +14,9 @@ function ContactRow({
   children: ReactNode;
 }) {
   return (
-    <p className="flex items-center gap-2.5">
-      <Icon className="size-4 shrink-0 text-champagne" aria-hidden />
-      {children}
+    <p className="grid min-h-11 grid-cols-[1.25rem_minmax(0,1fr)] items-center gap-x-2.5">
+      <Icon className="size-4 justify-self-center text-champagne" aria-hidden />
+      <span className="min-w-0">{children}</span>
     </p>
   );
 }
@@ -39,22 +39,22 @@ export function StoreContact({
       ) : null}
       {settings.contactPhone ? (
         <ContactRow icon={Phone}>
-          <a href={tel ?? undefined} className="inline-flex min-h-11 items-center">{settings.contactPhone}</a>
+          <a href={tel ?? undefined} className="inline-flex items-center">{settings.contactPhone}</a>
         </ContactRow>
       ) : null}
       {wa ? (
         <ContactRow icon={WhatsAppIcon}>
-          <a href={wa} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center text-channel">
+          <a href={wa} target="_blank" rel="noreferrer" className="inline-flex items-center text-channel">
             {settings.contactPhone}
           </a>
         </ContactRow>
       ) : null}
       {settings.contactEmail ? (
-        <p>
-          <a href={`mailto:${settings.contactEmail}`} className="inline-flex min-h-11 items-center">
+        <ContactRow icon={Mail}>
+          <a href={`mailto:${settings.contactEmail}`} className="inline-flex items-center break-all">
             {settings.contactEmail}
           </a>
-        </p>
+        </ContactRow>
       ) : null}
     </div>
   );
