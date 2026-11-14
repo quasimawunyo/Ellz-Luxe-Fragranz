@@ -2,29 +2,48 @@
 
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { z } from "zod";
 import { rateLimit } from "@/lib/rate-limit";
-import { getOrderById, getOrderByNumber } from "@/lib/orders/store";
-import { rememberPlacedOrderId, browserPlacedThisOrder } from "@/lib/orders/placed-cookie";
-import { orderEmailMatches } from "@/lib/orders/lookup";
+import { getOrderById, getOrderByNumber, listOrdersByPhone } from "@/lib/orders/store";
+import { browserPlacedThisOrder } from "@/lib/orders/placed-cookie";
+import { classifyTrackQuery, customerFulfilmentLine, customerPaymentLine } from "@/lib/orders/lookup";
+import type { StoreOrder } from "@/lib/orders/types";
 import { getAuthContext } from "@/lib/auth/session";
 import { canViewOrder } from "@/lib/auth/roles";
 import { redirectToHostedPayment } from "@/lib/payments/hosted";
 
-const trackSchema = z.object({
-  orderNumber: z.string().trim().min(4).max(40),
-  email: z.email(),
-});
-
 const LOOKUP_MISS = "We could not find an order with those details.";
 
-export async function trackOrderAction(_prev: { error?: string } | null, formData: FormData) {
-  const parsed = trackSchema.safeParse({
-    orderNumber: formData.get("orderNumber"),
-    email: formData.get("email"),
-  });
-  if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? "Check the order number and email." };
+export type TrackedOrder = {
+  orderNumber: string;
+  placed: string;
+  fulfilment: string;
+  payment: string;
+  deliveryMethod: string;
+  items: { name: string; size: string; quantity: number }[];
+};
+
+export type TrackLookupState = { error?: string; orders?: TrackedOrder[] } | null;
+
+function publicTrack(order: StoreOrder): TrackedOrder {
+  return {
+    orderNumber: order.orderNumber,
+    placed: new Intl.DateTimeFormat("en-GH", { dateStyle: "medium", timeZone: "Africa/Accra" }).format(new Date(order.createdAt)),
+    fulfilment: customerFulfilmentLine(order.fulfillmentStatus),
+    payment: customerPaymentLine(order.paymentStatus),
+    deliveryMethod: order.deliveryMethod,
+    items: order.items.map((item) => ({
+      name: item.productName,
+      size: item.variantLabel,
+      quantity: item.quantity,
+    })),
+  };
+}
+
+export async function trackOrderAction(_prev: TrackLookupState, formData: FormData): Promise<TrackLookupState> {
+  const query = String(formData.get("query") ?? "").trim();
+  const kind = classifyTrackQuery(query);
+  if (kind === "invalid") {
+    return { error: "Enter the phone number from checkout, or an order number such as ELF-…." };
   }
 
   const hdrs = await headers();
@@ -33,13 +52,9 @@ export async function trackOrderAction(_prev: { error?: string } | null, formDat
     return { error: "Please wait before trying again." };
   }
 
-  const order = await getOrderByNumber(parsed.data.orderNumber);
-  if (!order || !orderEmailMatches(order.email, parsed.data.email)) {
-    return { error: LOOKUP_MISS };
-  }
-
-  await rememberPlacedOrderId(order.id);
-  redirect(`/checkout/confirmation?order=${order.id}`);
+  const matches = kind === "phone" ? await listOrdersByPhone(query) : await getOrderByNumber(query).then((order) => (order && !order.isTest ? [order] : []));
+  if (!matches.length) return { error: LOOKUP_MISS };
+  return { orders: matches.map(publicTrack) };
 }
 
 export async function resumePaymentAction(_prev: { error?: string } | null, formData: FormData) {

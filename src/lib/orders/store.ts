@@ -24,7 +24,8 @@ import {
 } from "@/lib/payments/moolre";
 import { isPaystackConfigured } from "@/lib/payments/paystack";
 import { rememberPlacedOrderId } from "@/lib/orders/placed-cookie";
-import { normalizeOrderNumber } from "@/lib/orders/lookup";
+import { normalizeOrderNumber, phonesMatch } from "@/lib/orders/lookup";
+import { ghanaWaDigits } from "@/lib/whatsapp";
 import { revalidatePath } from "next/cache";
 
 const ORDERS_COOKIE = "elf_orders";
@@ -341,6 +342,37 @@ export async function getOrderByPaymentReference(reference: string) {
     return getOrderById(payment.order_id);
   }
   return (await demoOrders()).find((order) => order.paystackReference === reference) ?? null;
+}
+
+export async function listOrdersByPhone(phone: string) {
+  const needle = ghanaWaDigits(phone);
+  const last9 = needle.slice(-9);
+  if (!/^\d{9}$/.test(last9)) return [];
+  if (isSupabaseAdminConfigured()) {
+    const admin = createServiceClient();
+    if (admin) {
+      const { data } = await admin
+        .from("orders")
+        .select("id, phone, is_test, created_at")
+        .ilike("phone", `%${last9}%`)
+        .order("created_at", { ascending: false })
+        .limit(40);
+      const ids = (data ?? [])
+        .filter((row) => !row.is_test && phonesMatch(String(row.phone ?? ""), phone))
+        .slice(0, 8)
+        .map((row) => row.id as string);
+      const orders = [];
+      for (const id of ids) {
+        const order = await getOrderById(id);
+        if (order && !order.isTest) orders.push(order);
+      }
+      return orders;
+    }
+  }
+  return (await demoOrders())
+    .filter((order) => !order.isTest && phonesMatch(order.phone, phone))
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    .slice(0, 8);
 }
 
 export async function getOrderByNumber(orderNumber: string) {

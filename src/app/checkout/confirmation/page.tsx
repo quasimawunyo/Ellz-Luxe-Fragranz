@@ -50,7 +50,7 @@ export default async function ConfirmationPage({
     return (
       <div className="mx-auto max-w-3xl px-4 py-16">
         <EmptyState title="This confirmation is private">
-          <Link href="/track">Track with order number and email</Link>
+          <Link href="/track">Track your order</Link>
           {" · "}
           <Link href="/login">Sign in</Link>
         </EmptyState>

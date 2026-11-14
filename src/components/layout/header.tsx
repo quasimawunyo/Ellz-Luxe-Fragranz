@@ -25,6 +25,7 @@ const SHOP = [
   { href: "/collections/mens-fragrances", label: "Men" },
   { href: "/collections/unisex-fragrances", label: "Unisex" },
   { href: "/collections/gift-and-discovery-sets", label: "Gifts" },
+  { href: "/track", label: "Track order" },
 ];
 
 export function Header({
