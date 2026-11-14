@@ -80,4 +80,16 @@ describe("order desk", () => {
     );
     expect(rows.map((row) => row.orderNumber)).toEqual(["ELF-OPEN"]);
   });
+
+  it("lists delivery orders that still have no fee", () => {
+    const rows = filterOrders(
+      [
+        order({ id: "fee", orderNumber: "ELF-FEE", shippingMinor: 0 }),
+        order({ id: "pickup", orderNumber: "ELF-PICK", deliveryMethod: "Pickup at Ells Luxe Annex", shippingMinor: 0 }),
+        order({ id: "quoted", orderNumber: "ELF-QUOTED", shippingMinor: 2000 }),
+      ],
+      { view: "all", fee: "missing" },
+    );
+    expect(rows.map((row) => row.orderNumber)).toEqual(["ELF-FEE"]);
+  });
 });

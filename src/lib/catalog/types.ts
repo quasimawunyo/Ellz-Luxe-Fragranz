@@ -14,6 +14,7 @@ export type ProductVariant = {
   sizeMl: number | null;
   priceMinor: number;
   compareAtMinor: number | null;
+  costPriceMinor?: number | null;
   stock: number;
   trackStock: boolean;
   stockQuantity: number;

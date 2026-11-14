@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { verifyMoolreCallbackSecret } from "@/lib/payments/signature";
-import { cedisFromMinor, minorFromCedis, moolreAmountMatches, moolrePaymentSucceeded } from "@/lib/payments/moolre-money";
+import { cedisFromMinor, minorFromCedis, moolreAmountMatches, moolrePaymentSucceeded, normalizePayerNetwork } from "@/lib/payments/moolre-money";
 
 describe("moolre money helpers", () => {
   it("converts pesewas to a GHS decimal string", () => {
@@ -22,6 +22,16 @@ describe("moolre money helpers", () => {
     expect(moolrePaymentSucceeded({ txstatus: 1 })).toBe(true);
     expect(moolrePaymentSucceeded({ txstatus: 0 })).toBe(false);
     expect(moolrePaymentSucceeded({ txstatus: 2 })).toBe(false);
+  });
+});
+
+describe("moolre payer network", () => {
+  it("keeps MTN, Telecel, and AT when Moolre sends them", () => {
+    expect(normalizePayerNetwork("MTN")).toBe("mtn");
+    expect(normalizePayerNetwork("TELECEL")).toBe("telecel");
+    expect(normalizePayerNetwork("AT")).toBe("at");
+    expect(normalizePayerNetwork("")).toBeNull();
+    expect(normalizePayerNetwork("unknown")).toBeNull();
   });
 });
 

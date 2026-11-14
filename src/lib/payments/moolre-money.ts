@@ -1,3 +1,12 @@
+export function normalizePayerNetwork(value: string | null | undefined) {
+  const raw = value?.trim().toLowerCase() ?? "";
+  if (raw === "mtn") return "mtn";
+  if (raw === "telecel" || raw === "vodafone") return "telecel";
+  if (raw === "at" || raw === "airteltigo" || raw === "airtel tigo" || raw === "tigo") return "at";
+  if (raw === "card" || raw === "visa" || raw === "mastercard") return "card";
+  return null;
+}
+
 export function cedisFromMinor(amountMinor: number) {
   return (amountMinor / 100).toFixed(2);
 }

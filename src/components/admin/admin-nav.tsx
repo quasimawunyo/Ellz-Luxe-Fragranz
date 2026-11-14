@@ -3,7 +3,7 @@
 import { useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutGrid, ClipboardList, Package, Inbox, Settings, Shield } from "lucide-react";
+import { LayoutGrid, ClipboardList, Package, Inbox, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 function subscribe() {
@@ -22,12 +22,10 @@ const LINKS = [
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 
-const CONTROL = { href: "/admin/super", label: "Control", icon: Shield, exact: true };
-
-export function AdminNav({ showControl = false }: { showControl?: boolean }) {
+export function AdminNav() {
   const pathname = usePathname();
   const isClient = useIsClient();
-  const links = showControl ? [CONTROL, ...LINKS] : LINKS;
+  const links = LINKS;
   return (
     <nav aria-label="Admin" className="flex flex-wrap gap-1 lg:flex-col lg:flex-nowrap">
       {links.map((link) => {

@@ -169,6 +169,19 @@ export default async function AdminProductPage({
           />
         </div>
         <div>
+          <Label htmlFor="costCedis">Cost (GH₵)</Label>
+          <Input
+            id="costCedis"
+            name="costCedis"
+            type="number"
+            min="0"
+            step="0.01"
+            defaultValue={variant?.costPriceMinor != null ? cedisInputFromMinor(variant.costPriceMinor) : ""}
+            placeholder="Optional"
+          />
+          <p className="mt-1 text-xs text-taupe">Used for estimated profit on Overview. Leave empty until you know the cost.</p>
+        </div>
+        <div>
           <Label htmlFor="compareAtCedis">Compare-at (GH₵)</Label>
           <Input
             id="compareAtCedis"

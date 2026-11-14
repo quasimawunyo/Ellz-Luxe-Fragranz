@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { listOrders } from "@/lib/orders/store";
-import { filterOrders, isDefaultOrderQueue, type OrderListQuery } from "@/lib/orders/desk";
+import { filterOrders, isDefaultOrderQueue, orderListHeading, type OrderListQuery } from "@/lib/orders/desk";
 import { fulfillmentStatuses, paymentStatuses } from "@/lib/orders/transitions";
 import { formatMoney } from "@/lib/money";
 import { Button } from "@/components/ui/button";
@@ -27,7 +27,7 @@ export default async function AdminOrdersPage({
     <div>
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold">{queue ? "Orders to do" : "Orders"}</h1>
+          <h1 className="text-2xl font-semibold">{orderListHeading(query)}</h1>
           <p className="mt-2 text-sm text-taupe">
             {queue ? "Paid orders that still need packing, delivery, or pickup." : `${orders.length} in this list.`}
           </p>

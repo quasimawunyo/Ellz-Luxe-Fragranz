@@ -81,6 +81,7 @@ export type Database = {
           size_ml: number | null;
           price_minor: number;
           compare_at_minor: number | null;
+          cost_price_minor: number | null;
           stock: number;
           created_at: string;
         };
@@ -153,6 +154,7 @@ export type Database = {
           tracking_number: string | null;
           is_test: boolean;
           awaiting_review: boolean;
+          sales_channel: "online" | "in_store";
           created_at: string;
         };
         Insert: Omit<Database["public"]["Tables"]["orders"]["Row"], "created_at"> & {
@@ -188,6 +190,7 @@ export type Database = {
           method: string | null;
           note: string | null;
           link_url: string | null;
+          payer_network: string | null;
           raw_event_id: string | null;
           created_at: string;
         };

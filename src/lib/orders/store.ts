@@ -452,6 +452,7 @@ export async function markOrderPaid(
   reference: string,
   eventId: string,
   expectedAmountMinor?: number,
+  payerNetwork?: string | null,
 ) {
   if (isSupabaseAdminConfigured()) {
     const admin = createServiceClient();
@@ -467,6 +468,9 @@ export async function markOrderPaid(
       payment.amount_minor !== expectedAmountMinor
     ) {
       return null;
+    }
+    if (payerNetwork) {
+      await admin.from("payments").update({ payer_network: payerNetwork }).eq("id", payment.id);
     }
     if (payment.status !== "paid") {
       await admin

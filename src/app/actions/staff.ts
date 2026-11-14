@@ -43,6 +43,7 @@ export async function updateStaffRoleAction(
     .eq("id", userId);
   if (error) return { error: error.message };
 
+  revalidatePath("/admin/settings/control");
   revalidatePath("/admin/super");
   revalidatePath("/admin");
   return { ok: true as const, message: "Role saved." };

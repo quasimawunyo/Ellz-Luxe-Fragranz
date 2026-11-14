@@ -6,6 +6,7 @@ import {
   isMoolreConfigured,
   moolreAmountMatches,
   moolrePaymentSucceeded,
+  normalizePayerNetwork,
   verifyMoolreCallbackSecret,
 } from "@/lib/payments/moolre";
 
@@ -19,6 +20,7 @@ type MoolreCallback = {
     transactionid?: string | null;
     amount?: string;
     accountnumber?: string;
+    payernetwork?: string;
   };
 };
 
@@ -58,6 +60,7 @@ export async function POST(request: Request) {
       data.externalref,
       String(data.transactionid ?? data.externalref),
       expected,
+      normalizePayerNetwork(data.payernetwork),
     );
   }
 

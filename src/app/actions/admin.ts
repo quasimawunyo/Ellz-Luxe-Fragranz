@@ -130,7 +130,10 @@ export async function saveProductAction(_prev: { error?: string; ok?: boolean; m
 
   const priceMinor = minorFromCedisInput(formData.get("priceCedis"));
   const compareAtMinor = minorFromCedisInput(formData.get("compareAtCedis"));
+  const costRaw = String(formData.get("costCedis") ?? "").trim();
+  const costMinor = minorFromCedisInput(costRaw);
   if (priceMinor === null) return { error: "Enter a price in Ghana cedis (for example 280.00)." };
+  if (costRaw && costMinor === null) return { error: "Enter the cost in Ghana cedis, or leave it empty." };
   const trackStock = formData.get("trackStock") === "on";
   const quantityRaw = String(formData.get("stockQuantity") ?? "").trim();
   const desiredQuantity = Number(quantityRaw === "" ? "0" : quantityRaw);
@@ -160,6 +163,7 @@ export async function saveProductAction(_prev: { error?: string; ok?: boolean; m
     size_ml: variantParsed.data.sizeMl ?? null,
     price_minor: variantParsed.data.priceMinor,
     compare_at_minor: variantParsed.data.compareAtMinor ?? null,
+    cost_price_minor: costRaw ? costMinor : null,
     low_stock_threshold: lowStockThreshold,
   });
   if (variantError) return { error: variantError.message };

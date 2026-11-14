@@ -22,10 +22,13 @@ export type OrderListQuery = {
   to?: string;
   tests?: string;
   view?: string;
+  fee?: string;
+  attention?: string;
+  review?: string;
 };
 
 export function isDefaultOrderQueue(query: OrderListQuery) {
-  return !query.view && !query.q && !query.payment && !query.fulfilment && !query.method && !query.from && !query.to && query.tests !== "1";
+  return !query.view && !query.q && !query.payment && !query.fulfilment && !query.method && !query.from && !query.to && query.tests !== "1" && !query.fee && !query.attention && !query.review;
 }
 
 function accraDay(iso: string) {
@@ -52,6 +55,12 @@ export function filterOrders(orders: StoreOrder[], query: OrderListQuery) {
       if (query.fulfilment && order.fulfillmentStatus !== (query.fulfilment as FulfillmentStatus)) return false;
       if (query.method === "pickup" && !isPickupOrder(order.deliveryMethod)) return false;
       if (query.method === "delivery" && isPickupOrder(order.deliveryMethod)) return false;
+      if (query.fee === "missing") {
+        const open = ["new", "packed", "out_for_delivery", "ready_for_pickup"].includes(order.fulfillmentStatus);
+        if (!open || order.shippingMinor !== 0 || isPickupOrder(order.deliveryMethod)) return false;
+      }
+      if (query.attention === "1" && (!order.needsAttention || order.fulfillmentStatus === "cancelled")) return false;
+      if (query.review === "1" && !order.awaitingReview) return false;
       if (needle) {
         const phone = order.phone.replace(/\D/g, "");
         const matches =
@@ -67,6 +76,16 @@ export function filterOrders(orders: StoreOrder[], query: OrderListQuery) {
       return true;
     })
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+}
+
+export function orderListHeading(query: OrderListQuery) {
+  if (query.fee === "missing") return "Waiting for a delivery fee";
+  if (query.attention === "1") return "Needs attention";
+  if (query.review === "1") return "Review";
+  if (query.payment === "paid" && query.fulfilment === "new") return "Waiting to be packed";
+  if (query.fulfilment === "out_for_delivery") return "Out for delivery";
+  if (isDefaultOrderQueue(query)) return "Orders to do";
+  return "Orders";
 }
 
 export function ordersToCsv(orders: StoreOrder[]) {

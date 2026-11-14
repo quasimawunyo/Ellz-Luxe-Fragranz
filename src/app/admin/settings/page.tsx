@@ -1,53 +1,28 @@
+import Link from "next/link";
 import { getStoreSettings } from "@/lib/catalog/queries";
 import { saveSettingsAction } from "@/app/actions/admin";
 import { ActionForm } from "@/components/forms/form-status";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/input";
-import { getLaunchStatus } from "@/lib/launch/status";
+import { requireAdmin } from "@/lib/auth/require-admin";
+import { isSuperAdminRole } from "@/lib/auth/roles";
 
 export const metadata = { title: "Settings · Admin" };
 
 export default async function AdminSettingsPage() {
-  const settings = await getStoreSettings();
-  const launch = getLaunchStatus();
+  const [settings, auth] = await Promise.all([getStoreSettings(), requireAdmin()]);
   return (
     <div className="max-w-2xl">
       <h1 className="text-2xl font-semibold">Store settings</h1>
       <p className="mt-2 text-sm text-taupe">Contact, delivery fees, and story copy shown on the shop.</p>
-      <section className="mt-8 border border-espresso/10 bg-white p-5 text-sm">
-        <h2 className="text-lg font-semibold">Checkout</h2>
-        <ul className="mt-4 space-y-2">
-          <li>Catalog saves: {launch.canSaveCatalog ? "Ready" : "Needs service role key"}</li>
-          <li>Checkout: {launch.checkout}</li>
-          <li>Moolre: {launch.moolre ? "Ready" : "Not set"}</li>
-          <li>Paystack: {launch.paystack ? "Ready" : "Not set"}</li>
-          <li>Order email ping: {launch.orderEmail ? "Ready — annex and customer" : "Add RESEND_API_KEY in Vercel"}</li>
-          <li>Order WhatsApp ping: {launch.orderWhatsAppApi ? "Ready" : "Customer WhatsApp opens"}</li>
-          <li>Order phone ping: {launch.orderPush ? "Ready" : "Not set"}</li>
-        </ul>
-        <p className="mt-4 text-taupe">
-          Leaked password protection is an Auth dashboard switch. Open{" "}
-          <a
-            href="https://supabase.com/dashboard/project/rarcmcpiaykuzdfpbwlh/auth/providers"
-            className="underline underline-offset-4"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Email sign-in
-          </a>
-          , turn on Prevent use of leaked passwords, and save. It needs the Pro plan.
+      {isSuperAdminRole(auth.role) ? (
+        <p className="mt-4 text-sm">
+          <Link href="/admin/settings/control" className="text-leaf underline underline-offset-4">
+            Control
+          </Link>
+          <span className="text-taupe"> — staff roles, keys, the callback URL, and the data source.</span>
         </p>
-        {launch.orderPushUrl ? (
-          <p className="mt-4">
-            Open this on your phone once, then allow notifications:{" "}
-            <a href={launch.orderPushUrl} className="break-all underline underline-offset-4" target="_blank" rel="noreferrer">
-              {launch.orderPushUrl}
-            </a>
-          </p>
-        ) : null}
-        <p className="mt-4 text-taupe">Moolre callback</p>
-        <p className="mt-1 break-all">{launch.moolreWebhook}</p>
-      </section>
+      ) : null}
       <ActionForm action={saveSettingsAction} className="mt-8 space-y-4">
         <div>
           <Label htmlFor="announcement">Announcement</Label>

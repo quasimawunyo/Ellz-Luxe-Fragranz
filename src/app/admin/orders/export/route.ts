@@ -14,6 +14,9 @@ export async function GET(request: Request) {
     to: url.searchParams.get("to") ?? undefined,
     tests: url.searchParams.get("tests") ?? undefined,
     view: url.searchParams.get("view") ?? undefined,
+    fee: url.searchParams.get("fee") ?? undefined,
+    attention: url.searchParams.get("attention") ?? undefined,
+    review: url.searchParams.get("review") ?? undefined,
   };
   const csv = ordersToCsv(filterOrders(await listOrders(), query));
   return new Response(csv, {

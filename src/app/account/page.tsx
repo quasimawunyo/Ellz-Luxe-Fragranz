@@ -56,8 +56,8 @@ export default async function AccountPage() {
       ) : null}
       {auth.role === "super_admin" ? (
         <p className="mt-2 text-sm">
-          <Link href="/admin/super" className="text-taupe hover:text-espresso">
-            Super admin
+          <Link href="/admin/settings/control" className="text-taupe hover:text-espresso">
+            Control
           </Link>
         </p>
       ) : null}
