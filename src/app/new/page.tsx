@@ -3,7 +3,7 @@ import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { ProductGrid } from "@/components/product/product-card";
 import { EmptyState } from "@/components/ui/states";
 import { getPublishedProducts } from "@/lib/catalog/queries";
-import { isNewProduct } from "@/lib/catalog/helpers";
+import { homepageNewArrivals } from "@/lib/catalog/helpers";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
@@ -13,7 +13,7 @@ export const metadata = pageMetadata({
 });
 
 export default async function NewArrivalsPage() {
-  const products = (await getPublishedProducts()).filter((product) => isNewProduct(product));
+  const products = homepageNewArrivals(await getPublishedProducts());
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10">

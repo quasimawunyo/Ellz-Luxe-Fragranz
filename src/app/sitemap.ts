@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { HOUSE_BRANDS } from "@/lib/catalog/brands";
-import { isDiscounted } from "@/lib/catalog/helpers";
+import { isDiscounted, stockedCollections } from "@/lib/catalog/helpers";
 import { getCollections, getPublishedProducts } from "@/lib/catalog/queries";
 import { env } from "@/lib/env";
 
@@ -10,7 +10,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     getCollections(),
   ]);
   const onSale = products.some(isDiscounted);
-  const stockedCollectionIds = new Set(products.flatMap((product) => product.collectionIds));
+  const stocked = stockedCollections(collections, products);
   const staticPaths = [
     "",
     "/shop",
@@ -37,9 +37,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${env.siteUrl}/product/${product.slug}`,
       changeFrequency: "weekly" as const,
     })),
-    ...collections
-      .filter((collection) => stockedCollectionIds.has(collection.id))
-      .map((collection) => ({
+    ...stocked.map((collection) => ({
       url: `${env.siteUrl}/collections/${collection.slug}`,
       changeFrequency: "weekly" as const,
     })),

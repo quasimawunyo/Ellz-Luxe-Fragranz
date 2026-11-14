@@ -7,7 +7,8 @@ import { HomeHero } from "@/components/home/home-hero";
 import { NewsletterBand } from "@/components/home/newsletter-band";
 import { ProductCard, ProductGrid } from "@/components/product/product-card";
 import { buttonVariants } from "@/components/ui/button";
-import { getCollectionProducts, getCollections, getDiscountedProducts, getFeaturedProducts, getNewArrivals, getStoreSettings } from "@/lib/catalog/queries";
+import { stockedCollections } from "@/lib/catalog/helpers";
+import { getCollections, getDiscountedProducts, getFeaturedProducts, getNewArrivals, getPublishedProducts, getStoreSettings } from "@/lib/catalog/queries";
 import { env } from "@/lib/env";
 import { pageMetadata } from "@/lib/seo";
 import { ghanaWaDigits } from "@/lib/whatsapp";
@@ -19,19 +20,18 @@ export const metadata = pageMetadata({
 });
 
 export default async function HomePage() {
-  const [featured, discounted, arrivals, collections, settings, gifts, nonce] = await Promise.all([
+  const [featured, discounted, arrivals, collections, settings, published, nonce] = await Promise.all([
     getFeaturedProducts(),
     getDiscountedProducts(),
     getNewArrivals(),
     getCollections(),
     getStoreSettings(),
-    getCollectionProducts("gift-and-discovery-sets"),
+    getPublishedProducts(),
     headers().then((value) => value.get("x-nonce") ?? undefined),
   ]);
   const categoryOrder = ["col-women", "col-men", "col-unisex", "col-gifts"];
-  const shopBy = categoryOrder
-    .flatMap((id) => collections.filter((collection) => collection.id === id))
-    .filter((collection) => collection.slug !== "gift-and-discovery-sets" || gifts.products.length > 0);
+  const stockedIds = new Set(stockedCollections(collections, published).map((collection) => collection.id));
+  const shopBy = categoryOrder.flatMap((id) => collections.filter((collection) => collection.id === id && stockedIds.has(collection.id)));
   const telephone = ghanaWaDigits(settings.contactPhone);
   const localBusiness = {
     "@context": "https://schema.org",

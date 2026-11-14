@@ -414,7 +414,7 @@ export const DEMO_FAQS: FaqItem[] = [
     id: "faq-select",
     question: "How should I choose a fragrance?",
     answer:
-      "Read the notes on each bottle. Collections group citrus, floral, woody, and oud. WhatsApp 0593634512 if you want help choosing a bottle.",
+      "Shop the collections for citrus, floral, woody, and oud. WhatsApp 0593634512 if you want help choosing a bottle.",
     requiresOwnerReview: false,
   },
   {

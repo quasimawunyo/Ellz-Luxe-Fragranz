@@ -42,7 +42,16 @@ export default async function CartPage() {
               <li key={line.variantId} className="flex gap-4 border-b border-espresso/10 pb-6">
                 <div className="relative size-28 shrink-0 overflow-hidden bg-espresso/5">
                   {line.imageUrl ? (
-                    <Image src={line.imageUrl} alt={line.imageAlt || line.productName} fill sizes="112px" className="object-cover" />
+                    <Image
+                      src={line.imageUrl}
+                      alt={line.imageAlt || line.productName}
+                      fill
+                      sizes="112px"
+                      preload
+                      loading="eager"
+                      fetchPriority="high"
+                      className="object-cover"
+                    />
                   ) : null}
                 </div>
                 <div className="flex min-w-0 flex-1 flex-col">

@@ -5,7 +5,7 @@ import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { ProductGallery } from "@/components/product/gallery";
 import { ProductGrid } from "@/components/product/product-card";
 import { PurchaseForm } from "@/components/product/purchase-form";
-import { bottleSizeLabel, primaryImage, publicDescription, sellingVariant } from "@/lib/catalog/helpers";
+import { bottleSizeLabel, primaryImage, shelfDescription, sellingVariant } from "@/lib/catalog/helpers";
 import { getProductBySlug, getRelated, getStoreSettings } from "@/lib/catalog/queries";
 import { pageMetadata } from "@/lib/seo";
 
@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const product = await getProductBySlug(slug);
   if (!product) return { title: "Product" };
-  const description = publicDescription(product.description).slice(0, 160);
+  const description = shelfDescription(product).slice(0, 160);
   const image = primaryImage(product);
   return pageMetadata({
     title: product.name,
@@ -33,7 +33,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     headers().then((value) => value.get("x-nonce") ?? undefined),
   ]);
   const variant = sellingVariant(product);
-  const description = publicDescription(product.description);
+  const description = shelfDescription(product);
   const size = bottleSizeLabel(variant);
   const jsonLd = {
     "@context": "https://schema.org",

@@ -56,8 +56,20 @@ export function isNewProduct(product: Product, now = Date.now()) {
 
 export function homepageNewArrivals(products: Product[], now = Date.now()) {
   return products
-    .filter((product) => product.status === "published" && isNewProduct(product, now) && !product.featured)
+    .filter((product) => product.status === "published" && isNewProduct(product, now))
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+}
+
+export function stockedCollections<T extends { id: string }>(
+  collections: T[],
+  products: Pick<Product, "collectionIds" | "status">[],
+) {
+  const stocked = new Set(
+    products
+      .filter((product) => product.status === "published")
+      .flatMap((product) => product.collectionIds),
+  );
+  return collections.filter((collection) => stocked.has(collection.id));
 }
 
 export function publicDescription(description: string) {
@@ -65,6 +77,24 @@ export function publicDescription(description: string) {
     .replace(/\s*Photographed from the house bottle(?: and matching spray)?\./gi, "")
     .replace(/\s{2,}/g, " ")
     .trim();
+}
+
+export function shelfDescription(product: Product) {
+  const text = publicDescription(product.description);
+  if (/\d+\s*ml\b/i.test(text) || text.includes(". ") || /notes/i.test(text)) return text;
+  const sizes = [
+    ...new Set(
+      product.variants
+        .map((variant) => variant.sizeMl)
+        .filter((size): size is number => typeof size === "number" && size > 0),
+    ),
+  ].sort((a, b) => a - b);
+  if (!sizes.length) return text;
+  const concentration = product.concentration?.trim();
+  const hasConcentration = concentration ? text.toLowerCase().includes(concentration.toLowerCase()) : true;
+  const concentrationBit = !hasConcentration && concentration ? ` ${concentration.toLowerCase()}` : "";
+  const sizeBit = sizes.map((size) => `${size} ml`).join(" and ");
+  return `${text.replace(/\.\s*$/, "")}${concentrationBit}, ${sizeBit}.`;
 }
 
 export function bottleSizeLabel(variant: { sizeMl?: number | null; label?: string } | null | undefined) {

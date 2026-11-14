@@ -1,9 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState } from "react";
 import { addToCartAction } from "@/app/actions/cart";
+import { AddToCartButton } from "@/components/product/add-to-cart-button";
 import { QuantitySelector } from "@/components/product/quantity-selector";
-import { Button } from "@/components/ui/button";
 import { Price } from "@/components/ui/price";
 import { LikeButton } from "@/components/product/like-button";
 import { WaitlistButton } from "@/components/product/waitlist-button";
@@ -41,13 +42,16 @@ export function PurchaseForm({
         {soldOut ? (
           <WaitlistButton productId={productId} />
         ) : (
-          <Button type="submit" variant="shop" className="w-full sm:w-auto">
-            Add to cart
-          </Button>
+          <AddToCartButton className="w-full sm:w-auto" />
         )}
         <LikeButton productId={productId} name={productName} />
       </div>
       {soldOut ? <p className="text-sm text-taupe">Out of stock. Join the restock list to be notified.</p> : null}
+      {state?.ok ? (
+        <p role="status" className="text-sm text-leaf">
+          Added to cart. <Link href="/cart" className="underline">View cart</Link>
+        </p>
+      ) : null}
       {state?.error ? (
         <p role="alert" className="text-sm text-red-800">
           {state.error}

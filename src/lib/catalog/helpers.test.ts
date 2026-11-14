@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { discountedVariantOffers, filterProducts, homepageNewArrivals, isDiscounted, isNewProduct, publicDescription } from "@/lib/catalog/helpers";
+import { discountedVariantOffers, filterProducts, homepageNewArrivals, isDiscounted, isNewProduct, publicDescription, shelfDescription, stockedCollections } from "@/lib/catalog/helpers";
 import { DEMO_PRODUCTS } from "@/lib/catalog/seed";
 
 describe("catalog filters", () => {
@@ -29,14 +29,26 @@ describe("catalog filters", () => {
     expect(result.every((product) => product.newArrival || isNewProduct(product))).toBe(true);
   });
 
-  it("hides the photography note and keeps featured bottles out of the new-arrivals rail", () => {
+  it("hides the photography note and lists featured bottles with the other new arrivals", () => {
     expect(publicDescription("Lattafa Yara eau de parfum. Photographed from the house bottle.")).toBe(
       "Lattafa Yara eau de parfum.",
     );
-    const featuredNew = { ...DEMO_PRODUCTS[0], featured: true, newArrival: true };
-    const quietNew = { ...DEMO_PRODUCTS[1], featured: false, newArrival: true };
-    const arrivals = homepageNewArrivals([featuredNew, quietNew]);
-    expect(arrivals.map((product) => product.id)).toEqual([quietNew.id]);
+    const featuredNew = { ...DEMO_PRODUCTS[0], featured: true, newArrival: true, createdAt: "2026-03-02T00:00:00.000Z" };
+    const quietNew = { ...DEMO_PRODUCTS[1], featured: false, newArrival: true, createdAt: "2026-03-01T00:00:00.000Z" };
+    const arrivals = homepageNewArrivals([quietNew, featuredNew]);
+    expect(arrivals.map((product) => product.id)).toEqual([featuredNew.id, quietNew.id]);
+  });
+
+  it("hides empty collections and fills a bare description from the real sizes", () => {
+    const products = DEMO_PRODUCTS.filter((product) => product.status === "published");
+    const visible = stockedCollections(
+      [{ id: "col-gifts", slug: "gift-and-discovery-sets" }, { id: products[0].collectionIds[0], slug: "stocked" }],
+      products,
+    );
+    expect(visible.map((collection) => collection.id)).toEqual([products[0].collectionIds[0]]);
+    const island = products.find((product) => product.slug === "island-sun");
+    expect(island).toBeTruthy();
+    expect(shelfDescription(island!)).toBe("Khadlaj Island Sun eau de parfum, 50 ml and 100 ml.");
   });
 
   it("treats a higher compare-at price as a discount", () => {

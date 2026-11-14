@@ -1,14 +1,13 @@
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { ProductGrid } from "@/components/product/product-card";
-import { EmptyState } from "@/components/ui/states";
 import { getCollectionProducts } from "@/lib/catalog/queries";
 import { pageMetadata } from "@/lib/seo";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const { collection } = await getCollectionProducts(slug);
-  if (!collection) return { title: "Collection" };
+  const { collection, products } = await getCollectionProducts(slug);
+  if (!collection || products.length === 0) return { title: "Collection" };
   return pageMetadata({
     title: collection.name,
     description: collection.description,
@@ -20,7 +19,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function CollectionPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const { collection, products } = await getCollectionProducts(slug);
-  if (!collection) notFound();
+  if (!collection || products.length === 0) notFound();
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10">
@@ -34,14 +33,10 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
       <h1 className="mt-6 font-serif text-4xl">{collection.name}</h1>
       <p className="mt-3 max-w-2xl text-taupe">{collection.description}</p>
       <div className="mt-12">
-        {products.length ? (
-          <ProductGrid
-            products={products}
-            className="grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-6 lg:grid-cols-4 lg:gap-y-12"
-          />
-        ) : (
-          <EmptyState title="Nothing in this collection yet" />
-        )}
+        <ProductGrid
+          products={products}
+          className="grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-6 lg:grid-cols-4 lg:gap-y-12"
+        />
       </div>
     </div>
   );
