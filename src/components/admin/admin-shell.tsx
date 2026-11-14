@@ -21,6 +21,7 @@ import {
   X,
 } from "lucide-react";
 import { signOutAction } from "@/app/actions/auth";
+import { BrandLogo } from "@/components/brand/logo";
 import { cn } from "@/lib/utils";
 
 type Item = { href: string; label: string; icon: typeof Home; exact?: boolean; match?: (pathname: string) => boolean };
@@ -108,6 +109,15 @@ function NavLinks({ pathname, onNavigate }: { pathname: string; onNavigate?: () 
   );
 }
 
+function DeskMark() {
+  return (
+    <div className="px-5 py-5">
+      <BrandLogo href={false} label="EllzLuxe Fragranz" size={240} className="w-36" />
+      <p className="mt-2 text-[11px] uppercase tracking-[0.16em] text-ivory/55">Shop desk</p>
+    </div>
+  );
+}
+
 function Person({ name, email }: { name: string; email: string | null }) {
   return (
     <div className="border-t border-white/10 p-4">
@@ -144,13 +154,7 @@ export function AdminShell({ name, email, children }: { name: string; email: str
     <div className="min-h-full bg-ivory">
       <div className="flex min-h-screen">
         <aside className="sticky top-0 hidden h-screen w-72 shrink-0 flex-col bg-espresso text-ivory print:hidden lg:flex">
-          <div className="flex items-center gap-3 px-5 py-5">
-            <span className="grid size-10 place-items-center rounded-xl bg-ivory text-sm font-semibold text-espresso">EL</span>
-            <span>
-              <span className="block font-serif text-lg leading-tight">EllzLuxe Fragranz</span>
-              <span className="mt-0.5 block text-[11px] uppercase tracking-[0.16em] text-ivory/55">Shop desk</span>
-            </span>
-          </div>
+          <DeskMark />
           <NavLinks pathname={pathname} />
           <Person name={name} email={email} />
         </aside>
@@ -178,13 +182,7 @@ export function AdminShell({ name, email, children }: { name: string; email: str
                 <X className="size-5" />
               </button>
             </div>
-            <div className="flex items-center gap-3 px-5 pb-2">
-              <span className="grid size-10 place-items-center rounded-xl bg-ivory text-sm font-semibold text-espresso">EL</span>
-              <span>
-                <span className="block font-serif text-lg leading-tight">EllzLuxe Fragranz</span>
-                <span className="block text-[11px] uppercase tracking-[0.16em] text-ivory/55">Shop desk</span>
-              </span>
-            </div>
+            <DeskMark />
             <NavLinks pathname={pathname} onNavigate={() => setOpen(false)} />
             <Person name={name} email={email} />
           </div>
