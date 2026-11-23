@@ -9,4 +9,8 @@ describe("content security policy", () => {
     expect(scriptSrc).toContain("'strict-dynamic'");
     expect(scriptSrc).not.toMatch(/script-src[^;]*'unsafe-inline'/);
   });
+
+  it("allows bottle photos from the image host", () => {
+    expect(contentSecurityPolicy("test-nonce")).toContain("https://images.ellzluxefragranz.com");
+  });
 });

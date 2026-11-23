@@ -7,6 +7,7 @@ import { createServiceClient } from "@/lib/supabase/admin";
 import { isSupabaseAdminConfigured } from "@/lib/env";
 import { productInputSchema, variantInputSchema } from "@/lib/validations";
 import { minorFromCedisInput } from "@/lib/money";
+import { isR2Configured, uploadProductPhoto } from "@/lib/storage/r2";
 import type { DeliveryMethod } from "@/lib/catalog/types";
 
 function needDb() {
@@ -194,14 +195,26 @@ export async function saveProductAction(_prev: { error?: string; ok?: boolean; m
     if (file.size > 2_000_000) return { error: "Product photos must be 2 MB or smaller." };
     const allowed = ["image/jpeg", "image/png", "image/webp"];
     if (!allowed.includes(file.type)) return { error: "Use a JPEG, PNG, or WebP photo." };
-    const extension = file.type === "image/png" ? "png" : file.type === "image/webp" ? "webp" : "jpg";
-    const path = `${id}/${crypto.randomUUID()}.${extension}`;
-    const upload = await admin.storage.from("product-images").upload(path, file, {
-      contentType: file.type,
-      upsert: true,
-    });
-    if (upload.error) return { error: upload.error.message };
-    imageUrl = admin.storage.from("product-images").getPublicUrl(path).data.publicUrl;
+    if (isR2Configured()) {
+      try {
+        imageUrl = await uploadProductPhoto({
+          productId: id,
+          body: new Uint8Array(await file.arrayBuffer()),
+          contentType: file.type,
+        });
+      } catch (error) {
+        return { error: error instanceof Error ? error.message : "The photo could not be saved." };
+      }
+    } else {
+      const extension = file.type === "image/png" ? "png" : file.type === "image/webp" ? "webp" : "jpg";
+      const path = `${id}/${crypto.randomUUID()}.${extension}`;
+      const upload = await admin.storage.from("product-images").upload(path, file, {
+        contentType: file.type,
+        upsert: true,
+      });
+      if (upload.error) return { error: upload.error.message };
+      imageUrl = admin.storage.from("product-images").getPublicUrl(path).data.publicUrl;
+    }
   }
   if (imageUrl) {
     const imageId = String(formData.get("imageId") || `img-${id}`);

@@ -37,6 +37,16 @@ const nextConfig: NextConfig = {
         hostname: "*.supabase.co",
         pathname: "/storage/v1/object/public/**",
       },
+      {
+        protocol: "https",
+        hostname: "images.ellzluxefragranz.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "pub-dd93ddd68bcb4bd799ec28fdf7a2f9ed.r2.dev",
+        pathname: "/**",
+      },
     ],
   },
   async headers() {

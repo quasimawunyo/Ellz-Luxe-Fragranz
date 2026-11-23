@@ -4,7 +4,7 @@ export function contentSecurityPolicy(nonce: string) {
     "default-src 'self'",
     `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${isDev ? " 'unsafe-eval'" : ""} https://js.paystack.co https://vercel.live`,
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' blob: data: https://*.supabase.co",
+    "img-src 'self' blob: data: https://*.supabase.co https://images.ellzluxefragranz.com https://pub-dd93ddd68bcb4bd799ec28fdf7a2f9ed.r2.dev",
     "font-src 'self' data:",
     "media-src 'self' blob:",
     "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.paystack.co https://api.moolre.com https://vitals.vercel-insights.com https://vercel.live",
