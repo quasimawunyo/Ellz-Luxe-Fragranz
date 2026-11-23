@@ -2,12 +2,56 @@
 
 import Image from "next/image";
 import { Download, MessageCircle, ShoppingBag, Smartphone } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { installSurface, readInstallBrowser, type InstallSurface } from "@/lib/install-mode";
 
 const NEVER_KEY = "elf-install-never";
 const LATER_KEY = "elf-install-later";
-const SHOW_AFTER_MS = 5_000;
+const VIEWS_KEY = "elf-install-views";
+const STARTED_KEY = "elf-install-started";
+const MIN_VIEWS = 3;
+const MIN_ON_SITE_MS = 30_000;
+const LATER_MS = 14 * 24 * 60 * 60 * 1000;
+const BLOCKED = ["/cart", "/checkout", "/login", "/signup", "/track"];
+
+function readStore(key: string) {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function writeStore(key: string, value: string) {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    /* private browsing */
+  }
+}
+
+let countedPath: string | null = null;
+
+function blockedPath(pathname: string) {
+  if (pathname.startsWith("/admin")) return true;
+  return BLOCKED.some((path) => pathname === path || pathname.startsWith(`${path}/`));
+}
+
+function noteVisit(pathname: string) {
+  if (countedPath === pathname) return Number(readStore(VIEWS_KEY) ?? "0") || 0;
+  countedPath = pathname;
+  const next = (Number(readStore(VIEWS_KEY) ?? "0") || 0) + 1;
+  writeStore(VIEWS_KEY, String(next));
+  if (!readStore(STARTED_KEY)) writeStore(STARTED_KEY, String(Date.now()));
+  return next;
+}
+
+function dismissedNow() {
+  if (readStore(NEVER_KEY) === "1") return true;
+  const later = Number(readStore(LATER_KEY));
+  return Number.isFinite(later) && later > 0 && Date.now() - later < LATER_MS;
+}
 
 type BeforeInstallPromptEvent = Event & {
   prompt: () => Promise<void>;
@@ -29,10 +73,12 @@ function isStandalone() {
   return window.matchMedia("(display-mode: standalone)").matches || nav.standalone === true;
 }
 
-export function InstallPrompt() {
+export function InstallPrompt({ cartCount = 0 }: { cartCount?: number }) {
+  const pathname = usePathname();
   const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null);
   const [browser, setBrowser] = useState({ ios: false, desktopSafari: false, inApp: false });
   const [waited, setWaited] = useState(false);
+  const [views, setViews] = useState(0);
   const [dismissed, setDismissed] = useState(true);
   const [note, setNote] = useState<string | null>(null);
   const [host, setHost] = useState("");
@@ -57,32 +103,37 @@ export function InstallPrompt() {
     window.addEventListener("beforeinstallprompt", onPrompt);
     window.addEventListener("elf-install-ready", onReady);
 
-    const hidden = localStorage.getItem(NEVER_KEY) === "1" || sessionStorage.getItem(LATER_KEY) === "1";
-    setBrowser(
-      readInstallBrowser({
-        userAgent: navigator.userAgent,
-        platform: navigator.platform,
-        maxTouchPoints: navigator.maxTouchPoints,
-      }),
-    );
-    setHost(window.location.host);
-    setDismissed(hidden);
-    const id = window.setTimeout(() => setWaited(true), SHOW_AFTER_MS);
+    const started = Number(readStore(STARTED_KEY) ?? Date.now());
+    const remaining = Math.max(0, MIN_ON_SITE_MS - (Date.now() - started));
+    const visitId = window.setTimeout(() => {
+      setViews(noteVisit(pathname));
+      setBrowser(
+        readInstallBrowser({
+          userAgent: navigator.userAgent,
+          platform: navigator.platform,
+          maxTouchPoints: navigator.maxTouchPoints,
+        }),
+      );
+      setHost(window.location.host);
+      setDismissed(dismissedNow());
+    }, 0);
+    const waitId = window.setTimeout(() => setWaited(true), remaining);
 
     return () => {
-      window.clearTimeout(id);
+      window.clearTimeout(visitId);
+      window.clearTimeout(waitId);
       window.removeEventListener("beforeinstallprompt", onPrompt);
       window.removeEventListener("elf-install-ready", onReady);
     };
-  }, []);
+  }, [pathname]);
 
   function later() {
-    sessionStorage.setItem(LATER_KEY, "1");
+    writeStore(LATER_KEY, String(Date.now()));
     setDismissed(true);
   }
 
   function never() {
-    localStorage.setItem(NEVER_KEY, "1");
+    writeStore(NEVER_KEY, "1");
     setDismissed(true);
   }
 
@@ -100,7 +151,7 @@ export function InstallPrompt() {
         const choice = await deferred.userChoice;
         (window as InstallWindow).__elfInstallPrompt = undefined;
         setDeferred(null);
-        if (choice.outcome === "accepted") localStorage.setItem(NEVER_KEY, "1");
+        if (choice.outcome === "accepted") writeStore(NEVER_KEY, "1");
         setDismissed(true);
       } catch {
         setNote("Use the install icon in the address bar.");
@@ -122,7 +173,13 @@ export function InstallPrompt() {
     }
   }
 
-  const open = waited && !dismissed && surface !== "none";
+  const open =
+    waited &&
+    views >= MIN_VIEWS &&
+    !dismissed &&
+    cartCount < 1 &&
+    !blockedPath(pathname) &&
+    surface !== "none";
   if (!open) return null;
 
   const instructions =
@@ -169,7 +226,7 @@ export function InstallPrompt() {
           <button
             type="button"
             onClick={install}
-            className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-leaf py-4 text-base font-semibold text-white"
+            className="mt-5 flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl bg-leaf py-4 text-base font-semibold text-white"
           >
             <Download className="size-5" aria-hidden />
             Add to Home Screen
@@ -177,10 +234,10 @@ export function InstallPrompt() {
         ) : null}
         {instructions ? <p className="mt-5 text-center text-sm leading-6 text-espresso">{instructions}</p> : null}
         {note ? <p className="mt-3 text-center text-sm leading-6 text-taupe">{note}</p> : null}
-        <button type="button" onClick={later} className="mt-4 block w-full text-center text-sm text-taupe">
+        <button type="button" onClick={later} className="mt-4 flex min-h-11 w-full items-center justify-center text-sm text-taupe">
           Maybe Later
         </button>
-        <button type="button" onClick={never} className="mt-3 block w-full text-center text-xs text-taupe/80">
+        <button type="button" onClick={never} className="mt-1 flex min-h-11 w-full items-center justify-center text-sm text-taupe/80">
           Don&apos;t show again
         </button>
       </div>

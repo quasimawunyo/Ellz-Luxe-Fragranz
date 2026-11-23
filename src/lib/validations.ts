@@ -1,16 +1,19 @@
 import { z } from "zod";
 import { GHANA_REGIONS } from "@/lib/ghana";
 
-export const quantitySchema = z.coerce.number().int().min(1).max(6);
+const quantityLow = "Quantity must be at least 1.";
+const quantityHigh = "You can order up to 6 of this item.";
+
+export const quantitySchema = z.coerce.number().int(quantityLow).min(1, quantityLow).max(6, quantityHigh);
 
 export const addToCartSchema = z.object({
-  variantId: z.string().min(1),
+  variantId: z.string().min(1, "Choose a size."),
   quantity: quantitySchema,
 });
 
 export const updateCartItemSchema = z.object({
-  variantId: z.string().min(1),
-  quantity: z.coerce.number().int().min(0).max(6),
+  variantId: z.string().min(1, "Choose a size."),
+  quantity: z.coerce.number().int(quantityLow).min(0, quantityLow).max(6, quantityHigh),
 });
 
 export const newsletterSchema = z.object({
@@ -18,44 +21,48 @@ export const newsletterSchema = z.object({
 });
 
 export const waitlistSchema = z.object({
-  productId: z.string().min(1),
+  productId: z.string().min(1, "Choose a perfume."),
   email: z.email("Enter a valid email address."),
 });
 
 export const contactSchema = z.object({
-  name: z.string().trim().min(2).max(120),
-  email: z.email(),
-  message: z.string().trim().min(10).max(4000),
+  name: z.string().trim().min(2, "Enter your name.").max(120, "Name must be 120 characters or fewer."),
+  email: z.email("Enter a valid email address."),
+  message: z
+    .string()
+    .trim()
+    .min(10, "Enter a message of at least 10 characters.")
+    .max(4000, "Message must be 4,000 characters or fewer."),
 });
 
 export const checkoutSchema = z.object({
-  fullName: z.string().trim().min(2).max(120),
-  email: z.email(),
+  fullName: z.string().trim().min(2, "Enter your name.").max(120, "Name must be 120 characters or fewer."),
+  email: z.email("Enter a valid email address."),
   phone: z
     .string()
     .trim()
-    .min(9)
-    .max(20)
+    .min(9, "Enter a valid phone number.")
+    .max(20, "Enter a valid phone number.")
     .regex(/^[0-9+\s-]+$/, "Enter a valid phone number."),
-  region: z.enum(GHANA_REGIONS),
-  locality: z.string().trim().min(2).max(120),
-  addressLine: z.string().trim().min(4).max(200),
-  deliveryMethodId: z.string().min(1),
-  notes: z.string().trim().max(500).optional(),
+  region: z.enum(GHANA_REGIONS, "Choose a region."),
+  locality: z.string().trim().min(2, "Enter your town or area.").max(120, "Town or area must be 120 characters or fewer."),
+  addressLine: z.string().trim().min(4, "Enter your address.").max(200, "Address must be 200 characters or fewer."),
+  deliveryMethodId: z.string().min(1, "Choose a delivery method."),
+  notes: z.string().trim().max(500, "Notes must be 500 characters or fewer.").optional(),
 });
 
 export const signInSchema = z.object({
-  email: z.email(),
-  password: z.string().min(8).max(72),
+  email: z.email("Enter a valid email address."),
+  password: z.string().min(8, "Password must be at least 8 characters.").max(72, "Password must be 72 characters or fewer."),
 });
 
 export const signUpSchema = signInSchema.extend({
-  fullName: z.string().trim().min(2).max(120),
+  fullName: z.string().trim().min(2, "Enter your name.").max(120, "Name must be 120 characters or fewer."),
 });
 
 export const profileSchema = z.object({
-  fullName: z.string().trim().min(2).max(120),
-  phone: z.string().trim().max(20).optional(),
+  fullName: z.string().trim().min(2, "Enter your name.").max(120, "Name must be 120 characters or fewer."),
+  phone: z.string().trim().max(20, "Enter a valid phone number.").optional(),
 });
 
 export const productInputSchema = z.object({

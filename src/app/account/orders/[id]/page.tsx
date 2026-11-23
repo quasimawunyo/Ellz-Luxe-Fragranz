@@ -4,6 +4,17 @@ import { canViewOrder } from "@/lib/auth/roles";
 import { getOrderById } from "@/lib/orders/store";
 import { orderShippingIsQuoted, publicVariantLabel } from "@/lib/catalog/helpers";
 import { Price } from "@/components/ui/price";
+import { pageMetadata } from "@/lib/seo";
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  return pageMetadata({
+    title: "Order",
+    description: "One order from your EllzLuxe Fragranz account, with the bottles, delivery, and payment status.",
+    path: `/account/orders/${id}`,
+    index: false,
+  });
+}
 
 export default async function AccountOrderPage({ params }: { params: Promise<{ id: string }> }) {
   const auth = await getAuthContext();

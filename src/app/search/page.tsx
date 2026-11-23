@@ -6,10 +6,11 @@ import { Button } from "@/components/ui/button";
 import { queryShop } from "@/lib/catalog/queries";
 import Link from "next/link";
 import { pageMetadata } from "@/lib/seo";
+import { PAGE_DESCRIPTIONS } from "@/lib/seo-copy";
 
 export const metadata = pageMetadata({
   title: "Search",
-  description: "Search the EllzLuxe Fragranz catalog.",
+  description: PAGE_DESCRIPTIONS.search,
   path: "/search",
 });
 

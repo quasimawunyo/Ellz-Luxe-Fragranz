@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { trackOrderAction, type TrackLookupState } from "@/app/actions/orders";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
@@ -8,12 +8,18 @@ import { Input, Label } from "@/components/ui/input";
 export function TrackLookup() {
   const [state, action, pending] = useActionState(trackOrderAction, null as TrackLookupState);
   const [query, setQuery] = useState("");
+  const queryRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (state?.focus === "query") queryRef.current?.focus();
+  }, [state]);
 
   return (
     <form action={action} className="mt-8 space-y-4">
       <div>
         <Label htmlFor="query">Phone or order number</Label>
         <Input
+          ref={queryRef}
           id="query"
           name="query"
           value={query}
@@ -21,16 +27,18 @@ export function TrackLookup() {
           placeholder="020… or ELF-…"
           required
           autoComplete="off"
+          aria-invalid={state?.focus === "query" || undefined}
+          aria-describedby={state?.error ? "query-error" : undefined}
         />
+        {state?.error ? (
+          <p id="query-error" role="alert" className="mt-2 text-sm text-red-800">
+            {state.error}
+          </p>
+        ) : null}
       </div>
       <Button type="submit" variant="shop" disabled={pending} className="rounded-xl px-5">
         {pending ? "Looking…" : "See my order"}
       </Button>
-      {state?.error ? (
-        <p role="alert" className="text-sm text-red-800">
-          {state.error}
-        </p>
-      ) : null}
       {state?.orders?.length ? (
         <ul className="space-y-4 pt-2">
           {state.orders.map((order) => (

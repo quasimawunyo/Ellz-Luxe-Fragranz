@@ -5,11 +5,12 @@ import { buttonVariants } from "@/components/ui/button";
 import { getStoreSettings } from "@/lib/catalog/queries";
 import { cn } from "@/lib/utils";
 import { pageMetadata } from "@/lib/seo";
+import { PAGE_DESCRIPTIONS } from "@/lib/seo-copy";
 import { whatsappHref } from "@/lib/whatsapp";
 
 export const metadata = pageMetadata({
   title: "About",
-  description: "EllzLuxe Fragranz is a perfume boutique at Ells Luxe Annex, Pantang.",
+  description: PAGE_DESCRIPTIONS.about,
   path: "/about",
 });
 

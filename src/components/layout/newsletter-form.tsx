@@ -1,12 +1,19 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef } from "react";
 import { subscribeNewsletter } from "@/app/actions/commerce";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 export function NewsletterForm({ compact = false }: { compact?: boolean }) {
   const [state, formAction] = useActionState(subscribeNewsletter, null);
+  const wideRef = useRef<HTMLInputElement>(null);
+  const compactRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!state?.fields?.email && state?.focus !== "email") return;
+    (compact ? compactRef : wideRef).current?.focus();
+  }, [compact, state]);
 
   if (!compact) {
     return (
@@ -16,6 +23,7 @@ export function NewsletterForm({ compact = false }: { compact?: boolean }) {
         </label>
         <div className="flex items-center rounded-full border border-[#7dcea0]/35 bg-[#0a2e26] p-1 pl-4">
           <input
+            ref={wideRef}
             id="newsletter-email"
             name="email"
             type="email"
@@ -51,6 +59,7 @@ export function NewsletterForm({ compact = false }: { compact?: boolean }) {
           Email address
         </label>
         <Input
+          ref={compactRef}
           id="newsletter-email-compact"
           name="email"
           type="email"

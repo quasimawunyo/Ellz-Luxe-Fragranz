@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -139,10 +139,11 @@ function Person({ name, email }: { name: string; email: string | null }) {
 export function AdminShell({ name, email, children }: { name: string; email: string | null; children: React.ReactNode }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-
-  useEffect(() => {
+  const [seenPath, setSeenPath] = useState(pathname);
+  if (pathname !== seenPath) {
+    setSeenPath(pathname);
     setOpen(false);
-  }, [pathname]);
+  }
 
   return (
     <div className="min-h-full bg-ivory">

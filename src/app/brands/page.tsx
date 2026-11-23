@@ -3,10 +3,11 @@ import Link from "next/link";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { HOUSE_BRANDS } from "@/lib/catalog/brands";
 import { pageMetadata } from "@/lib/seo";
+import { PAGE_DESCRIPTIONS } from "@/lib/seo-copy";
 
 export const metadata = pageMetadata({
   title: "Brands",
-  description: "Fragrance houses stocked at EllzLuxe Fragranz.",
+  description: PAGE_DESCRIPTIONS.brands,
   path: "/brands",
 });
 

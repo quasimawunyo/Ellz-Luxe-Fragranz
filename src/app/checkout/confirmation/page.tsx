@@ -14,8 +14,15 @@ import { OpenAnnexWhatsApp } from "@/components/checkout/open-annex-whatsapp";
 import { resumePaymentAction } from "@/app/actions/orders";
 import { ActionForm } from "@/components/forms/form-status";
 import { Button } from "@/components/ui/button";
+import { pageMetadata } from "@/lib/seo";
+import { PAGE_DESCRIPTIONS } from "@/lib/seo-copy";
 
-export const metadata = { title: "Order confirmation" };
+export const metadata = pageMetadata({
+  title: "Order confirmation",
+  description: PAGE_DESCRIPTIONS.confirmation,
+  path: "/checkout/confirmation",
+  index: false,
+});
 
 export default async function ConfirmationPage({
   searchParams,

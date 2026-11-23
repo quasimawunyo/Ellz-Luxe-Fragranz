@@ -5,10 +5,11 @@ import { ShopFilters } from "@/components/shop/filters";
 import { EmptyState } from "@/components/ui/states";
 import { queryShop } from "@/lib/catalog/queries";
 import { pageMetadata } from "@/lib/seo";
+import { PAGE_DESCRIPTIONS } from "@/lib/seo-copy";
 
 export const metadata = pageMetadata({
   title: "Shop",
-  description: "Browse the bottles in stock at EllzLuxe Fragranz, Ells Luxe Annex, Pantang.",
+  description: PAGE_DESCRIPTIONS.shop,
   path: "/shop",
 });
 

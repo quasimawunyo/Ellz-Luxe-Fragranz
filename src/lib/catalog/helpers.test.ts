@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { discountedVariantOffers, filterProducts, homepageNewArrivals, isDiscounted, isNewProduct, publicDescription, shelfDescription, stockedCollections } from "@/lib/catalog/helpers";
+import { discountedVariantOffers, filterProducts, homepageNewArrivals, isDiscounted, isNewProduct, publicDescription, shelfDescription, stockedCategories, stockedCollections } from "@/lib/catalog/helpers";
 import { DEMO_PRODUCTS } from "@/lib/catalog/seed";
 
 describe("catalog filters", () => {
@@ -46,9 +46,19 @@ describe("catalog filters", () => {
       products,
     );
     expect(visible.map((collection) => collection.id)).toEqual([products[0].collectionIds[0]]);
+    const categories = stockedCategories(
+      [
+        { id: "cat-discovery", slug: "discovery-and-gifts" },
+        { id: products[0].categoryId, slug: "eau-de-parfum" },
+      ],
+      products,
+    );
+    expect(categories.map((category) => category.id)).toEqual([products[0].categoryId]);
     const island = products.find((product) => product.slug === "island-sun");
     expect(island).toBeTruthy();
-    expect(shelfDescription(island!)).toBe("Khadlaj Island Sun eau de parfum, 50 ml and 100 ml.");
+    expect(shelfDescription(island!)).toBe("Khadlaj Island Sun eau de parfum, 50 ml.");
+    const aventos = products.find((product) => product.slug === "aventos-blue-for-him");
+    expect(shelfDescription(aventos!)).toBe("Fragrance World Aventos Blue For Him eau de parfum, 50 ml.");
   });
 
   it("treats a higher compare-at price as a discount", () => {

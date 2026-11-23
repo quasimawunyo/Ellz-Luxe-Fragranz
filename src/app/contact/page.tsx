@@ -1,14 +1,15 @@
 import { submitContact } from "@/app/actions/commerce";
-import { ActionForm } from "@/components/forms/form-status";
+import { ActionForm, FieldError } from "@/components/forms/form-status";
 import { StoreContact, StoreSocials, WhatsAppCta } from "@/components/layout/store-details";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/input";
 import { getStoreSettings } from "@/lib/catalog/queries";
 import { pageMetadata } from "@/lib/seo";
+import { PAGE_DESCRIPTIONS } from "@/lib/seo-copy";
 
 export const metadata = pageMetadata({
   title: "Contact",
-  description: "Call, WhatsApp, or visit EllzLuxe Fragranz at Ells Luxe Annex, Pantang.",
+  description: PAGE_DESCRIPTIONS.contact,
   path: "/contact",
 });
 
@@ -30,14 +31,17 @@ export default async function ContactPage() {
         <div>
           <Label htmlFor="name">Name</Label>
           <Input id="name" name="name" required autoComplete="name" />
+          <FieldError name="name" />
         </div>
         <div>
           <Label htmlFor="email">Email</Label>
           <Input id="email" name="email" type="email" required autoComplete="email" />
+          <FieldError name="email" />
         </div>
         <div>
           <Label htmlFor="message">Message</Label>
           <Textarea id="message" name="message" required />
+          <FieldError name="message" />
         </div>
         <Button type="submit" variant="shop" className="w-full px-8 sm:w-auto">
           Send

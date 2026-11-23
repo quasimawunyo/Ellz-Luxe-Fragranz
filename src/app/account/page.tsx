@@ -1,12 +1,14 @@
 import { redirect } from "next/navigation";
 import { signOutAction, updateProfileAction } from "@/app/actions/auth";
 import { getAuthContext } from "@/lib/auth/session";
-import { ActionForm } from "@/components/forms/form-status";
+import { ActionForm, FieldError } from "@/components/forms/form-status";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
 import Link from "next/link";
+import { pageMetadata } from "@/lib/seo";
+import { PAGE_DESCRIPTIONS } from "@/lib/seo-copy";
 
-export const metadata = { title: "Account" };
+export const metadata = pageMetadata({ title: "Account", description: PAGE_DESCRIPTIONS.account, path: "/account", index: false });
 
 export default async function AccountPage() {
   const auth = await getAuthContext();
@@ -25,10 +27,12 @@ export default async function AccountPage() {
           <div>
             <Label htmlFor="fullName">Full name</Label>
             <Input id="fullName" name="fullName" defaultValue={name ?? ""} required className="rounded-xl px-4" />
+            <FieldError name="fullName" />
           </div>
           <div>
             <Label htmlFor="phone">Phone</Label>
             <Input id="phone" name="phone" defaultValue={auth.profile?.phone ?? ""} className="rounded-xl px-4" />
+            <FieldError name="phone" />
           </div>
           <Button type="submit" variant="shop" className="px-8">
             Save

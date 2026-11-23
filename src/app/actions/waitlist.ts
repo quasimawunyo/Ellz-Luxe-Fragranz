@@ -1,6 +1,7 @@
 "use server";
 
 import { headers } from "next/headers";
+import { validationState, type FormState } from "@/lib/forms/errors";
 import { waitlistSchema } from "@/lib/validations";
 import { rateLimit } from "@/lib/rate-limit";
 import { isSupabaseAdminConfigured } from "@/lib/env";
@@ -8,16 +9,13 @@ import { createServiceClient } from "@/lib/supabase/admin";
 import { getProductById } from "@/lib/catalog/queries";
 import { productHasSellableVariant } from "@/lib/stock";
 
-export async function joinWaitlistAction(
-  _prev: { error?: string; ok?: boolean; message?: string } | null,
-  formData: FormData,
-) {
+export async function joinWaitlistAction(_prev: FormState | null, formData: FormData): Promise<FormState> {
   const parsed = waitlistSchema.safeParse({
     productId: formData.get("productId"),
     email: formData.get("email"),
   });
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? "Enter a valid email." };
+    return validationState(parsed.error);
   }
 
   const product = await getProductById(parsed.data.productId);

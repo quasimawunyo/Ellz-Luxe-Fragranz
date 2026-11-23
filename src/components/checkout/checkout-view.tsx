@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { placeOrderAction } from "@/app/actions/checkout";
-import { ActionForm } from "@/components/forms/form-status";
+import { ActionForm, FieldError } from "@/components/forms/form-status";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/input";
 import { Price } from "@/components/ui/price";
@@ -49,14 +49,17 @@ export function CheckoutView({
         <div>
           <Label htmlFor="fullName">Full name</Label>
           <Input id="fullName" name="fullName" required autoComplete="name" defaultValue={fullName} />
+          <FieldError name="fullName" />
         </div>
         <div>
           <Label htmlFor="email">Email</Label>
           <Input id="email" name="email" type="email" required autoComplete="email" defaultValue={email} />
+          <FieldError name="email" />
         </div>
         <div>
           <Label htmlFor="phone">Phone</Label>
           <Input id="phone" name="phone" type="tel" required autoComplete="tel" inputMode="tel" placeholder="024 000 0000" />
+          <FieldError name="phone" />
         </div>
         <div>
           <Label htmlFor="region">Region</Label>
@@ -81,14 +84,17 @@ export function CheckoutView({
               </option>
             ))}
           </select>
+          <FieldError name="region" />
         </div>
         <div>
           <Label htmlFor="locality">Locality / city</Label>
           <Input id="locality" name="locality" required autoComplete="address-level2" placeholder="East Legon" />
+          <FieldError name="locality" />
         </div>
         <div>
           <Label htmlFor="addressLine">Street address</Label>
           <Input id="addressLine" name="addressLine" required autoComplete="street-address" />
+          <FieldError name="addressLine" />
         </div>
         <fieldset className="space-y-2">
           <legend className="mb-1 text-sm font-medium">Delivery</legend>
@@ -117,10 +123,12 @@ export function CheckoutView({
               </span>
             </label>
           ))}
+          <FieldError name="deliveryMethodId" />
         </fieldset>
         <div>
           <Label htmlFor="notes">Order notes (optional)</Label>
           <Textarea id="notes" name="notes" />
+          <FieldError name="notes" />
         </div>
         <Button type="submit" variant="shop" className="w-full px-8 sm:w-auto">
           {payLabel}

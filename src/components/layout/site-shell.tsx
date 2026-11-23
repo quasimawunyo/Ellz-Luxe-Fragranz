@@ -83,9 +83,11 @@ async function ChromeExtras() {
   );
 }
 
-export function SiteShell({ children }: { children: React.ReactNode }) {
+export async function SiteShell({ children }: { children: React.ReactNode }) {
+  const cart = await resolveCart().catch(() => null);
   return (
     <SiteChrome
+      cartCount={cart?.itemCount ?? 0}
       header={
         <Suspense fallback={<Header cartCount={0} signedIn={false} ready={false} />}>
           <ChromeHeader />

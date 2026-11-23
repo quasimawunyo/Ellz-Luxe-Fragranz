@@ -3,6 +3,7 @@
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { validationState, type FormState } from "@/lib/forms/errors";
 import { contactSchema, newsletterSchema } from "@/lib/validations";
 import { rateLimit } from "@/lib/rate-limit";
 import { isSupabaseAdminConfigured } from "@/lib/env";
@@ -12,11 +13,9 @@ function clientKey(prefix: string, extra: string) {
   return `${prefix}:${extra}`;
 }
 
-export async function subscribeNewsletter(_prev: { error?: string; ok?: boolean; message?: string } | null, formData: FormData) {
+export async function subscribeNewsletter(_prev: FormState | null, formData: FormData): Promise<FormState> {
   const parsed = newsletterSchema.safeParse({ email: formData.get("email") });
-  if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? "Enter a valid email." };
-  }
+  if (!parsed.success) return validationState(parsed.error);
   const hdrs = await headers();
   const ip = hdrs.get("x-forwarded-for") ?? "anon";
   if (!rateLimit(clientKey("news", ip), 5, 60_000).ok) {
@@ -34,15 +33,13 @@ export async function subscribeNewsletter(_prev: { error?: string; ok?: boolean;
   return { ok: true as const, message: "Thank you. You are on the list." };
 }
 
-export async function submitContact(_prev: { error?: string; ok?: boolean; message?: string } | null, formData: FormData) {
+export async function submitContact(_prev: FormState | null, formData: FormData): Promise<FormState> {
   const parsed = contactSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
     message: formData.get("message"),
   });
-  if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? "Please complete the form." };
-  }
+  if (!parsed.success) return validationState(parsed.error);
   const hdrs = await headers();
   const ip = hdrs.get("x-forwarded-for") ?? "anon";
   if (!rateLimit(clientKey("contact", ip), 4, 60_000).ok) {

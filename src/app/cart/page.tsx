@@ -2,18 +2,19 @@ import Image from "next/image";
 import Link from "next/link";
 import { updateCartAction } from "@/app/actions/cart";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
-import { ActionForm } from "@/components/forms/form-status";
+import { ActionForm, FieldError } from "@/components/forms/form-status";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Price } from "@/components/ui/price";
 import { EmptyState } from "@/components/ui/states";
 import { resolveCart } from "@/lib/cart/store";
 import { isSizeOnlyLabel, publicVariantLabel } from "@/lib/catalog/helpers";
 import { pageMetadata } from "@/lib/seo";
+import { PAGE_DESCRIPTIONS } from "@/lib/seo-copy";
 import { cn } from "@/lib/utils";
 
 export const metadata = pageMetadata({
   title: "Cart",
-  description: "Review the bottles in your EllzLuxe Fragranz cart.",
+  description: PAGE_DESCRIPTIONS.cart,
   path: "/cart",
   index: false,
 });
@@ -67,7 +68,7 @@ export default async function CartPage() {
                     currencyCode={cart.currencyCode}
                     className="mt-1 text-xl font-semibold text-leaf"
                   />
-                  <ActionForm action={updateCartAction} className="mt-3 flex items-center gap-3">
+                  <ActionForm action={updateCartAction} className="mt-3 flex flex-wrap items-center gap-3">
                     <input type="hidden" name="variantId" value={line.variantId} />
                     <label className="sr-only" htmlFor={`qty-${line.variantId}`}>
                       Quantity
@@ -84,6 +85,7 @@ export default async function CartPage() {
                     <Button type="submit" variant="outline">
                       Update
                     </Button>
+                    <FieldError name="quantity" className="basis-full" />
                   </ActionForm>
                   {line.available != null && line.quantity > line.available ? (
                     <p className="mt-2 text-sm text-red-800">

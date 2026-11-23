@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { TrackLookup } from "@/components/orders/track-lookup";
 import { pageMetadata } from "@/lib/seo";
+import { PAGE_DESCRIPTIONS } from "@/lib/seo-copy";
 
 export const metadata = pageMetadata({
   title: "Track order",
-  description: "Look up an EllzLuxe Fragranz order with the phone from checkout or the order number.",
+  description: PAGE_DESCRIPTIONS.track,
   path: "/track",
 });
 

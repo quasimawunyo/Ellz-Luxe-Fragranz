@@ -1,7 +1,7 @@
 import { cache } from "react";
 import { unstable_cache } from "next/cache";
 import { DEMO_CATEGORIES, DEMO_COLLECTIONS, DEMO_FAQS, DEMO_PRODUCTS, DEMO_SETTINGS } from "@/lib/catalog/seed";
-import { filterProducts, homepageNewArrivals, isDiscounted, paginate, relatedProducts, stockedCollections } from "@/lib/catalog/helpers";
+import { filterProducts, homepageNewArrivals, isDiscounted, paginate, relatedProducts, stockedCategories, stockedCollections } from "@/lib/catalog/helpers";
 import type { CatalogProduct, StoreSettings } from "@/lib/catalog/types";
 import { readJsonCookie, writeJsonCookie } from "@/lib/cookies/json-cookie";
 import { isSupabaseConfigured } from "@/lib/env";
@@ -320,7 +320,7 @@ export async function queryShop(raw: Record<string, string | string[] | undefine
   return {
     filters,
     collections: stockedCollections(collections, products),
-    categories,
+    categories: stockedCategories(categories, products),
     ...paginate(filtered, filters.page),
   };
 }

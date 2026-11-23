@@ -50,7 +50,7 @@ export function assertAvailableQuantity(
 ) {
   if (!variant.trackStock) {
     if (!Number.isInteger(quantity) || quantity < 1 || quantity > CART_QUANTITY_CAP) {
-      throw new Error(`Quantity cannot exceed ${CART_QUANTITY_CAP}.`);
+      throw new Error(`You can order up to ${CART_QUANTITY_CAP} of this item.`);
     }
     return;
   }
@@ -61,7 +61,7 @@ export function assertAvailableQuantity(
     throw new Error(stockLimitMessage(productName, variant.label, variant.stockQuantity));
   }
   if (quantity > CART_QUANTITY_CAP) {
-    throw new Error(`Quantity cannot exceed ${CART_QUANTITY_CAP}.`);
+    throw new Error(`You can order up to ${CART_QUANTITY_CAP} of this item.`);
   }
 }
 

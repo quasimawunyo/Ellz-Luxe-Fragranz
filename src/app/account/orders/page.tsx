@@ -6,8 +6,10 @@ import { buttonVariants } from "@/components/ui/button";
 import { Price } from "@/components/ui/price";
 import { EmptyState } from "@/components/ui/states";
 import { cn } from "@/lib/utils";
+import { pageMetadata } from "@/lib/seo";
+import { PAGE_DESCRIPTIONS } from "@/lib/seo-copy";
 
-export const metadata = { title: "Orders" };
+export const metadata = pageMetadata({ title: "Orders", description: PAGE_DESCRIPTIONS.orders, path: "/account/orders", index: false });
 
 export default async function AccountOrdersPage() {
   const auth = await getAuthContext();

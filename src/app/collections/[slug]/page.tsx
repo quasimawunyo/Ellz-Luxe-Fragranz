@@ -3,6 +3,7 @@ import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { ProductGrid } from "@/components/product/product-card";
 import { getCollectionProducts } from "@/lib/catalog/queries";
 import { pageMetadata } from "@/lib/seo";
+import { collectionMetaDescription } from "@/lib/seo-copy";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -10,7 +11,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!collection || products.length === 0) return { title: "Collection" };
   return pageMetadata({
     title: collection.name,
-    description: collection.description,
+    description: collectionMetaDescription(collection.description),
     path: `/collections/${collection.slug}`,
     image: collection.imageUrl,
   });

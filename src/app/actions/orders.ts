@@ -22,7 +22,7 @@ export type TrackedOrder = {
   items: { name: string; size: string; quantity: number }[];
 };
 
-export type TrackLookupState = { error?: string; orders?: TrackedOrder[] } | null;
+export type TrackLookupState = { error?: string; focus?: string; orders?: TrackedOrder[] } | null;
 
 function publicTrack(order: StoreOrder): TrackedOrder {
   return {
@@ -43,17 +43,17 @@ export async function trackOrderAction(_prev: TrackLookupState, formData: FormDa
   const query = String(formData.get("query") ?? "").trim();
   const kind = classifyTrackQuery(query);
   if (kind === "invalid") {
-    return { error: "Enter the phone number from checkout, or an order number such as ELF-…." };
+    return { error: "Enter the phone number from checkout, or an order number such as ELF-….", focus: "query" };
   }
 
   const hdrs = await headers();
   const ip = hdrs.get("x-forwarded-for") ?? "anon";
   if (!rateLimit(`track:${ip}`, 8, 60_000).ok) {
-    return { error: "Please wait before trying again." };
+    return { error: "Please wait before trying again.", focus: "query" };
   }
 
   const matches = kind === "phone" ? await listOrdersByPhone(query) : await getOrderByNumber(query).then((order) => (order && !order.isTest ? [order] : []));
-  if (!matches.length) return { error: LOOKUP_MISS };
+  if (!matches.length) return { error: LOOKUP_MISS, focus: "query" };
   return { orders: matches.map(publicTrack) };
 }
 

@@ -1,10 +1,17 @@
 import Link from "next/link";
 import { recoverPasswordAction } from "@/app/actions/auth";
-import { ActionForm } from "@/components/forms/form-status";
+import { ActionForm, FieldError } from "@/components/forms/form-status";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
+import { pageMetadata } from "@/lib/seo";
+import { PAGE_DESCRIPTIONS } from "@/lib/seo-copy";
 
-export const metadata = { title: "Password recovery" };
+export const metadata = pageMetadata({
+  title: "Password recovery",
+  description: PAGE_DESCRIPTIONS.forgot,
+  path: "/forgot-password",
+  index: false,
+});
 
 export default function ForgotPasswordPage() {
   return (
@@ -16,6 +23,7 @@ export default function ForgotPasswordPage() {
           <div>
             <Label htmlFor="email">Email</Label>
             <Input id="email" name="email" type="email" required autoComplete="email" className="rounded-xl px-4" />
+            <FieldError name="email" />
           </div>
           <Button type="submit" variant="shop" className="w-full">
             Send reset link

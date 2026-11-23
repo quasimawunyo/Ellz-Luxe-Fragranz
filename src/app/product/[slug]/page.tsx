@@ -6,6 +6,7 @@ import { ProductGallery } from "@/components/product/gallery";
 import { ProductGrid } from "@/components/product/product-card";
 import { PurchaseForm } from "@/components/product/purchase-form";
 import { bottleSizeLabel, primaryImage, shelfDescription, sellingVariant } from "@/lib/catalog/helpers";
+import { productMetaDescription } from "@/lib/seo-copy";
 import { isSoldOut } from "@/lib/stock";
 import { getProductBySlug, getRelated, getStoreSettings } from "@/lib/catalog/queries";
 import { pageMetadata } from "@/lib/seo";
@@ -14,7 +15,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const product = await getProductBySlug(slug);
   if (!product) return { title: "Product" };
-  const description = shelfDescription(product).slice(0, 160);
+  const description = productMetaDescription(product);
   const image = primaryImage(product);
   return pageMetadata({
     title: product.name,

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef } from "react";
 import { addToCartAction } from "@/app/actions/cart";
 import { AddToCartButton } from "@/components/product/add-to-cart-button";
 import { QuantitySelector } from "@/components/product/quantity-selector";
@@ -23,12 +23,19 @@ export function PurchaseForm({
   currencyCode?: string;
 }) {
   const [state, formAction] = useActionState(addToCartAction, null);
+  const formRef = useRef<HTMLFormElement>(null);
   const selected = variants[0];
   const soldOut = !selected || isSoldOut(selected);
   const max = selected ? maxPurchasable(selected) : 1;
+  const quantityError = state?.fields?.quantity;
+
+  useEffect(() => {
+    if (!quantityError) return;
+    formRef.current?.querySelector<HTMLElement>('[name="quantity"]')?.focus();
+  }, [quantityError]);
 
   return (
-    <form action={formAction} className="mt-8 space-y-5">
+    <form ref={formRef} action={formAction} className="mt-8 space-y-5">
       {selected ? (
         <Price
           className="text-3xl font-semibold tracking-tight text-leaf sm:text-4xl"
@@ -42,6 +49,11 @@ export function PurchaseForm({
         <p className={soldOut ? "text-sm text-red-800" : "text-sm text-leaf"}>{storefrontStockLabel(selected)}</p>
       ) : null}
       {selected ? <QuantitySelector max={soldOut ? 1 : max} disabled={soldOut} /> : null}
+      {quantityError ? (
+        <p id="quantity-error" role="alert" tabIndex={-1} className="text-sm text-red-800">
+          {quantityError}
+        </p>
+      ) : null}
       <div className="flex flex-wrap items-center gap-3">
         {soldOut ? <WaitlistButton productId={productId} /> : <AddToCartButton className="w-full sm:w-auto" />}
         <LikeButton productId={productId} name={productName} />
@@ -52,7 +64,7 @@ export function PurchaseForm({
           Added to cart. <Link href="/cart" className="underline">View cart</Link>
         </p>
       ) : null}
-      {state?.error ? (
+      {state?.error && !quantityError ? (
         <p role="alert" className="text-sm text-red-800">
           {state.error}
         </p>

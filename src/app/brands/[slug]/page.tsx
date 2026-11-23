@@ -6,6 +6,7 @@ import { EmptyState } from "@/components/ui/states";
 import { HOUSE_BRANDS, getHouseBrand } from "@/lib/catalog/brands";
 import { getPublishedProducts } from "@/lib/catalog/queries";
 import { pageMetadata } from "@/lib/seo";
+import { brandMetaDescription } from "@/lib/seo-copy";
 
 export function generateStaticParams() {
   return HOUSE_BRANDS.map((brand) => ({ slug: brand.slug }));
@@ -17,7 +18,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!brand) return { title: "Brand" };
   return pageMetadata({
     title: brand.name,
-    description: `Shop ${brand.name} bottles at EllzLuxe Fragranz.`,
+    description: brandMetaDescription(brand.name),
     path: `/brands/${brand.slug}`,
     image: brand.logo,
   });

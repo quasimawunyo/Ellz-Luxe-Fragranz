@@ -1,9 +1,10 @@
 import { getFaqs } from "@/lib/catalog/queries";
 import { pageMetadata } from "@/lib/seo";
+import { PAGE_DESCRIPTIONS } from "@/lib/seo-copy";
 
 export const metadata = pageMetadata({
   title: "FAQ",
-  description: "Payment, delivery, and returns for EllzLuxe Fragranz.",
+  description: PAGE_DESCRIPTIONS.faq,
   path: "/faq",
 });
 

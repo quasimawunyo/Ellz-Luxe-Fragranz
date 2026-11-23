@@ -1,6 +1,7 @@
 "use server";
 
 import { updateTag } from "next/cache";
+import { customerCheckoutError, validationState } from "@/lib/forms/errors";
 import { checkoutSchema } from "@/lib/validations";
 import { createPendingOrder } from "@/lib/orders/store";
 import { getAuthContext } from "@/lib/auth/session";
@@ -18,9 +19,7 @@ export async function placeOrderAction(_prev: { error?: string } | null, formDat
     deliveryMethodId: formData.get("deliveryMethodId"),
     notes: formData.get("notes") || undefined,
   });
-  if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? "Please check your details." };
-  }
+  if (!parsed.success) return validationState(parsed.error);
 
   try {
     const auth = await getAuthContext();
@@ -36,7 +35,7 @@ export async function placeOrderAction(_prev: { error?: string } | null, formDat
     if (typeof error === "object" && error && "digest" in error) {
       throw error;
     }
-    return { error: error instanceof Error ? error.message : "Checkout failed." };
+    return { error: error instanceof Error ? customerCheckoutError(error.message) : "We could not place the order. Please try again." };
   }
   return { error: "Checkout failed." };
 }

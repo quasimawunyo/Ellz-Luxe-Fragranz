@@ -73,6 +73,18 @@ export function stockedCollections<T extends { id: string }>(
   return collections.filter((collection) => stocked.has(collection.id));
 }
 
+export function stockedCategories<T extends { id: string }>(
+  categories: T[],
+  products: Pick<Product, "categoryId" | "status">[],
+) {
+  const stocked = new Set(
+    products
+      .filter((product) => product.status === "published" && product.categoryId)
+      .map((product) => product.categoryId),
+  );
+  return categories.filter((category) => stocked.has(category.id));
+}
+
 export function publicDescription(description: string) {
   return description
     .replace(/\s*Photographed from the house bottle(?: and matching spray)?\./gi, "")
@@ -83,13 +95,8 @@ export function publicDescription(description: string) {
 export function shelfDescription(product: Product) {
   const text = publicDescription(product.description);
   if (/\d+\s*ml\b/i.test(text) || text.includes(". ") || /notes/i.test(text)) return text;
-  const sizes = [
-    ...new Set(
-      product.variants
-        .map((variant) => variant.sizeMl)
-        .filter((size): size is number => typeof size === "number" && size > 0),
-    ),
-  ].sort((a, b) => a - b);
+  const offered = sellingVariant(product);
+  const sizes = offered?.sizeMl && offered.sizeMl > 0 ? [offered.sizeMl] : [];
   if (!sizes.length) return text;
   const concentration = product.concentration?.trim();
   const hasConcentration = concentration ? text.toLowerCase().includes(concentration.toLowerCase()) : true;

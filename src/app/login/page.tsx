@@ -1,13 +1,15 @@
 import Link from "next/link";
 import { signInAction } from "@/app/actions/auth";
-import { ActionForm } from "@/components/forms/form-status";
+import { ActionForm, FieldError } from "@/components/forms/form-status";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { isSupabaseConfigured } from "@/lib/env";
 import { safeInternalPath } from "@/lib/security/paths";
+import { pageMetadata } from "@/lib/seo";
+import { PAGE_DESCRIPTIONS } from "@/lib/seo-copy";
 
-export const metadata = { title: "Sign in" };
+export const metadata = pageMetadata({ title: "Sign in", description: PAGE_DESCRIPTIONS.login, path: "/login", index: false });
 
 export default async function LoginPage({
   searchParams,
@@ -28,6 +30,7 @@ export default async function LoginPage({
           <div>
             <Label htmlFor="email">Email</Label>
             <Input id="email" name="email" type="email" required autoComplete="email" className="rounded-xl px-4" />
+            <FieldError name="email" />
           </div>
           <div>
             <Label htmlFor="password">Password</Label>
@@ -39,6 +42,7 @@ export default async function LoginPage({
               autoComplete="current-password"
               className="rounded-xl px-4"
             />
+            <FieldError name="password" />
           </div>
           <Button type="submit" variant="shop" className="w-full">
             Sign in

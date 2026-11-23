@@ -5,13 +5,14 @@ import { buttonVariants } from "@/components/ui/button";
 import { isDiscounted } from "@/lib/catalog/helpers";
 import { getPublishedProducts } from "@/lib/catalog/queries";
 import { pageMetadata } from "@/lib/seo";
+import { PAGE_DESCRIPTIONS } from "@/lib/seo-copy";
 import { cn } from "@/lib/utils";
 
 export async function generateMetadata() {
   const discounted = (await getPublishedProducts()).filter(isDiscounted);
   return pageMetadata({
     title: "Flash sales",
-    description: "Bottles currently reduced at EllzLuxe Fragranz.",
+    description: PAGE_DESCRIPTIONS.sale,
     path: "/sale",
     index: discounted.length > 0,
   });

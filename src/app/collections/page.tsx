@@ -4,10 +4,11 @@ import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { stockedCollections } from "@/lib/catalog/helpers";
 import { getCollections, getPublishedProducts } from "@/lib/catalog/queries";
 import { pageMetadata } from "@/lib/seo";
+import { PAGE_DESCRIPTIONS } from "@/lib/seo-copy";
 
 export const metadata = pageMetadata({
   title: "Collections",
-  description: "Shop women's, men's, and unisex fragrances at EllzLuxe Fragranz.",
+  description: PAGE_DESCRIPTIONS.collections,
   path: "/collections",
 });
 

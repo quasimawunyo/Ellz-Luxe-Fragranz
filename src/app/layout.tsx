@@ -21,7 +21,8 @@ const playfair = Playfair_Display({
   preload: false,
 });
 
-const homeDescription = "Perfume boutique at Ells Luxe Annex, Pantang. Shop Lattafa, Armaf, Fragrance World, Rasasi, and the other houses on the shelf.";
+const homeDescription =
+  "EllzLuxe Fragranz: perfume boutique at Ells Luxe Annex, Pantang. Shop Lattafa, Armaf, Rasasi and more. Free pickup, delivery across Ghana.";
 
 export const metadata: Metadata = {
   description: homeDescription,

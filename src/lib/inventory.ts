@@ -7,10 +7,10 @@ export class InsufficientStockError extends Error {
 
 export function assertPurchasableQuantity(quantity: number, max = 6) {
   if (!Number.isInteger(quantity) || quantity < 1) {
-    throw new Error("Quantity must be a positive integer.");
+    throw new Error("Quantity must be at least 1.");
   }
   if (quantity > max) {
-    throw new Error(`Quantity cannot exceed ${max}.`);
+    throw new Error(`You can order up to ${max} of this item.`);
   }
 }
 

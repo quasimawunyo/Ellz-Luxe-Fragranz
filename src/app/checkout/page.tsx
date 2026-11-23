@@ -8,10 +8,11 @@ import { isMoolreConfigured } from "@/lib/payments/moolre";
 import { isPaystackConfigured } from "@/lib/payments/paystack";
 import Link from "next/link";
 import { pageMetadata } from "@/lib/seo";
+import { PAGE_DESCRIPTIONS } from "@/lib/seo-copy";
 
 export const metadata = pageMetadata({
   title: "Checkout",
-  description: "Place an EllzLuxe Fragranz order and pay by mobile money or card. Pickup is free.",
+  description: PAGE_DESCRIPTIONS.checkout,
   path: "/checkout",
   index: false,
 });

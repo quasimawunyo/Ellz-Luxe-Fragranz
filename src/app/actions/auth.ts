@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { createUserSupabase } from "@/lib/supabase/server";
 import { env, isSupabaseConfigured } from "@/lib/env";
+import { validationState } from "@/lib/forms/errors";
 import { profileSchema, signInSchema, signUpSchema } from "@/lib/validations";
 import { publicAuthError } from "@/lib/auth/errors";
 import { safeInternalPath } from "@/lib/security/paths";
@@ -15,7 +16,7 @@ export async function signInAction(_prev: { error?: string } | null, formData: F
     email: formData.get("email"),
     password: formData.get("password"),
   });
-  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Invalid details." };
+  if (!parsed.success) return validationState(parsed.error);
   const supabase = await createUserSupabase();
   const { error } = await supabase!.auth.signInWithPassword(parsed.data);
   if (error) return { error: publicAuthError(error.message) };
@@ -31,7 +32,7 @@ export async function signUpAction(_prev: { error?: string; ok?: boolean; messag
     password: formData.get("password"),
     fullName: formData.get("fullName"),
   });
-  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Invalid details." };
+  if (!parsed.success) return validationState(parsed.error);
   const supabase = await createUserSupabase();
   const { error } = await supabase!.auth.signUp({
     email: parsed.data.email,
@@ -55,9 +56,10 @@ export async function recoverPasswordAction(_prev: { error?: string; ok?: boolea
   if (!isSupabaseConfigured()) {
     return { error: "Authentication requires Supabase configuration." };
   }
-  const email = String(formData.get("email") ?? "");
+  const parsed = signInSchema.pick({ email: true }).safeParse({ email: formData.get("email") });
+  if (!parsed.success) return validationState(parsed.error);
   const supabase = await createUserSupabase();
-  const { error } = await supabase!.auth.resetPasswordForEmail(email, {
+  const { error } = await supabase!.auth.resetPasswordForEmail(parsed.data.email, {
     redirectTo: `${env.siteUrl}/auth/callback?next=/account`,
   });
   if (error) return { error: publicAuthError(error.message) };
@@ -69,7 +71,7 @@ export async function updateProfileAction(_prev: { error?: string; ok?: boolean;
     fullName: formData.get("fullName"),
     phone: formData.get("phone") || undefined,
   });
-  if (!parsed.success) return { error: parsed.error.issues[0]?.message };
+  if (!parsed.success) return validationState(parsed.error);
   const supabase = await createUserSupabase();
   if (!supabase) return { error: "Authentication requires Supabase configuration." };
   const {
@@ -80,6 +82,6 @@ export async function updateProfileAction(_prev: { error?: string; ok?: boolean;
     .from("profiles")
     .update({ full_name: parsed.data.fullName, phone: parsed.data.phone ?? null })
     .eq("id", user.id);
-  if (error) return { error: error.message };
+  if (error) return { error: "Could not save your profile." };
   return { ok: true as const, message: "Profile updated." };
 }

@@ -1,7 +1,9 @@
 import { SavedShelves } from "@/components/saved/saved-shelves";
 import { getPublishedProducts } from "@/lib/catalog/queries";
+import { pageMetadata } from "@/lib/seo";
+import { PAGE_DESCRIPTIONS } from "@/lib/seo-copy";
 
-export const metadata = { title: "Saved" };
+export const metadata = pageMetadata({ title: "Saved", description: PAGE_DESCRIPTIONS.saved, path: "/saved", index: false });
 
 export default async function SavedPage() {
   const products = await getPublishedProducts();

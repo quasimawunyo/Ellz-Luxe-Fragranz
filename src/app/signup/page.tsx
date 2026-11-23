@@ -1,11 +1,18 @@
 import Link from "next/link";
 import { signUpAction } from "@/app/actions/auth";
-import { ActionForm } from "@/components/forms/form-status";
+import { ActionForm, FieldError } from "@/components/forms/form-status";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
+import { pageMetadata } from "@/lib/seo";
+import { PAGE_DESCRIPTIONS } from "@/lib/seo-copy";
 
-export const metadata = { title: "Create account" };
+export const metadata = pageMetadata({
+  title: "Create account",
+  description: PAGE_DESCRIPTIONS.signup,
+  path: "/signup",
+  index: false,
+});
 
 export default function SignupPage() {
   return (
@@ -17,10 +24,12 @@ export default function SignupPage() {
           <div>
             <Label htmlFor="fullName">Full name</Label>
             <Input id="fullName" name="fullName" required autoComplete="name" className="rounded-xl px-4" />
+            <FieldError name="fullName" />
           </div>
           <div>
             <Label htmlFor="email">Email</Label>
             <Input id="email" name="email" type="email" required autoComplete="email" className="rounded-xl px-4" />
+            <FieldError name="email" />
           </div>
           <div>
             <Label htmlFor="password">Password</Label>
@@ -32,6 +41,7 @@ export default function SignupPage() {
               autoComplete="new-password"
               className="rounded-xl px-4"
             />
+            <FieldError name="password" />
             <p className="mt-2 text-xs text-taupe">At least 8 characters. Avoid a password that has been leaked.</p>
           </div>
           <Button type="submit" variant="shop" className="w-full">

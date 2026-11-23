@@ -5,10 +5,11 @@ import { EmptyState } from "@/components/ui/states";
 import { getPublishedProducts } from "@/lib/catalog/queries";
 import { homepageNewArrivals } from "@/lib/catalog/helpers";
 import { pageMetadata } from "@/lib/seo";
+import { PAGE_DESCRIPTIONS } from "@/lib/seo-copy";
 
 export const metadata = pageMetadata({
   title: "New arrivals",
-  description: "Bottles recently added at EllzLuxe Fragranz.",
+  description: PAGE_DESCRIPTIONS.new,
   path: "/new",
 });
 

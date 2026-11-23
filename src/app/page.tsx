@@ -11,11 +11,12 @@ import { stockedCollections } from "@/lib/catalog/helpers";
 import { getCollections, getDiscountedProducts, getFeaturedProducts, getNewArrivals, getPublishedProducts, getStoreSettings } from "@/lib/catalog/queries";
 import { env } from "@/lib/env";
 import { pageMetadata } from "@/lib/seo";
+import { PAGE_DESCRIPTIONS } from "@/lib/seo-copy";
 import { ghanaWaDigits } from "@/lib/whatsapp";
 import { cn } from "@/lib/utils";
 
 export const metadata = pageMetadata({
-  description: "Perfume boutique at Ells Luxe Annex, Pantang. Shop Lattafa, Armaf, Fragrance World, Rasasi, and the other houses on the shelf.",
+  description: PAGE_DESCRIPTIONS.home,
   path: "/",
 });
 
@@ -57,10 +58,15 @@ export default async function HomePage() {
 
       <section className="bg-white px-4 pb-14 pt-14" aria-label="New arrivals">
         <div className="mx-auto max-w-7xl">
-          <h2 className="font-serif text-4xl md:text-5xl">New arrivals</h2>
+          <div className="flex items-end justify-between gap-4">
+            <h2 className="font-serif text-4xl md:text-5xl">New arrivals</h2>
+            <Link href="/new" className="inline-flex min-h-11 shrink-0 items-center text-sm text-taupe hover:text-espresso">
+              View all
+            </Link>
+          </div>
           {arrivals.length ? (
             <div className="mt-8 flex snap-x snap-mandatory gap-6 overflow-x-auto pb-2">
-              {arrivals.map((product) => (
+              {arrivals.slice(0, 8).map((product) => (
                 <div key={product.id} className="w-64 shrink-0 snap-start sm:w-72">
                   <ProductCard product={product} />
                 </div>

@@ -8,10 +8,12 @@ export function SiteChrome({
   children,
   header,
   extras,
+  cartCount = 0,
 }: {
   children: ReactNode;
   header: ReactNode;
   extras: ReactNode;
+  cartCount?: number;
 }) {
   const pathname = usePathname();
   if (pathname.startsWith("/admin")) {
@@ -31,7 +33,7 @@ export function SiteChrome({
         {children}
       </main>
       {extras}
-      <InstallPrompt />
+      <InstallPrompt cartCount={cartCount} />
     </>
   );
 }
