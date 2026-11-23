@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { CatalogProduct } from "@/lib/catalog/types";
 import { isDiscounted, isNewProduct, lowestPrice, primaryImage, shopVariants } from "@/lib/catalog/helpers";
 import { isSoldOut } from "@/lib/stock";
+import { buttonVariants } from "@/components/ui/button";
 import { Price } from "@/components/ui/price";
 import { formatMoney } from "@/lib/money";
 import { QuickAdd } from "@/components/product/quick-add";
@@ -63,7 +64,7 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
           {soldOut ? (
             <WaitlistButton productId={product.id} wide />
           ) : several ? (
-            <Link href={`/product/${product.slug}`} className="flex min-h-11 items-center justify-center bg-leaf px-4 text-sm text-white">
+            <Link href={`/product/${product.slug}`} className={cn(buttonVariants({ variant: "shop" }), "w-full")}>
               Add to cart
             </Link>
           ) : variant ? (
@@ -92,7 +93,7 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
         {soldOut ? (
           <WaitlistButton productId={product.id} wide />
         ) : several ? (
-          <Link href={`/product/${product.slug}`} className="flex min-h-11 items-center justify-center bg-leaf px-4 text-sm text-white">
+          <Link href={`/product/${product.slug}`} className={cn(buttonVariants({ variant: "shop" }), "w-full")}>
             Add to cart
           </Link>
         ) : variant ? (
