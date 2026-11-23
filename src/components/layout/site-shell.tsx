@@ -9,8 +9,8 @@ import { WhatsAppButton } from "@/components/layout/whatsapp-button";
 import { BrandGrid } from "@/components/brand/brand-grid";
 import { getAuthContext } from "@/lib/auth/session";
 import { resolveCart } from "@/lib/cart/store";
-import { discountedVariantOffers, primaryImage, sellingVariant } from "@/lib/catalog/helpers";
-import { getCollectionProducts, getDiscountedProducts, getStoreSettings } from "@/lib/catalog/queries";
+import { discountedVariantOffers, primaryImage, searchHaystack, sellingVariant } from "@/lib/catalog/helpers";
+import { getCollectionProducts, getDiscountedProducts, getPublishedProducts, getStoreSettings } from "@/lib/catalog/queries";
 
 function salePopupProducts(products: Awaited<ReturnType<typeof getDiscountedProducts>>): SalePopupProduct[] {
   return products.flatMap((product) => {
@@ -40,11 +40,12 @@ function salePopupProducts(products: Awaited<ReturnType<typeof getDiscountedProd
 }
 
 async function ChromeHeader() {
-  const [settings, session, discounted, gifts] = await Promise.all([
+  const [settings, session, discounted, gifts, published] = await Promise.all([
     getStoreSettings(),
     Promise.all([resolveCart(), getAuthContext()]).catch(() => null),
     getDiscountedProducts(),
     getCollectionProducts("gift-and-discovery-sets"),
+    getPublishedProducts(),
   ]);
   const cartCount = session?.[0].itemCount ?? 0;
   const signedIn = Boolean(session?.[1].user);
@@ -59,6 +60,16 @@ async function ChromeHeader() {
         isAdmin={isAdmin}
         showSale={discounted.length > 0}
         showGifts={gifts.products.length > 0}
+        searchHits={published.map((product) => {
+          const image = primaryImage(product);
+          return {
+            slug: product.slug,
+            name: product.name,
+            brand: product.brand,
+            imageUrl: image?.url ?? null,
+            text: searchHaystack(product),
+          };
+        })}
       />
     </>
   );

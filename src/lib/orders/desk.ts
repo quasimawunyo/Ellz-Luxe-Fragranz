@@ -61,10 +61,21 @@ function accraDay(iso: string) {
   }).format(new Date(iso));
 }
 
+export function orderMatchesQuery(order: { orderNumber: string; fullName: string; phone: string }, query: string) {
+  const needle = query.trim().toLowerCase();
+  if (!needle) return true;
+  const needleDigits = query.replace(/\D/g, "");
+  const phone = order.phone.replace(/\D/g, "");
+  return (
+    order.orderNumber.toLowerCase().includes(needle) ||
+    order.fullName.toLowerCase().includes(needle) ||
+    order.phone.toLowerCase().includes(needle) ||
+    (needleDigits.length >= 3 && phone.includes(needleDigits))
+  );
+}
+
 export function filterOrders(orders: StoreOrder[], query: OrderListQuery, shop?: { email: string; phone: string }) {
   const queue = isDefaultOrderQueue(query);
-  const needle = query.q?.trim().toLowerCase() ?? "";
-  const needleDigits = query.q?.replace(/\D/g, "") ?? "";
   const shopContact = shop ?? { email: "", phone: "" };
   return orders
     .filter((order) => {
@@ -84,15 +95,7 @@ export function filterOrders(orders: StoreOrder[], query: OrderListQuery, shop?:
       }
       if (query.attention === "1" && (!order.needsAttention || order.fulfillmentStatus === "cancelled")) return false;
       if (query.review === "1" && !order.awaitingReview) return false;
-      if (needle) {
-        const phone = order.phone.replace(/\D/g, "");
-        const matches =
-          order.orderNumber.toLowerCase().includes(needle) ||
-          order.fullName.toLowerCase().includes(needle) ||
-          order.phone.toLowerCase().includes(needle) ||
-          (needleDigits.length >= 3 && phone.includes(needleDigits));
-        if (!matches) return false;
-      }
+      if (query.q && !orderMatchesQuery(order, query.q)) return false;
       const day = accraDay(order.createdAt);
       if (query.from && day < query.from) return false;
       if (query.to && day > query.to) return false;

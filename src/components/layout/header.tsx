@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
@@ -15,6 +16,14 @@ const NAV = [
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ];
+
+export type HeaderSearchHit = {
+  slug: string;
+  name: string;
+  brand: string;
+  imageUrl: string | null;
+  text: string;
+};
 
 const SHOP = [
   { href: "/shop", label: "All perfumes" },
@@ -35,6 +44,7 @@ export function Header({
   ready = true,
   showSale = false,
   showGifts = false,
+  searchHits = [],
 }: {
   cartCount: number;
   signedIn: boolean;
@@ -42,6 +52,7 @@ export function Header({
   ready?: boolean;
   showSale?: boolean;
   showGifts?: boolean;
+  searchHits?: HeaderSearchHit[];
 }) {
   const shopLinks = SHOP.filter((link) => {
     if (link.href === "/sale") return showSale;
@@ -49,7 +60,10 @@ export function Header({
     return true;
   });
   const [open, setOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [panelTop, setPanelTop] = useState(0);
+  const searchRef = useRef<HTMLInputElement>(null);
   const headerRef = useRef<HTMLElement>(null);
   const router = useRouter();
   const pathname = usePathname();
@@ -57,7 +71,17 @@ export function Header({
   if (pathname !== seenPath) {
     setSeenPath(pathname);
     setOpen(false);
+    setSearchOpen(false);
+    setSearchQuery("");
   }
+
+  const needle = searchQuery.trim().toLowerCase();
+  const matches = needle ? searchHits.filter((hit) => hit.text.includes(needle)).slice(0, 8) : [];
+
+  useEffect(() => {
+    if (!searchOpen) return;
+    searchRef.current?.focus();
+  }, [searchOpen]);
 
   useEffect(() => {
     if (!open) return;
@@ -106,7 +130,8 @@ export function Header({
               type="button"
               className="grid size-11 shrink-0 place-items-center text-espresso"
               aria-label="Search"
-              onClick={() => router.push("/search")}
+              aria-expanded={searchOpen}
+              onClick={() => setSearchOpen((value) => !value)}
             >
               <Search className="size-[18px]" strokeWidth={1.75} />
             </button>
@@ -136,6 +161,33 @@ export function Header({
             </Link>
           </div>
         </div>
+        {searchOpen ? (
+          <div className="border-t border-espresso/10 bg-white">
+            <form
+              className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3"
+              onSubmit={(event) => {
+                event.preventDefault();
+                setSearchOpen(false);
+                router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
+              }}
+            >
+              <Search className="size-4 text-taupe" />
+              <label className="sr-only" htmlFor="site-search">
+                Search products
+              </label>
+              <input
+                ref={searchRef}
+                id="site-search"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder="Search perfumes"
+                autoComplete="off"
+                className="h-11 flex-1 bg-transparent text-sm outline-none"
+              />
+            </form>
+            {needle ? <SearchMatches matches={matches} query={searchQuery} onPick={() => setSearchOpen(false)} /> : null}
+          </div>
+        ) : null}
       </header>
       {open ? (
         <nav
@@ -147,9 +199,8 @@ export function Header({
             className="flex items-center gap-3 rounded-full border border-espresso/15 bg-white px-5"
             onSubmit={(event) => {
               event.preventDefault();
-              const q = String(new FormData(event.currentTarget).get("q") ?? "");
               setOpen(false);
-              router.push(`/search?q=${encodeURIComponent(q)}`);
+              router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
             }}
           >
             <Search className="size-4 text-taupe" />
@@ -158,11 +209,14 @@ export function Header({
             </label>
             <input
               id="site-search-mobile"
-              name="q"
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
               placeholder="Search perfumes"
+              autoComplete="off"
               className="h-12 flex-1 bg-transparent text-sm outline-none"
             />
           </form>
+          {needle ? <SearchMatches matches={matches} query={searchQuery} onPick={() => setOpen(false)} /> : null}
           <div className="mt-8">
             {NAV.map((item) => (
               <Link
@@ -199,5 +253,39 @@ export function Header({
       ) : null}
       {ready ? <MobileNav cartCount={cartCount} signedIn={signedIn} /> : null}
     </>
+  );
+}
+
+function SearchMatches({
+  matches,
+  query,
+  onPick,
+}: {
+  matches: HeaderSearchHit[];
+  query: string;
+  onPick: () => void;
+}) {
+  return (
+    <div className="mx-auto max-w-7xl px-4 pb-4" aria-live="polite">
+      {matches.length ? (
+        <ul className="divide-y divide-espresso/10 border border-espresso/10 bg-white">
+          {matches.map((hit) => (
+            <li key={hit.slug}>
+              <Link href={`/product/${hit.slug}`} prefetch className="flex items-center gap-3 px-3 py-2" onClick={onPick}>
+                <span className="relative size-12 shrink-0 overflow-hidden bg-espresso/5">
+                  {hit.imageUrl ? <Image src={hit.imageUrl} alt="" fill className="object-cover" sizes="48px" /> : null}
+                </span>
+                <span>
+                  <span className="block text-sm font-medium">{hit.name}</span>
+                  <span className="block text-xs text-taupe">{hit.brand}</span>
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="text-sm text-taupe">No matches for {query.trim()}.</p>
+      )}
+    </div>
   );
 }

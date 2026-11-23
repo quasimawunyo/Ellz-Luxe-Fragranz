@@ -314,14 +314,14 @@ export async function queryShop(raw: Record<string, string | string[] | undefine
   const collection = collections.find(
     (item) => item.slug === filters.collection || item.id === filters.collection,
   );
-  const filtered = filterProducts(
-    products,
-    { ...filters, collection: collection?.id ?? filters.collection },
-  );
+  const scoped = { ...filters, collection: collection?.id ?? filters.collection };
+  const browse = filterProducts(products, { ...scoped, q: undefined });
+  const filtered = filters.q ? filterProducts(products, scoped) : browse;
   return {
     filters,
     collections: stockedCollections(collections, products),
     categories: stockedCategories(categories, products),
+    browse,
     ...paginate(filtered, filters.page),
   };
 }

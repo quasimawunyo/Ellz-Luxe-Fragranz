@@ -1,8 +1,7 @@
 import Link from "next/link";
+import { ActivityDesk } from "@/components/admin/activity-desk";
 import { activityLabel, listStaffActivity } from "@/lib/admin/activity";
 import { requireSuperAdmin } from "@/lib/auth/require-super-admin";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
 export const metadata = { title: "Activity · Shop desk" };
 
@@ -15,7 +14,7 @@ export default async function ActivityPage({
 }) {
   await requireSuperAdmin();
   const query = await searchParams;
-  const rows = await listStaffActivity(query);
+  const rows = await listStaffActivity({ ...query, person: undefined });
 
   return (
     <div className="mx-auto max-w-4xl">
@@ -30,38 +29,22 @@ export default async function ActivityPage({
           </Link>
         </p>
       ) : null}
-      <form className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-5" method="get">
-        {query.order ? <input type="hidden" name="order" value={query.order} /> : null}
-        <Input name="person" defaultValue={query.person} placeholder="Person" aria-label="Person" />
-        <select name="action" defaultValue={query.action ?? ""} aria-label="Action" className="min-h-11 border border-espresso/15 bg-white px-3 text-sm">
-          <option value="">All actions</option>
-          {ACTIONS.map((action) => (
-            <option key={action} value={action}>
-              {activityLabel(action)}
-            </option>
-          ))}
-        </select>
-        <Input name="from" type="date" defaultValue={query.from} aria-label="From" />
-        <Input name="to" type="date" defaultValue={query.to} aria-label="To" />
-        <Button type="submit">Filter</Button>
-      </form>
-      <ul className="mt-8 divide-y divide-espresso/10 rounded-[1.25rem] border border-espresso/10 bg-white">
-        {rows.map((row) => (
-          <li key={row.id} className="px-4 py-4 text-sm">
-            <p>{activityLabel(row.action)}</p>
-            {row.before || row.after ? (
-              <p className="mt-1 text-taupe">
-                {row.before || "—"} → {row.after || "—"}
-              </p>
-            ) : null}
-            <p className="mt-1 text-xs text-taupe">
-              {row.actorEmail} ·{" "}
-              {new Intl.DateTimeFormat("en-GH", { dateStyle: "medium", timeStyle: "short", timeZone: "Africa/Accra" }).format(new Date(row.createdAt))}
-            </p>
-          </li>
-        ))}
-        {!rows.length ? <li className="px-4 py-8 text-sm text-taupe">No activity yet.</li> : null}
-      </ul>
+      <ActivityDesk
+        rows={rows.map((row) => ({
+          id: row.id,
+          actorEmail: row.actorEmail,
+          label: activityLabel(row.action),
+          before: row.before,
+          after: row.after,
+          createdAt: row.createdAt,
+        }))}
+        initialPerson={query.person ?? ""}
+        action={query.action}
+        from={query.from}
+        to={query.to}
+        order={query.order}
+        actions={ACTIONS.map((action) => ({ id: action, label: activityLabel(action) }))}
+      />
     </div>
   );
 }

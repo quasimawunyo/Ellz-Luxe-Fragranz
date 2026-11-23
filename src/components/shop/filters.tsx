@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { HOUSE_BRANDS } from "@/lib/catalog/brands";
 import type { CatalogCategory, CatalogCollection } from "@/lib/catalog/types";
@@ -10,11 +12,15 @@ export function ShopFilters({
   collections,
   categories,
   idPrefix,
+  query,
+  onQueryChange,
 }: {
   filters: ShopFilters;
   collections: CatalogCollection[];
   categories: CatalogCategory[];
   idPrefix: string;
+  query: string;
+  onQueryChange: (value: string) => void;
 }) {
   const fieldId = (name: string) => `${idPrefix}-${name}`;
 
@@ -22,7 +28,14 @@ export function ShopFilters({
     <form className="space-y-6" method="get">
       <div>
         <Label htmlFor={fieldId("q")}>Search</Label>
-        <Input id={fieldId("q")} name="q" defaultValue={filters.q ?? ""} placeholder="Name, notes, brand" />
+        <Input
+          id={fieldId("q")}
+          name="q"
+          value={query}
+          onChange={(event) => onQueryChange(event.target.value)}
+          placeholder="Name, notes, brand"
+          autoComplete="off"
+        />
       </div>
       <div>
         <Label htmlFor={fieldId("collection")}>Collection</Label>

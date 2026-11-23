@@ -1,8 +1,5 @@
-import Link from "next/link";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
-import { ProductGrid } from "@/components/product/product-card";
-import { ShopFilters } from "@/components/shop/filters";
-import { EmptyState } from "@/components/ui/states";
+import { ShopExplorer } from "@/components/shop/shop-explorer";
 import { queryShop } from "@/lib/catalog/queries";
 import { pageMetadata } from "@/lib/seo";
 import { PAGE_DESCRIPTIONS } from "@/lib/seo-copy";
@@ -18,74 +15,18 @@ export default async function ShopPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const raw = await searchParams;
-  const result = await queryShop(raw);
+  const result = await queryShop(await searchParams);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10">
       <Breadcrumbs items={[{ href: "/", label: "Home" }, { label: "Shop" }]} />
       <h1 className="mt-8 font-serif text-4xl">Shop</h1>
-      <div className="mt-10 grid gap-10 lg:grid-cols-[16rem_1fr]">
-        <aside>
-          <details className="rounded-[1.25rem] border border-espresso/10 bg-white p-4 lg:hidden">
-            <summary className="flex min-h-11 cursor-pointer items-center text-sm font-medium">Filters</summary>
-            <div className="mt-4">
-              <ShopFilters
-                idPrefix="mobile"
-                filters={result.filters}
-                collections={result.collections}
-                categories={result.categories}
-              />
-            </div>
-          </details>
-          <div className="hidden lg:block">
-            <ShopFilters
-              idPrefix="desktop"
-              filters={result.filters}
-              collections={result.collections}
-              categories={result.categories}
-            />
-          </div>
-        </aside>
-        <div>
-          {result.items.length ? (
-            <ProductGrid products={result.items} />
-          ) : (
-            <EmptyState title="No products match">
-              <p>Try a different search, or reset filters.</p>
-              <Link href="/shop" className="mt-3 inline-block underline">
-                Reset shop
-              </Link>
-            </EmptyState>
-          )}
-          {result.totalPages > 1 ? (
-            <div className="mt-10 flex justify-center gap-3">
-              {Array.from({ length: result.totalPages }, (_, index) => {
-                const page = index + 1;
-                const params = new URLSearchParams();
-                if (result.filters.q) params.set("q", result.filters.q);
-                if (result.filters.collection) params.set("collection", result.filters.collection);
-                if (result.filters.category) params.set("category", result.filters.category);
-                if (result.filters.brand) params.set("brand", result.filters.brand);
-                if (result.filters.sort) params.set("sort", result.filters.sort);
-                if (result.filters.arrival) params.set("arrival", result.filters.arrival);
-                params.set("page", String(page));
-                return (
-                  <Link
-                    key={page}
-                    href={`/shop?${params.toString()}`}
-                    className={`grid size-11 place-items-center border ${
-                      page === result.page ? "border-espresso bg-espresso text-ivory" : "border-espresso/20"
-                    }`}
-                  >
-                    {page}
-                  </Link>
-                );
-              })}
-            </div>
-          ) : null}
-        </div>
-      </div>
+      <ShopExplorer
+        products={result.browse}
+        filters={result.filters}
+        collections={result.collections}
+        categories={result.categories}
+      />
     </div>
   );
 }
