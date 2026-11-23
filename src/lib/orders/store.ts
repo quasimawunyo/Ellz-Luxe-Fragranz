@@ -331,6 +331,49 @@ export async function recordOrderEvent(input: {
   });
 }
 
+type OrderRow = Parameters<typeof mapOrder>[0];
+
+async function hydrateOrders(admin: NonNullable<ReturnType<typeof createServiceClient>>, rows: OrderRow[]) {
+  if (!rows.length) return [];
+  const ids = rows.map((row) => row.id);
+  const [{ data: itemRows }, { data: paymentRows }, { data: eventRows }] = await Promise.all([
+    admin.from("order_items").select("*").in("order_id", ids),
+    admin.from("payments").select("*").in("order_id", ids),
+    admin.from("order_events").select("*").in("order_id", ids),
+  ]);
+  const itemsByOrder = new Map<string, StoreOrder["items"]>();
+  for (const item of itemRows ?? []) {
+    const list = itemsByOrder.get(item.order_id) ?? [];
+    list.push({
+      productName: item.product_name,
+      sku: item.sku,
+      variantLabel: item.variant_label,
+      quantity: item.quantity,
+      unitPriceMinor: item.unit_price_minor,
+      productId: item.product_id,
+      variantId: item.variant_id,
+    });
+    itemsByOrder.set(item.order_id, list);
+  }
+  const paymentsByOrder = new Map<string, OrderPayment[]>();
+  for (const row of [...(paymentRows ?? [])].sort((a, b) => a.created_at.localeCompare(b.created_at))) {
+    const list = paymentsByOrder.get(row.order_id) ?? [];
+    list.push(mapPayment(row));
+    paymentsByOrder.set(row.order_id, list);
+  }
+  const eventsByOrder = new Map<string, OrderEvent[]>();
+  for (const row of [...(eventRows ?? [])].sort((a, b) => a.created_at.localeCompare(b.created_at))) {
+    const list = eventsByOrder.get(row.order_id) ?? [];
+    list.push(mapEvent(row));
+    eventsByOrder.set(row.order_id, list);
+  }
+  return rows.map((row) => {
+    const payments = paymentsByOrder.get(row.id) ?? [];
+    const latest = payments.at(-1);
+    return mapOrder(row, itemsByOrder.get(row.id) ?? [], latest?.reference ?? null, latest?.provider ?? null, payments, eventsByOrder.get(row.id) ?? []);
+  });
+}
+
 export async function getOrderById(id: string) {
   if (isSupabaseAdminConfigured()) {
     const admin = createServiceClient();
@@ -398,12 +441,16 @@ export async function listOrdersByPhone(phone: string) {
         .filter((row) => !row.is_test && phonesMatch(String(row.phone ?? ""), phone))
         .slice(0, 8)
         .map((row) => row.id as string);
-      const orders = [];
-      for (const id of ids) {
-        const order = await getOrderById(id);
-        if (order && !order.isTest) orders.push(order);
-      }
-      return orders;
+      if (!ids.length) return [];
+      const { data: rows } = await admin.from("orders").select("*").in("id", ids);
+      const byId = new Map((rows ?? []).map((row) => [row.id, row]));
+      return hydrateOrders(
+        admin,
+        ids.flatMap((id) => {
+          const row = byId.get(id);
+          return row ? [row] : [];
+        }),
+      );
     }
   }
   return (await demoOrders())
@@ -433,12 +480,7 @@ export async function listOrders(filter?: { userId?: string; email?: string }) {
       let query = admin.from("orders").select("*").order("created_at", { ascending: false });
       if (filter?.userId) query = query.eq("user_id", filter.userId);
       const { data } = await query;
-      const orders: StoreOrder[] = [];
-      for (const row of data ?? []) {
-        const loaded = await getOrderById(row.id);
-        if (loaded) orders.push(loaded);
-      }
-      return orders;
+      return hydrateOrders(admin, data ?? []);
     }
   }
   let orders = await demoOrders();
