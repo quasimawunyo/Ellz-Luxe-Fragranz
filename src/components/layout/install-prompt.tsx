@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { Download, MessageCircle, ShoppingBag, Smartphone } from "lucide-react";
 import { useEffect, useState } from "react";
+import { installSurface, readInstallBrowser, type InstallSurface } from "@/lib/install-mode";
 
 const NEVER_KEY = "elf-install-never";
 const LATER_KEY = "elf-install-later";
@@ -23,12 +24,6 @@ const tiles = [
   { icon: MessageCircle, label: "WhatsApp" },
 ];
 
-function isIosDevice() {
-  const ua = navigator.userAgent;
-  const iPadOs = navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1;
-  return /iphone|ipad|ipod/i.test(ua) || iPadOs;
-}
-
 function isStandalone() {
   const nav = navigator as Navigator & { standalone?: boolean };
   return window.matchMedia("(display-mode: standalone)").matches || nav.standalone === true;
@@ -36,11 +31,10 @@ function isStandalone() {
 
 export function InstallPrompt() {
   const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null);
-  const [ios, setIos] = useState(false);
-  const [phone, setPhone] = useState(false);
+  const [browser, setBrowser] = useState({ ios: false, desktopSafari: false, inApp: false });
   const [waited, setWaited] = useState(false);
   const [dismissed, setDismissed] = useState(true);
-  const [manual, setManual] = useState<string | null>(null);
+  const [note, setNote] = useState<string | null>(null);
   const [host, setHost] = useState("");
 
   useEffect(() => {
@@ -64,9 +58,13 @@ export function InstallPrompt() {
     window.addEventListener("elf-install-ready", onReady);
 
     const hidden = localStorage.getItem(NEVER_KEY) === "1" || sessionStorage.getItem(LATER_KEY) === "1";
-    const iosDevice = isIosDevice();
-    setIos(iosDevice);
-    setPhone(window.matchMedia("(max-width: 767px), (pointer: coarse)").matches);
+    setBrowser(
+      readInstallBrowser({
+        userAgent: navigator.userAgent,
+        platform: navigator.platform,
+        maxTouchPoints: navigator.maxTouchPoints,
+      }),
+    );
     setHost(window.location.host);
     setDismissed(hidden);
     const id = window.setTimeout(() => setWaited(true), SHOW_AFTER_MS);
@@ -88,31 +86,53 @@ export function InstallPrompt() {
     setDismissed(true);
   }
 
+  const surface: InstallSurface = installSurface({
+    canPrompt: Boolean(deferred),
+    ios: browser.ios,
+    desktopSafari: browser.desktopSafari,
+    inApp: browser.inApp,
+  });
+
   async function install() {
-    if (!deferred) {
-      setManual(ios ? "Tap Share, then Add to Home Screen." : "Open the browser menu, then choose Add to Home Screen.");
+    if (deferred) {
+      try {
+        await deferred.prompt();
+        const choice = await deferred.userChoice;
+        (window as InstallWindow).__elfInstallPrompt = undefined;
+        setDeferred(null);
+        if (choice.outcome === "accepted") localStorage.setItem(NEVER_KEY, "1");
+        setDismissed(true);
+      } catch {
+        setNote("Use the install icon in the address bar.");
+      }
       return;
     }
+
+    if (surface !== "ios-share" || typeof navigator.share !== "function") {
+      setNote("Tap Share in Safari, then Add to Home Screen.");
+      return;
+    }
+
     try {
-      await deferred.prompt();
-      const choice = await deferred.userChoice;
-      (window as InstallWindow).__elfInstallPrompt = undefined;
-      setDeferred(null);
-      if (choice.outcome === "accepted") localStorage.setItem(NEVER_KEY, "1");
-      setDismissed(true);
-    } catch {
-      setManual("Open the browser menu, then choose Add to Home Screen.");
+      await navigator.share({ title: "EllzLuxe Fragranz", url: window.location.href });
+      setNote("Choose Add to Home Screen in that menu.");
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") return;
+      setNote("Tap Share in Safari, then Add to Home Screen.");
     }
   }
 
-  const open = waited && !dismissed && (Boolean(deferred) || ios || phone);
+  const open = waited && !dismissed && surface !== "none";
   if (!open) return null;
 
-  const steps = ios
-    ? "Tap Share, then Add to Home Screen."
-    : deferred
-      ? null
-      : "Open the browser menu, then choose Add to Home Screen.";
+  const instructions =
+    surface === "desktop-safari"
+      ? "From the Safari menu, choose Add to Dock."
+      : surface === "in-app"
+        ? "Open this page in Safari, then tap Share and Add to Home Screen."
+        : surface === "ios-share"
+          ? "Opens the share menu. Then choose Add to Home Screen."
+          : null;
 
   return (
     <div className="fixed inset-0 z-[80] flex items-end justify-center bg-rich/50 p-4 pb-24 sm:items-center sm:p-6">
@@ -145,7 +165,7 @@ export function InstallPrompt() {
             </div>
           ))}
         </div>
-        {deferred ? (
+        {surface === "prompt" || surface === "ios-share" ? (
           <button
             type="button"
             onClick={install}
@@ -154,10 +174,9 @@ export function InstallPrompt() {
             <Download className="size-5" aria-hidden />
             Add to Home Screen
           </button>
-        ) : (
-          <p className="mt-5 text-center text-sm leading-6 text-espresso">{steps}</p>
-        )}
-        {manual ? <p className="mt-3 text-center text-sm leading-6 text-taupe">{manual}</p> : null}
+        ) : null}
+        {instructions ? <p className="mt-5 text-center text-sm leading-6 text-espresso">{instructions}</p> : null}
+        {note ? <p className="mt-3 text-center text-sm leading-6 text-taupe">{note}</p> : null}
         <button type="button" onClick={later} className="mt-4 block w-full text-center text-sm text-taupe">
           Maybe Later
         </button>
