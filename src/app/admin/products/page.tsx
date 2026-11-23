@@ -27,6 +27,13 @@ export default async function AdminProductsPage({
   const status = FILTERS.some((item) => item.id === params.status) ? (params.status as "all" | StockState) : "all";
   const query = (params.q ?? "").trim().toLowerCase();
   const products = await getAllProductsForAdmin();
+  const unsized = products
+    .filter((product) => product.variants.length === 0)
+    .filter((product) => {
+      if (!query) return true;
+      return product.name.toLowerCase().includes(query) || product.brand.toLowerCase().includes(query);
+    })
+    .sort((a, b) => a.name.localeCompare(b.name));
   const rows = products
     .flatMap((product) => {
       const image = primaryImage(product);
@@ -97,6 +104,31 @@ export default async function AdminProductsPage({
           );
         })}
       </div>
+
+      {status === "all" && unsized.length ? (
+        <div className="mt-6 rounded-[1.25rem] border border-espresso/10 bg-white p-4">
+          <h2 className="font-medium">Waiting for a size and price</h2>
+          <p className="mt-1 text-sm text-taupe">These bottles are not on the shop yet. Add a size and a price, then publish.</p>
+          <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+            {unsized.map((product) => {
+              const image = primaryImage(product);
+              return (
+                <li key={product.id}>
+                  <Link href={`/admin/products/${product.id}`} className="flex items-center gap-3">
+                    <span className="relative size-14 shrink-0 overflow-hidden bg-espresso/5">
+                      {image ? <Image src={image.url} alt="" fill className="object-cover" sizes="56px" /> : null}
+                    </span>
+                    <span>
+                      <span className="block font-medium">{product.name}</span>
+                      <span className="block text-sm text-taupe">{product.brand}</span>
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ) : null}
 
       <ul className="mt-6 space-y-3 lg:hidden">
         {rows.map((row) => (
