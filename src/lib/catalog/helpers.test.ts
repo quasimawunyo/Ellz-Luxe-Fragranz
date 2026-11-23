@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { discountedVariantOffers, filterProducts, homepageNewArrivals, isDiscounted, isNewProduct, publicDescription, shelfDescription, stockedCategories, stockedCollections } from "@/lib/catalog/helpers";
+import { discountedVariantOffers, filterProducts, homepageNewArrivals, isDiscounted, isNewProduct, publicDescription, shelfDescription, stockedCategories, stockedCollections, takeUniqueBottles, unusedPicture } from "@/lib/catalog/helpers";
 import { DEMO_PRODUCTS } from "@/lib/catalog/seed";
 
 describe("catalog filters", () => {
@@ -74,6 +74,21 @@ describe("catalog filters", () => {
     };
     expect(isDiscounted(discounted)).toBe(true);
     expect(discountedVariantOffers(discounted).map((variant) => variant.priceMinor)).toEqual([40000]);
+  });
+
+  it("keeps each bottle and each picture once", () => {
+    const bottles = [
+      { id: "yara", picture: "/images/products/yara.jpg" },
+      { id: "yara-again", picture: "/images/products/yara.jpg" },
+      { id: "oud", picture: "/images/products/oud-noir.jpg" },
+    ];
+    const seenIds = new Set<string>();
+    const seenPictures = new Set<string>();
+    const picked = takeUniqueBottles(bottles, seenIds, seenPictures, (bottle) => bottle.picture);
+    expect(picked.map((bottle) => bottle.id)).toEqual(["yara", "oud"]);
+    expect(unusedPicture(["/images/products/yara.jpg", "/images/products/kaly-vardy.jpg"], seenPictures)).toBe(
+      "/images/products/kaly-vardy.jpg",
+    );
   });
 
   it("sorts by price ascending", () => {

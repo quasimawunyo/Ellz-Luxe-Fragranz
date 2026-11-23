@@ -20,7 +20,7 @@ export function HomeHero() {
             alt="A bottle spraying perfume"
             fill
             priority
-            sizes="(min-width: 768px) 40vw, 100vw"
+            sizes="(min-width: 1920px) 50vw, (min-width: 768px) 40vw, 100vw"
             className="object-cover"
           />
         </div>

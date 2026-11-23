@@ -5,7 +5,8 @@ import { useState } from "react";
 import type { ProductImage } from "@/lib/catalog/types";
 
 export function ProductGallery({ images, name }: { images: ProductImage[]; name: string }) {
-  const [active, setActive] = useState(images[0]);
+  const frames = images.filter((image, index, all) => all.findIndex((item) => item.url === image.url) === index);
+  const [active, setActive] = useState(frames[0]);
   if (!active) {
     return <div className="aspect-square rounded-[1.5rem] bg-espresso/5" />;
   }
@@ -18,13 +19,13 @@ export function ProductGallery({ images, name }: { images: ProductImage[]; name:
           alt={active.alt || name}
           fill
           priority
-          sizes="(min-width: 1024px) 36rem, (min-width: 768px) 28rem, 100vw"
+          sizes="(min-width: 1920px) 50vw, (min-width: 1024px) 36rem, (min-width: 768px) 28rem, 100vw"
           className="object-cover"
         />
       </div>
-      {images.length > 1 ? (
+      {frames.length > 1 ? (
         <div className="mt-3 flex gap-2">
-          {images.map((image) => (
+          {frames.map((image) => (
             <button
               key={image.id}
               type="button"

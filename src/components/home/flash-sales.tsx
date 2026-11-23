@@ -17,9 +17,12 @@ export function picturesForFlashSales(products: CatalogProduct[], limit: number)
   const withImages = products.filter((product) => primaryImage(product));
   const preferred = PREFERRED.flatMap((slug) => withImages.filter((product) => product.slug === slug));
   const rest = withImages.filter((product) => !preferred.some((picked) => picked.id === product.id));
-  const unique = [...preferred, ...rest].filter(
-    (product, index, all) => all.findIndex((item) => item.id === product.id) === index,
-  );
+  const unique = [...preferred, ...rest].filter((product, index, all) => {
+    const picture = primaryImage(product)?.url;
+    return (
+      all.findIndex((item) => item.id === product.id || (picture && primaryImage(item)?.url === picture)) === index
+    );
+  });
   return unique.slice(0, limit);
 }
 

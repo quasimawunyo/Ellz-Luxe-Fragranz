@@ -6,7 +6,7 @@ import { HeroAnnouncement } from "@/components/home/hero-announcement";
 import { HomeHero } from "@/components/home/home-hero";
 import { NewsletterBand } from "@/components/home/newsletter-band";
 import { ProductCard, ProductGrid } from "@/components/product/product-card";
-import { stockedCollections } from "@/lib/catalog/helpers";
+import { primaryImage, stockedCollections, takeUniqueBottles, unusedPicture } from "@/lib/catalog/helpers";
 import { getCollections, getDiscountedProducts, getFeaturedProducts, getNewArrivals, getPublishedProducts, getStoreSettings } from "@/lib/catalog/queries";
 import { env } from "@/lib/env";
 import { pageMetadata } from "@/lib/seo";
@@ -46,7 +46,24 @@ export default async function HomePage() {
       addressCountry: "GH",
     },
   };
-  const flash = picturesForFlashSales(discounted, discounted.length);
+  const seenIds = new Set<string>();
+  const seenPictures = new Set<string>();
+  const pictureOf = (product: (typeof arrivals)[number]) => primaryImage(product)?.url;
+  const arrivalCards = takeUniqueBottles(arrivals, seenIds, seenPictures, pictureOf, 8);
+  const bestCards = takeUniqueBottles(featured, seenIds, seenPictures, pictureOf);
+  const flash = takeUniqueBottles(picturesForFlashSales(discounted, discounted.length), seenIds, seenPictures, pictureOf);
+  const categoryCovers = shopBy.map((collection) => ({
+    collection,
+    imageUrl: unusedPicture(
+      [
+        collection.imageUrl,
+        ...published
+          .filter((product) => product.collectionIds.includes(collection.id))
+          .map((product) => primaryImage(product)?.url),
+      ],
+      seenPictures,
+    ),
+  }));
 
   return (
     <>
@@ -62,9 +79,9 @@ export default async function HomePage() {
               View all
             </Link>
           </div>
-          {arrivals.length ? (
+          {arrivalCards.length ? (
             <div className="mt-8 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-4">
-              {arrivals.slice(0, 8).map((product) => (
+              {arrivalCards.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
@@ -81,16 +98,18 @@ export default async function HomePage() {
             </Link>
           </div>
           <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
-            {shopBy.map((collection) => (
+            {categoryCovers.map(({ collection, imageUrl }) => (
               <Link key={collection.id} href={`/collections/${collection.slug}`} prefetch className="min-w-0">
                 <div className="relative aspect-[4/5] overflow-hidden bg-espresso/5">
-                  <Image
-                    src={collection.imageUrl}
-                    alt=""
-                    fill
-                    sizes="(min-width: 1024px) 25vw, 50vw"
-                    className="object-cover"
-                  />
+                  {imageUrl ? (
+                    <Image
+                      src={imageUrl}
+                      alt=""
+                      fill
+                      sizes="(min-width: 1024px) 25vw, 50vw"
+                      className="object-cover"
+                    />
+                  ) : null}
                 </div>
                 <span className="mt-3 block font-serif text-lg leading-tight">{collection.name.replace(" fragrances", "")}</span>
               </Link>
@@ -103,7 +122,7 @@ export default async function HomePage() {
         <div className="mx-auto max-w-7xl">
           <h2 className="font-serif text-3xl">Best sellers</h2>
           <div className="mt-10">
-            <ProductGrid products={featured} viewAllHref="/shop" className="grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-6 lg:gap-y-12" />
+            <ProductGrid products={bestCards} viewAllHref="/shop" className="grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-6 lg:gap-y-12" />
           </div>
         </div>
       </section>

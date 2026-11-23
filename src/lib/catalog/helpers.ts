@@ -208,13 +208,46 @@ export function paginate<T>(items: T[], page: number, pageSize = PAGE_SIZE) {
   };
 }
 
+export function takeUniqueBottles<T extends { id: string }>(
+  products: T[],
+  seenIds: Set<string>,
+  seenPictures: Set<string>,
+  pictureOf: (product: T) => string | null | undefined,
+  limit?: number,
+) {
+  const picked: T[] = [];
+  for (const product of products) {
+    if (seenIds.has(product.id)) continue;
+    const picture = pictureOf(product) ?? "";
+    if (picture && seenPictures.has(picture)) continue;
+    seenIds.add(product.id);
+    if (picture) seenPictures.add(picture);
+    picked.push(product);
+    if (limit != null && picked.length >= limit) break;
+  }
+  return picked;
+}
+
+export function unusedPicture(candidates: Array<string | null | undefined>, seenPictures: Set<string>) {
+  const picture = candidates.find((url) => url && !seenPictures.has(url)) ?? null;
+  if (picture) seenPictures.add(picture);
+  return picture;
+}
+
 export function relatedProducts(product: Product, catalog: Product[], limit = 4) {
-  return catalog
-    .filter(
+  const seenIds = new Set<string>([product.id]);
+  const seenPictures = new Set<string>();
+  const current = primaryImage(product)?.url;
+  if (current) seenPictures.add(current);
+  return takeUniqueBottles(
+    catalog.filter(
       (candidate) =>
-        candidate.id !== product.id &&
         candidate.status === "published" &&
         candidate.collectionIds.some((id) => product.collectionIds.includes(id)),
-    )
-    .slice(0, limit);
+    ),
+    seenIds,
+    seenPictures,
+    (candidate) => primaryImage(candidate)?.url,
+    limit,
+  );
 }
