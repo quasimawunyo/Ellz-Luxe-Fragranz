@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import { PublicAnnouncement } from "@/components/layout/public-announcement";
-import { AnnexPromises } from "@/components/layout/annex-promises";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
 import { SalePopup, type SalePopupProduct } from "@/components/layout/sale-popup";
@@ -74,7 +73,6 @@ async function ChromeExtras() {
   return (
     <>
       <BrandGrid />
-      <AnnexPromises phone={settings.contactPhone} />
       <TrustAndPay />
       <Footer settings={settings} showSale={discounted.length > 0} showGifts={gifts.products.length > 0} />
       <WhatsAppButton phone={settings.contactPhone} />

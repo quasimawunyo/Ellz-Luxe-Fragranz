@@ -18,12 +18,13 @@ export function Footer({
         <div className="md:grid md:grid-cols-4 md:gap-10">
           <div>
             <BrandLogo className="w-20 md:w-32" size={256} />
-            <StoreContact settings={settings} className="mt-4 space-y-1.5 text-sm text-taupe" />
+            <p className="mt-4 text-sm text-taupe">Authentic bottles.</p>
+            <StoreContact settings={settings} className="mt-3 space-y-1.5 text-sm text-taupe" />
             <StoreSocials settings={settings} />
           </div>
           <div className="mt-8 grid grid-cols-3 gap-x-4 md:col-span-3 md:mt-0 md:gap-10">
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] md:text-xs md:tracking-[0.22em]">Shop</p>
+              <p className="text-sm font-medium">Shop</p>
               <ul className="mt-3 space-y-1 text-sm text-taupe [&_a]:inline-flex [&_a]:min-h-11 [&_a]:items-center">
                 <li><Link href="/shop">All products</Link></li>
                 <li><Link href="/collections">Collections</Link></li>
@@ -34,7 +35,7 @@ export function Footer({
               </ul>
             </div>
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] md:text-xs md:tracking-[0.22em]">Help</p>
+              <p className="text-sm font-medium">Help</p>
               <ul className="mt-3 space-y-1 text-sm text-taupe [&_a]:inline-flex [&_a]:min-h-11 [&_a]:items-center">
                 <li><Link href="/contact">Contact</Link></li>
                 <li><Link href="/track">Track order</Link></li>
@@ -43,7 +44,7 @@ export function Footer({
               </ul>
             </div>
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] md:text-xs md:tracking-[0.22em]">About</p>
+              <p className="text-sm font-medium">About</p>
               <ul className="mt-3 space-y-1 text-sm text-taupe [&_a]:inline-flex [&_a]:min-h-11 [&_a]:items-center">
                 <li><Link href="/about">Our story</Link></li>
                 <li><Link href="/faq">FAQ</Link></li>

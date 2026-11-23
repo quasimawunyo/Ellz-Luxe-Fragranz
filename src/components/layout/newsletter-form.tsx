@@ -21,15 +21,15 @@ export function NewsletterForm({ compact = false }: { compact?: boolean }) {
         <label className="sr-only" htmlFor="newsletter-email">
           Email address
         </label>
-        <div className="flex items-center rounded-full border border-[#7dcea0]/35 bg-[#0a2e26] p-1 pl-4">
+        <div className="flex items-center border border-espresso/15 bg-white p-1 pl-4">
           <input
             ref={wideRef}
             id="newsletter-email"
             name="email"
             type="email"
             required
-            placeholder="Enter your email address"
-            className="min-h-10 min-w-0 flex-1 bg-transparent text-sm text-snow outline-none placeholder:text-[#8fb8a4]"
+            placeholder="Email address"
+            className="min-h-10 min-w-0 flex-1 bg-transparent text-sm text-espresso outline-none placeholder:text-taupe"
           />
           <button
             type="submit"
@@ -39,12 +39,12 @@ export function NewsletterForm({ compact = false }: { compact?: boolean }) {
           </button>
         </div>
         {state?.error ? (
-          <p role="alert" className="mt-3 text-sm text-red-200">
+          <p role="alert" className="mt-3 text-sm text-red-800">
             {state.error}
           </p>
         ) : null}
         {state?.ok && state.message ? (
-          <p role="status" className="mt-3 text-sm text-[#b7e4c7]">
+          <p role="status" className="mt-3 text-sm text-espresso">
             {state.message}
           </p>
         ) : null}

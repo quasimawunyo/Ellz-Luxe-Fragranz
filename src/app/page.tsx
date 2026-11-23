@@ -6,14 +6,12 @@ import { HeroAnnouncement } from "@/components/home/hero-announcement";
 import { HomeHero } from "@/components/home/home-hero";
 import { NewsletterBand } from "@/components/home/newsletter-band";
 import { ProductCard, ProductGrid } from "@/components/product/product-card";
-import { buttonVariants } from "@/components/ui/button";
 import { stockedCollections } from "@/lib/catalog/helpers";
 import { getCollections, getDiscountedProducts, getFeaturedProducts, getNewArrivals, getPublishedProducts, getStoreSettings } from "@/lib/catalog/queries";
 import { env } from "@/lib/env";
 import { pageMetadata } from "@/lib/seo";
 import { PAGE_DESCRIPTIONS } from "@/lib/seo-copy";
 import { ghanaWaDigits } from "@/lib/whatsapp";
-import { cn } from "@/lib/utils";
 
 export const metadata = pageMetadata({
   description: PAGE_DESCRIPTIONS.home,
@@ -56,53 +54,45 @@ export default async function HomePage() {
       <HomeHero />
       <HeroAnnouncement location={settings.location} phone={settings.contactPhone} />
 
-      <section className="bg-white px-4 pb-14 pt-14" aria-label="New arrivals">
+      <section className="bg-white px-4 py-12" aria-label="New arrivals">
         <div className="mx-auto max-w-7xl">
           <div className="flex items-end justify-between gap-4">
-            <h2 className="font-serif text-4xl md:text-5xl">New arrivals</h2>
+            <h2 className="font-serif text-3xl">New arrivals</h2>
             <Link href="/new" className="inline-flex min-h-11 shrink-0 items-center text-sm text-taupe hover:text-espresso">
               View all
             </Link>
           </div>
           {arrivals.length ? (
-            <div className="mt-8 flex snap-x snap-mandatory gap-6 overflow-x-auto pb-2">
+            <div className="mt-8 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-4">
               {arrivals.slice(0, 8).map((product) => (
-                <div key={product.id} className="w-64 shrink-0 snap-start sm:w-72">
-                  <ProductCard product={product} />
-                </div>
+                <ProductCard key={product.id} product={product} />
               ))}
             </div>
           ) : null}
         </div>
       </section>
 
-      <section className="bg-ivory px-4 py-8 md:py-12">
+      <section className="bg-ivory px-4 py-12">
         <div className="mx-auto max-w-7xl">
           <div className="flex items-end justify-between gap-4">
-            <h2 className="font-serif text-3xl md:text-4xl">Shop by category</h2>
+            <h2 className="font-serif text-3xl">Shop by category</h2>
             <Link href="/collections" className="inline-flex min-h-11 shrink-0 items-center text-sm text-taupe hover:text-espresso">
               All categories
             </Link>
           </div>
-          <div className="mt-5 grid grid-cols-2 gap-2.5 sm:mt-6 sm:gap-4 lg:grid-cols-4">
+          <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
             {shopBy.map((collection) => (
-              <Link
-                key={collection.id}
-                href={`/collections/${collection.slug}`}
-                prefetch
-                className="group relative aspect-[3/2] min-w-0 overflow-hidden rounded-2xl sm:aspect-[4/3] lg:rounded-[1.5rem]"
-              >
-                <Image
-                  src={collection.imageUrl}
-                  alt={collection.name}
-                  fill
-                  sizes="(min-width: 1024px) 25vw, 50vw"
-                  className="object-cover transition duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-rich/75 via-rich/20 to-transparent" />
-                <span aria-hidden className="absolute inset-x-2.5 bottom-2.5 font-serif text-base leading-tight text-snow sm:inset-x-4 sm:bottom-4 sm:text-xl">
-                  {collection.name.replace(" fragrances", "")}
-                </span>
+              <Link key={collection.id} href={`/collections/${collection.slug}`} prefetch className="min-w-0">
+                <div className="relative aspect-[4/5] overflow-hidden bg-espresso/5">
+                  <Image
+                    src={collection.imageUrl}
+                    alt=""
+                    fill
+                    sizes="(min-width: 1024px) 25vw, 50vw"
+                    className="object-cover"
+                  />
+                </div>
+                <span className="mt-3 block font-serif text-lg leading-tight">{collection.name.replace(" fragrances", "")}</span>
               </Link>
             ))}
           </div>
@@ -111,7 +101,7 @@ export default async function HomePage() {
 
       <section className="bg-white px-4 py-14">
         <div className="mx-auto max-w-7xl">
-          <h2 className="font-serif text-4xl md:text-5xl">Best sellers</h2>
+          <h2 className="font-serif text-3xl">Best sellers</h2>
           <div className="mt-10">
             <ProductGrid products={featured} viewAllHref="/shop" className="grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-6 lg:gap-y-12" />
           </div>
@@ -122,7 +112,7 @@ export default async function HomePage() {
         <section className="bg-white px-4 py-14">
           <div className="mx-auto max-w-7xl">
             <div className="flex items-end justify-between gap-4">
-              <h2 className="font-serif text-4xl md:text-5xl">Flash sales</h2>
+              <h2 className="font-serif text-3xl">Flash sales</h2>
               <Link href="/sale" className="shrink-0 text-sm text-taupe hover:text-espresso">
                 View all
               </Link>
@@ -134,21 +124,21 @@ export default async function HomePage() {
         </section>
       ) : null}
 
-      <section className="bg-white px-4 py-14">
-        <div className="mx-auto grid min-h-[24rem] max-w-7xl overflow-hidden rounded-[2rem] bg-rich text-snow md:grid-cols-2">
-          <div className="relative min-h-80">
+      <section className="bg-white px-4 py-12">
+        <div className="mx-auto grid max-w-7xl items-center gap-8 md:grid-cols-2">
+          <div className="relative aspect-[4/3] bg-espresso/5">
             <Image
               src="/images/story.jpg"
-              alt="Perfume bottles"
+              alt="Two perfume bottles on linen"
               fill
               sizes="(min-width: 768px) 50vw, 100vw"
               className="object-cover"
             />
           </div>
-          <div className="flex flex-col justify-center px-8 py-16 md:px-16">
-            <h2 className="font-serif text-4xl">About</h2>
-            <p className="mt-6 max-w-md leading-7 text-snow/75">{settings.aboutStory}</p>
-            <Link href="/about" className={cn(buttonVariants({ variant: "shop" }), "mt-8 inline-flex w-fit px-8")}>
+          <div>
+            <h2 className="font-serif text-3xl">About</h2>
+            <p className="mt-4 max-w-md leading-7 text-taupe">{settings.aboutStory}</p>
+            <Link href="/about" className="mt-6 inline-flex min-h-11 items-center text-sm underline underline-offset-4">
               About us
             </Link>
           </div>

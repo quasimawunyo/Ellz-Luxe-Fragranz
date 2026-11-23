@@ -29,14 +29,14 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
     <article className="group">
       <div className="relative">
         <Link href={`/product/${product.slug}`} prefetch className="block">
-          <div className="relative aspect-square overflow-hidden rounded-[1.5rem] bg-espresso/5">
+          <div className="relative aspect-square overflow-hidden bg-espresso/5">
             {image ? (
               <Image
                 src={image.url}
                 alt={image.alt}
                 fill
                 sizes="(min-width: 1024px) 320px, (min-width: 640px) 45vw, 86vw"
-                className="object-cover transition duration-500 hover:scale-105"
+                className="object-cover"
               />
             ) : null}
           </div>
@@ -44,7 +44,7 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
         {badge ? (
           <span
             className={cn(
-              "absolute left-3 top-3 rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em]",
+              "absolute left-3 top-3 px-2 py-1 text-xs",
               soldOut ? "bg-red-800 text-white" : "bg-white text-espresso",
             )}
           >
@@ -64,7 +64,7 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
           ) : null}
         </div>
       </div>
-      <p className="mt-4 text-xs uppercase tracking-[0.18em] text-taupe">{product.brand}</p>
+      <p className="mt-3 text-sm text-taupe">{product.brand}</p>
       <h3 className="mt-1 font-serif text-lg leading-snug sm:text-xl">
         <Link href={`/product/${product.slug}`} prefetch>{product.name}</Link>
       </h3>
@@ -112,9 +112,9 @@ export function ProductGrid({
       {viewAllHref ? (
         <Link
           href={viewAllHref}
-          className="flex h-full min-h-48 items-end rounded-[1.5rem] bg-leaf p-5 text-snow transition hover:bg-leaf/90 sm:min-h-72 sm:p-8"
+          className="flex h-full min-h-48 items-center justify-center border border-espresso/15 px-5 text-sm hover:border-espresso"
         >
-          <p className="font-serif text-3xl leading-tight sm:text-4xl">View all perfumes</p>
+          <p>View all perfumes</p>
         </Link>
       ) : null}
     </div>

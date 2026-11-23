@@ -78,7 +78,7 @@ export function Header({
 
   return (
     <>
-      <header ref={headerRef} className="sticky top-0 z-40 border-b border-espresso/8 bg-white/95 backdrop-blur">
+      <header ref={headerRef} className="sticky top-0 z-40 border-b border-espresso/10 bg-white">
         <div className="mx-auto flex max-w-7xl items-center gap-2 px-3 py-2.5 sm:gap-3 sm:px-4 sm:py-3 lg:grid lg:grid-cols-[1fr_auto_1fr]">
           <div className="flex min-w-0 flex-1 items-center">
             <button
@@ -94,7 +94,7 @@ export function Header({
             </button>
             <BrandLogo className="ml-1 w-[3.75rem] shrink-0 sm:ml-0 sm:w-24 md:w-28" size={224} priority />
           </div>
-          <nav className="hidden items-center gap-9 text-[11px] uppercase tracking-[0.32em] text-taupe lg:flex" aria-label="Main navigation">
+          <nav className="hidden items-center gap-8 text-sm text-taupe lg:flex" aria-label="Main navigation">
             {NAV.map((item) => (
               <Link key={item.href} href={item.href} prefetch className="inline-flex min-h-11 items-center hover:text-espresso">
                 {item.label}
@@ -114,7 +114,7 @@ export function Header({
             {ready ? (
               <>
                 {isAdmin ? (
-                  <Link href="/admin" className="hidden px-2 text-[11px] uppercase tracking-[0.22em] hover:text-champagne lg:inline">
+                  <Link href="/admin" className="hidden px-2 text-sm hover:text-espresso lg:inline">
                     Admin
                   </Link>
                 ) : null}
@@ -169,14 +169,14 @@ export function Header({
                 key={item.href}
                 href={item.href}
                 prefetch
-                className="block border-b border-espresso/10 py-4 font-serif text-3xl"
+                className="block border-b border-espresso/10 py-4 text-base"
                 onClick={() => setOpen(false)}
               >
                 {item.label}
               </Link>
             ))}
           </div>
-          <p className="mt-10 text-[11px] font-medium uppercase tracking-[0.28em] text-taupe">Browse</p>
+          <p className="mt-10 text-sm text-taupe">Browse</p>
           <div className="mt-2 grid grid-cols-2 gap-x-8">
             {shopLinks.map((link) => (
               <Link

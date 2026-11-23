@@ -43,7 +43,6 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-outfit);
   --font-serif: var(--font-playfair);
-  --animate-brand-marquee: brand-marquee 40s linear infinite;
 }
 
 body {
@@ -86,25 +85,6 @@ h3,
 .luxe-panel {
   border: 1px solid color-mix(in srgb, var(--espresso) 12%, transparent);
   background: var(--white);
-}
-
-@keyframes brand-marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-.brand-marquee-track {
-  animation: brand-marquee 40s linear infinite;
-}
-
-@media (hover: hover) {
-  .brand-marquee-track:hover {
-    animation-play-state: paused;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -62,12 +62,12 @@ export function SalePopup({ products }: { products: SalePopupProduct[] }) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="sale-popup-title"
-        className="max-h-[min(34rem,calc(100dvh-8rem))] w-full max-w-md overflow-y-auto rounded-[1.5rem] bg-ivory p-5 shadow-xl"
+        className="max-h-[min(34rem,calc(100dvh-8rem))] w-full max-w-md overflow-y-auto border border-espresso/10 bg-ivory p-5"
         onClick={(event) => event.stopPropagation()}
       >
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h2 id="sale-popup-title" className="font-serif text-3xl leading-tight">
+            <h2 id="sale-popup-title" className="font-serif text-2xl leading-tight">
               Flash sales
             </h2>
           </div>
@@ -87,7 +87,7 @@ export function SalePopup({ products }: { products: SalePopupProduct[] }) {
               <Link
                 href={`/product/${product.slug}`}
                 onClick={() => setOpen(false)}
-                className="flex gap-3 rounded-2xl bg-white p-3"
+                className="flex gap-3 border border-espresso/10 bg-white p-3"
               >
                 {product.imageUrl ? (
                   <Image
@@ -95,13 +95,13 @@ export function SalePopup({ products }: { products: SalePopupProduct[] }) {
                     alt={product.imageAlt}
                     width={72}
                     height={72}
-                    className="size-16 shrink-0 rounded-xl object-cover"
+                    className="size-16 shrink-0 object-cover"
                   />
                 ) : (
-                  <span className="size-16 shrink-0 rounded-xl bg-espresso/5" />
+                  <span className="size-16 shrink-0 bg-espresso/5" />
                 )}
                 <span className="min-w-0">
-                  <span className="block text-[11px] uppercase tracking-[0.16em] text-taupe">{product.brand}</span>
+                  <span className="block text-sm text-taupe">{product.brand}</span>
                   <span className="mt-1 block font-serif text-lg leading-snug">{product.name}</span>
                   <span className="mt-1 block space-y-0.5">
                     {product.offers.map((offer) => (
