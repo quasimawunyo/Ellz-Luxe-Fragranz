@@ -1,9 +1,10 @@
 import { revalidatePath } from "next/cache";
 import { env } from "@/lib/env";
 import { createServiceClient } from "@/lib/supabase/admin";
-import { minorFromCedisInput, orderGrandTotal } from "@/lib/money";
+import { formatMoney, minorFromCedisInput, orderGrandTotal } from "@/lib/money";
 import { notifyCustomerOfFulfilment } from "@/lib/notify/order";
 import { generateMoolrePaymentLink, isMoolreConfigured } from "@/lib/payments/moolre";
+import { recordStaffActivity } from "@/lib/admin/activity";
 import { amountPaidMinor, balanceDueMinor } from "@/lib/orders/desk";
 import { getOrderById, recordOrderEvent, returnStockForOrder, settlePaidOrderStock, updateFulfillment } from "@/lib/orders/store";
 import {
@@ -31,6 +32,14 @@ export async function advanceOrder(orderId: string, actor: { id: string; email: 
     actorEmail: actor.email,
     note,
   });
+  await recordStaffActivity({
+    actorId: actor.id,
+    actorEmail: actor.email,
+    action: "order_status",
+    targetId: orderId,
+    before: order.fulfillmentStatus,
+    after: next,
+  });
   if (emailCustomer && updated && customerEmailForFulfilment(next)) {
     await notifyCustomerOfFulfilment(updated, next);
     await recordOrderEvent({
@@ -54,12 +63,21 @@ export async function cancelOrder(
   if (trimmed.length < 3) throw new Error("Enter a reason for cancelling.");
   const order = await getOrderById(orderId);
   if (!order) throw new Error("Order not found.");
-  return updateFulfillment(orderId, "cancelled" as FulfillmentStatus, undefined, {
+  const updated = await updateFulfillment(orderId, "cancelled" as FulfillmentStatus, undefined, {
     returnToStock,
     actorId: actor.id,
     actorEmail: actor.email,
     note: trimmed,
   });
+  await recordStaffActivity({
+    actorId: actor.id,
+    actorEmail: actor.email,
+    action: "cancel",
+    targetId: orderId,
+    before: order.fulfillmentStatus,
+    after: returnToStock ? "cancelled, stock returned" : "cancelled, stock unchanged",
+  });
+  return updated;
 }
 
 export async function setDeliveryFee(orderId: string, actor: { id: string; email: string | null }, cedis: unknown) {
@@ -142,7 +160,7 @@ export async function requestDeliveryFeeLink(orderId: string, actor: { id: strin
 export async function recordManualPayment(
   orderId: string,
   actor: { id: string; email: string | null },
-  input: { method: string; reference: string; amount: unknown; note: string },
+  input: { method: string; reference: string; amount: unknown; note: string; idempotencyKey?: string },
 ) {
   if (!manualPaymentMethods.includes(input.method as ManualPaymentMethod)) {
     throw new Error("Choose mobile money, cash, or card.");
@@ -157,6 +175,12 @@ export async function recordManualPayment(
   if (!order) throw new Error("Order not found.");
   if (order.isTest) throw new Error("Test orders do not take payment.");
   const admin = needAdmin();
+  const idempotencyKey = String(input.idempotencyKey ?? "").trim();
+  const rawEventId = `idem:${idempotencyKey || crypto.randomUUID()}`;
+  if (idempotencyKey) {
+    const existing = await admin.from("payments").select("id").eq("raw_event_id", rawEventId).maybeSingle();
+    if (existing.data) return getOrderById(orderId);
+  }
   const { error } = await admin.from("payments").insert({
     order_id: orderId,
     provider: "manual",
@@ -166,9 +190,15 @@ export async function recordManualPayment(
     currency_code: order.currencyCode,
     status: "paid",
     note,
-    raw_event_id: `manual:${actor.id}`,
+    raw_event_id: rawEventId,
   });
-  if (error) throw new Error(error.message.includes("duplicate") ? "That reference is already recorded." : error.message);
+  if (error) {
+    if (idempotencyKey) {
+      const again = await admin.from("payments").select("id").eq("raw_event_id", rawEventId).maybeSingle();
+      if (again.data) return getOrderById(orderId);
+    }
+    throw new Error(error.message.includes("duplicate") ? "That reference is already recorded." : error.message);
+  }
   const paidBefore = order.paymentStatus;
   const covered = amountPaidMinor(order.payments) + amountMinor;
   const settlesGoods = paidBefore === "pending" && covered >= order.subtotalMinor;
@@ -185,6 +215,14 @@ export async function recordManualPayment(
     actorEmail: actor.email,
   });
   if (settlesGoods) await settlePaidOrderStock(orderId);
+  await recordStaffActivity({
+    actorId: actor.id,
+    actorEmail: actor.email,
+    action: "payment",
+    targetId: orderId,
+    before: paidBefore,
+    after: `${formatMoney(amountMinor)} by ${input.method.replaceAll("_", " ")}`,
+  });
   return getOrderById(orderId);
 }
 
@@ -193,6 +231,7 @@ export async function recordRefund(
   actor: { id: string; email: string | null },
   note: string,
   returnToStock: boolean,
+  idempotencyKey = "",
 ) {
   const trimmed = note.trim();
   if (trimmed.length < 3) throw new Error("Enter a note for this refund.");
@@ -200,11 +239,17 @@ export async function recordRefund(
   if (!order) throw new Error("Order not found.");
   if (order.paymentStatus !== "paid") throw new Error("Only a paid order can be marked refunded.");
   const admin = needAdmin();
+  const key = idempotencyKey.trim();
+  const rawEventId = `idem:${key || crypto.randomUUID()}`;
+  if (key) {
+    const existing = await admin.from("payments").select("id").eq("raw_event_id", rawEventId).maybeSingle();
+    if (existing.data) return getOrderById(orderId);
+  }
   const reference = `refund_${crypto.randomUUID()}`;
   const refundedMinor =
     order.payments.filter((payment) => payment.status === "paid").reduce((sum, payment) => sum + payment.amountMinor, 0) ||
     order.totalMinor;
-  await admin.from("payments").insert({
+  const { error: refundError } = await admin.from("payments").insert({
     order_id: orderId,
     provider: "manual",
     method: null,
@@ -213,8 +258,15 @@ export async function recordRefund(
     currency_code: order.currencyCode,
     status: "refunded",
     note: trimmed,
-    raw_event_id: `refund:${actor.id}`,
+    raw_event_id: rawEventId,
   });
+  if (refundError) {
+    if (key) {
+      const again = await admin.from("payments").select("id").eq("raw_event_id", rawEventId).maybeSingle();
+      if (again.data) return getOrderById(orderId);
+    }
+    throw new Error(refundError.message);
+  }
   await admin.from("orders").update({ payment_status: "refunded" }).eq("id", orderId);
   await recordOrderEvent({
     orderId,
@@ -226,15 +278,27 @@ export async function recordRefund(
     actorEmail: actor.email,
   });
   if (returnToStock && !order.isTest) await returnStockForOrder(orderId, actor.id);
+  await recordStaffActivity({
+    actorId: actor.id,
+    actorEmail: actor.email,
+    action: "refund",
+    targetId: orderId,
+    before: order.paymentStatus,
+    after: `${formatMoney(refundedMinor)}${returnToStock && !order.isTest ? ", stock returned" : ", stock unchanged"}`,
+  });
   return getOrderById(orderId);
 }
 
-export async function setOrderTest(orderId: string, actor: { id: string; email: string | null }, isTest: boolean) {
+export async function setOrderTest(
+  orderId: string,
+  actor: { id: string; email: string | null },
+  isTest: boolean,
+  returnStock = false,
+) {
   const order = await getOrderById(orderId);
   if (!order) throw new Error("Order not found.");
-  if (isTest && order.stockApplied) {
-    await returnStockForOrder(orderId, actor.id);
-  }
+  const returned = Boolean(isTest && returnStock && order.stockApplied);
+  if (returned) await returnStockForOrder(orderId, actor.id);
   const admin = needAdmin();
   await admin.from("orders").update({ is_test: isTest, awaiting_review: false }).eq("id", orderId);
   await recordOrderEvent({
@@ -242,9 +306,21 @@ export async function setOrderTest(orderId: string, actor: { id: string; email: 
     eventType: "test",
     fromValue: order.isTest ? "test" : "real",
     toValue: isTest ? "test" : "real",
-    note: isTest ? "Marked as a test. It is hidden from the queue and left out of revenue and stock." : "Marked as a real sale.",
+    note: isTest
+      ? returned
+        ? "Marked as a test. Money and coupon use stay as they are. Stock taken for this order was returned."
+        : "Marked as a test. Money, coupon use, and stock stay as they are."
+      : "Marked as a real sale. Money, coupon use, and stock stay as they are.",
     actorId: actor.id,
     actorEmail: actor.email,
+  });
+  await recordStaffActivity({
+    actorId: actor.id,
+    actorEmail: actor.email,
+    action: "test",
+    targetId: orderId,
+    before: order.isTest ? "test" : "real",
+    after: isTest ? (returned ? "test, stock returned" : "test, stock unchanged") : "real",
   });
   return getOrderById(orderId);
 }

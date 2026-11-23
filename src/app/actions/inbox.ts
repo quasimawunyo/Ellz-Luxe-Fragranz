@@ -14,3 +14,13 @@ export async function markMessageSpamAction(formData: FormData) {
   revalidatePath("/admin/inbox");
   revalidatePath("/admin");
 }
+
+export async function markMessageAnsweredAction(formData: FormData) {
+  await requireAdmin();
+  const admin = createServiceClient();
+  if (!admin) return;
+  const id = String(formData.get("id") ?? "");
+  await admin.from("contact_messages").update({ answered_at: new Date().toISOString() }).eq("id", id);
+  revalidatePath("/admin/inbox");
+  revalidatePath("/admin");
+}

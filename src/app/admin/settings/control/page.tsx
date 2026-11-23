@@ -6,7 +6,7 @@ import { dataMode } from "@/lib/env";
 import { roleLabel } from "@/lib/auth/roles";
 import { StaffRoleForm } from "@/components/admin/staff-role-form";
 
-export const metadata = { title: "Control · Settings" };
+export const metadata = { title: "Control · Shop desk" };
 
 export default async function SettingsControlPage() {
   const auth = await requireSuperAdmin();
@@ -34,11 +34,11 @@ export default async function SettingsControlPage() {
           </div>
           <div>
             <dt className="text-taupe">Data</dt>
-            <dd className="mt-1">{dataMode() === "supabase" ? "Supabase" : "Demonstration"}</dd>
+            <dd className="mt-1">{dataMode() === "supabase" ? "Live shop" : "Practice data"}</dd>
           </div>
           <div>
             <dt className="text-taupe">Catalog saves</dt>
-            <dd className="mt-1">{launch.canSaveCatalog ? "Ready" : "Needs service role key"}</dd>
+            <dd className="mt-1">{launch.canSaveCatalog ? "Ready" : "Saving is not set up yet."}</dd>
           </div>
           <div>
             <dt className="text-taupe">Checkout</dt>
@@ -58,7 +58,7 @@ export default async function SettingsControlPage() {
           </div>
           <div>
             <dt className="text-taupe">Order email</dt>
-            <dd className="mt-1">{launch.orderEmail ? "Annex and customer" : "Add RESEND_API_KEY"}</dd>
+            <dd className="mt-1">{launch.orderEmail ? "Annex and customer" : "Order email is not set up yet."}</dd>
           </div>
           <div className="sm:col-span-2">
             <dt className="text-taupe">Moolre callback</dt>
@@ -83,7 +83,7 @@ export default async function SettingsControlPage() {
           Promote a signed-up account to Admin for day-to-day shop work. Only a super admin can change roles.
         </p>
         {staff.length === 0 ? (
-          <p className="mt-6 text-sm text-taupe">No accounts loaded. Add the service role key to list staff.</p>
+          <p className="mt-6 text-sm text-taupe">No staff accounts yet.</p>
         ) : (
           <>
             <ul className="mt-6 space-y-5 lg:hidden">

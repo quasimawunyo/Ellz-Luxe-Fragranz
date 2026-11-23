@@ -8,7 +8,7 @@ import { StockBadge } from "@/components/admin/stock-badge";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-export const metadata = { title: "Products · Admin" };
+export const metadata = { title: "Edit products · Shop desk" };
 
 const FILTERS: Array<{ id: "all" | StockState; label: string }> = [
   { id: "all", label: "All" },

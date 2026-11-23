@@ -13,7 +13,7 @@ export async function updateStaffRoleAction(
 ) {
   const auth = await requireSuperAdmin();
   if (!isSupabaseAdminConfigured()) {
-    return { error: "Staff changes need SUPABASE_SERVICE_ROLE_KEY." };
+    return { error: "Saving is not set up yet. Ask the person who built the shop." };
   }
   const admin = createServiceClient();
   if (!admin) return { error: "Admin client unavailable." };

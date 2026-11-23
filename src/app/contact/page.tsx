@@ -36,8 +36,14 @@ export default async function ContactPage() {
           <FieldError name="name" />
         </div>
         <div>
+          <Label htmlFor="phone">Phone</Label>
+          <Input id="phone" name="phone" type="tel" autoComplete="tel" />
+          <FieldError name="phone" />
+        </div>
+        <div>
           <Label htmlFor="email">Email</Label>
-          <Input id="email" name="email" type="email" required autoComplete="email" />
+          <Input id="email" name="email" type="email" autoComplete="email" />
+          <p className="mt-2 text-sm text-taupe">Enter a phone number or an email address.</p>
           <FieldError name="email" />
         </div>
         <div>

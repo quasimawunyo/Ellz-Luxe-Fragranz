@@ -55,26 +55,37 @@ export async function submitContact(_prev: FormState | null, formData: FormData)
   const parsed = contactSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
+    phone: formData.get("phone"),
     message,
   });
   if (!parsed.success) return validationState(parsed.error);
   const hdrs = await headers();
   const ip = hdrs.get("x-forwarded-for")?.split(",")[0]?.trim() || "anon";
-  if (!hourlyLimit("contact", ip, parsed.data.email)) {
+  if (!hourlyLimit("contact", ip, parsed.data.email || parsed.data.phone)) {
     return { error: "Please wait before sending another message." };
   }
-  if (isSupabaseAdminConfigured()) {
-    const admin = createServiceClient();
-    const { error } = await admin!.from("contact_messages").insert(parsed.data);
-    if (error) return { error: "Could not send your message." };
+  if (!isSupabaseAdminConfigured()) {
+    return { error: "Your message could not be sent. Use WhatsApp instead." };
   }
-  revalidatePath("/contact");
-  return {
-    ok: true as const,
-    message: isSupabaseAdminConfigured()
-      ? "Message received. We will reply to the address you provided."
-      : "Message validated. Connect Supabase to persist contact messages.",
+  const admin = createServiceClient();
+  const payload = {
+    name: parsed.data.name,
+    email: parsed.data.email,
+    phone: parsed.data.phone || null,
+    message: parsed.data.message,
   };
+  let { error } = await admin!.from("contact_messages").insert(payload);
+  if (error && /phone/i.test(error.message)) {
+    const retry = await admin!.from("contact_messages").insert({
+      name: payload.name,
+      email: payload.email,
+      message: payload.message,
+    });
+    error = retry.error;
+  }
+  if (error) return { error: "Could not send your message." };
+  revalidatePath("/contact");
+  return { ok: true as const, message: "Message received. We will reply to the phone or email you provided." };
 }
 
 export async function requireAdminOrRedirect() {

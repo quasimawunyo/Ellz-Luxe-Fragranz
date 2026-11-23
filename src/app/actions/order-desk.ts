@@ -94,6 +94,7 @@ export async function recordManualPaymentAction(_prev: { error?: string; ok?: bo
       reference: String(formData.get("reference") ?? ""),
       amount: formData.get("amount"),
       note: String(formData.get("note") ?? ""),
+      idempotencyKey: String(formData.get("idempotencyKey") ?? ""),
     });
     refresh(orderId);
     return { ok: true as const, message: "Manual payment recorded." };
@@ -106,7 +107,13 @@ export async function recordRefundAction(_prev: { error?: string; ok?: boolean; 
   const auth = await requireAdmin();
   const orderId = String(formData.get("orderId") ?? "");
   try {
-    await recordRefund(orderId, actor(auth), String(formData.get("note") ?? ""), formData.get("returnToStock") === "on");
+    await recordRefund(
+      orderId,
+      actor(auth),
+      String(formData.get("note") ?? ""),
+      formData.get("returnToStock") === "on",
+      String(formData.get("idempotencyKey") ?? ""),
+    );
     refresh(orderId);
     return { ok: true as const, message: "Refund recorded." };
   } catch (error) {
@@ -118,9 +125,27 @@ export async function setOrderTestAction(_prev: { error?: string; ok?: boolean; 
   const auth = await requireAdmin();
   const orderId = String(formData.get("orderId") ?? "");
   try {
-    const isTest = formData.get("isTest") === "on";
-    await setOrderTest(orderId, actor(auth), isTest);
+    const isTest = formData.get("isTest") === "on" || formData.get("isTest") === "true";
+    const returnStock = formData.get("returnStock") === "true" || formData.get("returnStock") === "on";
+    await setOrderTest(orderId, actor(auth), isTest, returnStock);
     refresh(orderId);
+    return { ok: true as const, message: isTest ? "Marked as a test." : "Marked as a real sale." };
+  } catch (error) {
+    return failed(error);
+  }
+}
+
+export async function bulkSetOrderTestAction(formData: FormData) {
+  const auth = await requireAdmin();
+  const ids = [...new Set(formData.getAll("orderId").map(String).filter(Boolean))];
+  if (!ids.length) return { error: "Select an order first." };
+  const isTest = formData.get("isTest") === "true";
+  const returnStock = formData.get("returnStock") === "true";
+  try {
+    for (const orderId of ids) {
+      await setOrderTest(orderId, actor(auth), isTest, returnStock);
+      refresh(orderId);
+    }
     return { ok: true as const, message: isTest ? "Marked as a test." : "Marked as a real sale." };
   } catch (error) {
     return failed(error);

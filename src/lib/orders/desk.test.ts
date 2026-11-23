@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { amountPaidMinor, balanceDueMinor, filterOrders } from "@/lib/orders/desk";
+import { amountPaidMinor, balanceDueMinor, filterOrders, looksLikeTest } from "@/lib/orders/desk";
 import { nextFulfillmentStatus } from "@/lib/orders/transitions";
 import type { StoreOrder } from "@/lib/orders/types";
 
@@ -91,5 +91,20 @@ describe("order desk", () => {
       { view: "all", fee: "missing" },
     );
     expect(rows.map((row) => row.orderNumber)).toEqual(["ELF-FEE"]);
+  });
+
+  it("suggests orders that look like tests without marking them", () => {
+    const shop = { email: "ellzluxefragranz@gmail.com", phone: "0593634512" };
+    const cheap = order({ id: "cheap", orderNumber: "ELF-CHEAP", totalMinor: 1500, email: "buyer@example.com" });
+    const own = order({ id: "own", orderNumber: "ELF-OWN", email: "ellzluxefragranz@gmail.com", phone: "233593634512", createdAt: "2026-11-15T10:00:00.000Z" });
+    const real = order({ id: "real", orderNumber: "ELF-REAL" });
+    const marked = order({ id: "marked", orderNumber: "ELF-MARKED", isTest: true, totalMinor: 500 });
+    expect(looksLikeTest(cheap, shop)).toBe(true);
+    expect(looksLikeTest(own, shop)).toBe(true);
+    expect(looksLikeTest(real, shop)).toBe(false);
+    expect(looksLikeTest(marked, shop)).toBe(false);
+    const rows = filterOrders([cheap, own, real, marked], { view: "all", tests: "suggest" }, shop);
+    expect(rows.map((row) => row.orderNumber)).toEqual(["ELF-OWN", "ELF-CHEAP"]);
+    expect(rows.every((row) => row.isTest === false)).toBe(true);
   });
 });

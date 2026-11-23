@@ -6,7 +6,9 @@ const RANGES = [
   ["today", "Today"],
   ["7d", "Last 7 days"],
   ["30d", "Last 30 days"],
+  ["90d", "Last 90 days"],
   ["month", "This month"],
+  ["all", "All time"],
   ["custom", "Custom"],
 ] as const;
 

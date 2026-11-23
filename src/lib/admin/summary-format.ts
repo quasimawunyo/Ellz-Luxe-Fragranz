@@ -1,7 +1,7 @@
-export type SalesPreset = "today" | "7d" | "30d" | "month" | "custom";
+export type SalesPreset = "today" | "7d" | "30d" | "90d" | "month" | "all" | "custom";
 
 export function salesPreset(value: string | undefined): SalesPreset {
-  if (value === "today" || value === "30d" || value === "month" || value === "custom") return value;
+  if (value === "today" || value === "30d" || value === "90d" || value === "month" || value === "all" || value === "custom") return value;
   return "7d";
 }
 
@@ -12,6 +12,21 @@ export function periodChange(current: number, previous: number) {
   if (percent > 0) return { direction: "up" as const, percent };
   if (percent < 0) return { direction: "down" as const, percent: Math.abs(percent) };
   return { direction: "flat" as const, percent: 0 };
+}
+
+export function formatAccraDate(iso: string) {
+  const value = iso.includes("T") ? iso : `${iso}T12:00:00Z`;
+  return new Intl.DateTimeFormat("en-GH", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "Africa/Accra",
+  }).format(new Date(value));
+}
+
+export function emptySalesNote(lastPaidAt: string | null) {
+  if (!lastPaidAt) return "No paid sales in this range.";
+  return `No paid sales in this range. The last paid sale was ${formatAccraDate(lastPaidAt)}.`;
 }
 
 export function formatAccraDay(isoDate: string) {
@@ -31,7 +46,9 @@ export function formatAccraRange(from: string, to: string) {
 export function rangePhrase(preset: SalesPreset) {
   if (preset === "today") return "today";
   if (preset === "30d") return "last 30 Accra days";
+  if (preset === "90d") return "last 90 Accra days";
   if (preset === "month") return "this month";
+  if (preset === "all") return "all time";
   if (preset === "custom") return "these Accra days";
   return "last 7 Accra days";
 }

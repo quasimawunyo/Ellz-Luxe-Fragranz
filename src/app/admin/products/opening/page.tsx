@@ -8,7 +8,7 @@ import { formatMoney } from "@/lib/money";
 import { stockState } from "@/lib/stock";
 import { StockBadge } from "@/components/admin/stock-badge";
 
-export const metadata = { title: "Opening stock · Admin" };
+export const metadata = { title: "Set opening stock · Shop desk" };
 
 export default async function OpeningStockPage() {
   await requireAdmin();

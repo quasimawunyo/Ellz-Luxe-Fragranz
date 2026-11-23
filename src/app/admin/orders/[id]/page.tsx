@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -14,13 +15,21 @@ import { CopyText } from "@/components/admin/copy-text";
 import { CustomerWhatsApp } from "@/components/admin/customer-whatsapp";
 import { StatusPill } from "@/components/admin/status-pill";
 import { restoreCouponUseAction } from "@/app/actions/coupons";
+import { ConfirmSubmit } from "@/components/admin/confirm-submit";
 import { ActionForm } from "@/components/forms/form-status";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
 import { Price } from "@/components/ui/price";
-import { cedisInputFromMinor, formatMoney } from "@/lib/money";
+import { cedisInputFromMinor, formatMoney, minorFromCedisInput } from "@/lib/money";
 import { amountPaidMinor, balanceDueMinor } from "@/lib/orders/desk";
+import { isSuperAdminRole } from "@/lib/auth/roles";
+import { requireAdmin } from "@/lib/auth/require-admin";
 import { getOrderById } from "@/lib/orders/store";
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const order = await getOrderById((await params).id);
+  return { title: `${order?.orderNumber ?? "Order"} · Shop desk` };
+}
 import {
   canCancelFulfillment,
   customerEmailForFulfilment,
@@ -31,7 +40,7 @@ import {
 
 export default async function AdminOrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const order = await getOrderById(id);
+  const [auth, order] = await Promise.all([requireAdmin(), getOrderById(id)]);
   if (!order) notFound();
   const pickup = isPickupOrder(order.deliveryMethod);
   const next = nextFulfillmentStatus(order.fulfillmentStatus, order.deliveryMethod);
@@ -43,9 +52,16 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
     <div className="max-w-3xl">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <h1 className="text-2xl font-semibold">{order.orderNumber}</h1>
-        <Link href={`/admin/orders/${order.id}/slip`} className="text-sm underline underline-offset-4">
-          Print packing slip
-        </Link>
+        <div className="flex gap-4">
+          {isSuperAdminRole(auth.role) ? (
+            <Link href={`/admin/activity?order=${order.id}`} className="text-sm underline underline-offset-4">
+              History
+            </Link>
+          ) : null}
+          <Link href={`/admin/orders/${order.id}/slip`} className="text-sm underline underline-offset-4">
+            Print packing slip
+          </Link>
+        </div>
       </div>
       <div className="mt-3 flex flex-wrap items-center gap-2">
         <StatusPill value={order.paymentStatus} />
@@ -63,7 +79,18 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
             <ActionForm action={setOrderTestAction}>
               <input type="hidden" name="orderId" value={order.id} />
               <input type="hidden" name="isTest" value="on" />
-              <Button type="submit" variant="outline">Mark as test</Button>
+              {order.stockApplied ? (
+                <ConfirmSubmit
+                  idleLabel="Mark as test"
+                  confirmLabel="Return stock"
+                  detail="Mark this order as a test. Money and coupon use stay as they are. Stock taken for this order will be returned."
+                  variant="outline"
+                >
+                  <input type="hidden" name="returnStock" value="true" />
+                </ConfirmSubmit>
+              ) : (
+                <Button type="submit" variant="outline">Mark as test</Button>
+              )}
             </ActionForm>
           </div>
         </section>
@@ -216,7 +243,17 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
           <Label htmlFor="paymentNote">Note</Label>
           <Input id="paymentNote" name="note" required />
         </div>
-        <Button type="submit">Record payment</Button>
+        <ConfirmSubmit
+          idleLabel="Record payment"
+          confirmLabel="Record payment"
+          detail="Record this payment. Stock is not returned."
+          detailFromForm={(form) => {
+            const amount = minorFromCedisInput(new FormData(form).get("amount"));
+            const money = amount && amount > 0 ? formatMoney(amount, order.currencyCode) : "the amount you entered";
+            return `Record a payment of ${money}. Stock is not returned.`;
+          }}
+          idempotency
+        />
       </ActionForm>
 
       <section className="mt-8">
@@ -269,7 +306,21 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
             <input name="returnToStock" type="checkbox" className="mt-1 size-4" />
             <span>Return to stock</span>
           </label>
-          <Button type="submit" variant="danger">Cancel order</Button>
+          <ConfirmSubmit
+            idleLabel="Cancel order"
+            confirmLabel="Cancel order"
+            detail="Cancel this order."
+            variant="danger"
+            detailFromForm={(form) => {
+              const returning = new FormData(form).get("returnToStock") === "on";
+              const stock = returning
+                ? order.stockApplied
+                  ? "Stock held for this order will be returned."
+                  : "No stock was held, so nothing is returned."
+                : "Stock stays as it is.";
+              return `Cancel this order. The order total stays ${formatMoney(order.totalMinor, order.currencyCode)}. ${stock}`;
+            }}
+          />
         </ActionForm>
       ) : null}
 
@@ -285,7 +336,24 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
             <input name="returnToStock" type="checkbox" className="mt-1 size-4" />
             <span>Return to stock</span>
           </label>
-          <Button type="submit" variant="danger">Record refund</Button>
+          <ConfirmSubmit
+            idleLabel="Record refund"
+            confirmLabel="Record refund"
+            detail="Record this refund."
+            variant="danger"
+            idempotency
+            detailFromForm={(form) => {
+              const returning = new FormData(form).get("returnToStock") === "on";
+              const stock = returning
+                ? order.isTest
+                  ? "This is a test order, so stock is not returned."
+                  : order.stockApplied
+                    ? "Stock held for this order will be returned."
+                    : "No stock was held, so nothing is returned."
+                : "Stock stays as it is.";
+              return `Record a refund of ${formatMoney(paid || order.totalMinor, order.currencyCode)}. ${stock}`;
+            }}
+          />
         </ActionForm>
       ) : null}
 
@@ -293,7 +361,17 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
         <ActionForm action={setOrderTestAction} className="mt-4">
           <input type="hidden" name="orderId" value={order.id} />
           <input type="hidden" name="isTest" value={order.isTest ? "" : "on"} />
-          <Button type="submit" variant="outline">{order.isTest ? "Mark as a real sale" : "Mark as test"}</Button>
+          {order.isTest || !order.stockApplied ? (
+            <Button type="submit" variant="outline">{order.isTest ? "Mark as a real sale" : "Mark as test"}</Button>
+          ) : (
+            <ConfirmSubmit
+              idleLabel="Mark as test"
+              confirmLabel="Return stock"
+              detail="Mark this order as a test. Money and coupon use stay as they are. Stock taken for this order will be returned."
+            >
+              <input type="hidden" name="returnStock" value="true" />
+            </ConfirmSubmit>
+          )}
         </ActionForm>
       ) : null}
 

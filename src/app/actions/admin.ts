@@ -7,22 +7,68 @@ import { createServiceClient } from "@/lib/supabase/admin";
 import { isSupabaseAdminConfigured } from "@/lib/env";
 import { productInputSchema } from "@/lib/validations";
 import { parseSizeRows } from "@/lib/catalog/save-sizes";
-import { minorFromCedisInput } from "@/lib/money";
+import { recordStaffActivity } from "@/lib/admin/activity";
+import { formatMoney, minorFromCedisInput } from "@/lib/money";
 import { isR2Configured, uploadProductPhoto } from "@/lib/storage/r2";
 import type { DeliveryMethod } from "@/lib/catalog/types";
 
 function needDb() {
   if (!isSupabaseAdminConfigured()) {
-    throw new Error("Admin mutations require a configured Supabase service role.");
+    throw new Error("Saving is not set up yet. Ask the person who built the shop.");
   }
   const admin = createServiceClient();
   if (!admin) throw new Error("Admin client unavailable.");
   return admin;
 }
 
-export async function saveSettingsAction(_prev: { error?: string; ok?: boolean; message?: string } | null, formData: FormData) {
+function categorySlug(name: string) {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80);
+}
+
+export async function saveCategoryAction(_prev: { error?: string; ok?: boolean } | null, formData: FormData) {
   await requireAdmin();
   const admin = needDb();
+  const name = String(formData.get("name") ?? "").trim();
+  const typedSlug = String(formData.get("slug") ?? "").trim();
+  const slug = typedSlug || categorySlug(name);
+  if (name.length < 2) return { error: "Enter a category name." };
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) return { error: "Use letters, numbers, and hyphens for the slug." };
+  const existingId = String(formData.get("id") ?? "").trim();
+  const id = existingId || slug;
+  const { data: slugOwner } = await admin.from("categories").select("id").eq("slug", slug).maybeSingle();
+  if (slugOwner && slugOwner.id !== id) return { error: "That slug is already used." };
+  const { error } = await admin.from("categories").upsert({ id, name, slug });
+  if (error) return { error: "The category could not be saved." };
+  updateTag("storefront");
+  revalidatePath("/admin/categories");
+  revalidatePath("/shop");
+  return { ok: true as const };
+}
+
+export async function deleteCategoryAction(_prev: { error?: string; ok?: boolean } | null, formData: FormData) {
+  await requireAdmin();
+  const admin = needDb();
+  const id = String(formData.get("id") ?? "");
+  const { count } = await admin.from("products").select("id", { count: "exact", head: true }).eq("category_id", id);
+  if ((count ?? 0) > 0) return { error: "Move or archive its products first." };
+  const { error } = await admin.from("categories").delete().eq("id", id);
+  if (error) return { error: "The category could not be deleted." };
+  updateTag("storefront");
+  revalidatePath("/admin/categories");
+  revalidatePath("/shop");
+  return { ok: true as const };
+}
+
+export async function saveSettingsAction(_prev: { error?: string; ok?: boolean; message?: string } | null, formData: FormData) {
+  const auth = await requireAdmin();
+  const admin = needDb();
+  const current = await admin.from("store_settings").select("key, value");
+  const before = new Map((current.data ?? []).map((row) => [String(row.key), JSON.stringify(row.value ?? "")]));
   const entries = [
     ["announcement", formData.get("announcement")],
     ["contact_email", formData.get("contactEmail")],
@@ -69,6 +115,19 @@ export async function saveSettingsAction(_prev: { error?: string; ok?: boolean; 
     },
   ];
   await admin.from("store_settings").upsert({ key: "delivery_methods", value: deliveryMethods });
+  const hidden = new Set(["contact_phone", "momo_number", "momo_merchant_id", "bank_account"]);
+  const changed = entries
+    .filter(([key, value]) => before.get(key) !== JSON.stringify(String(value ?? "")))
+    .map(([key]) => (hidden.has(key) ? `${key.replaceAll("_", " ")} changed` : key.replaceAll("_", " ")));
+  if (changed.length) {
+    await recordStaffActivity({
+      actorId: auth.user.id,
+      actorEmail: auth.email,
+      action: "settings",
+      targetId: "store",
+      after: changed.join(", "),
+    });
+  }
   updateTag("storefront");
   revalidatePath("/");
   revalidatePath("/checkout");
@@ -110,8 +169,13 @@ export async function saveProductAction(_prev: { error?: string; ok?: boolean; m
     imageAlt: String(formData.get("imageAlt") ?? "").trim() || undefined,
   });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message };
-  const creating = !String(formData.get("id") || "");
-  const id = String(formData.get("id") || crypto.randomUUID());
+  const existingId = String(formData.get("id") || "").trim();
+  const creating = !existingId;
+  const id = creating ? parsed.data.slug : existingId;
+  const { data: beforeVariants } = await admin
+    .from("product_variants")
+    .select("label, price_minor")
+    .eq("product_id", id);
   const { error } = await admin.from("products").upsert({
     id,
     name: parsed.data.name,
@@ -216,6 +280,18 @@ export async function saveProductAction(_prev: { error?: string; ok?: boolean; m
     });
   }
 
+  const beforeText = (beforeVariants ?? []).map((variant) => `${variant.label} ${formatMoney(Number(variant.price_minor))}`).join("; ");
+  const afterText = parsedSizes.sizes.map((size) => `${size.label} ${formatMoney(size.priceMinor)}`).join("; ");
+  if (beforeText !== afterText) {
+    await recordStaffActivity({
+      actorId: auth.user.id,
+      actorEmail: auth.email,
+      action: "sizes",
+      targetId: id,
+      before: beforeText,
+      after: afterText,
+    });
+  }
   updateTag("storefront");
   revalidatePath("/admin/products");
   revalidatePath("/shop");
@@ -240,6 +316,7 @@ export async function adjustStockAction(_prev: { error?: string; ok?: boolean; m
   if (!variantId) return { error: "Choose a size." };
   if (!Number.isInteger(amount) || amount < 1) return { error: "Enter a whole number of bottles." };
   if (!ADJUST_REASONS.includes(reason as (typeof ADJUST_REASONS)[number])) return { error: "Choose a reason." };
+  const { data: beforeStock } = await admin.from("product_variants").select("stock_quantity").eq("id", variantId).maybeSingle();
   const change = direction === "remove" ? -amount : amount;
   const { error } = await admin.rpc("adjust_stock", {
     p_variant_id: variantId,
@@ -250,6 +327,15 @@ export async function adjustStockAction(_prev: { error?: string; ok?: boolean; m
     p_created_by: auth.user.id,
   });
   if (error) return { error: stockErrorMessage(error) };
+  const beforeQuantity = Number(beforeStock?.stock_quantity ?? 0);
+  await recordStaffActivity({
+    actorId: auth.user.id,
+    actorEmail: auth.email,
+    action: "stock",
+    targetId: variantId,
+    before: String(beforeQuantity),
+    after: String(beforeQuantity + change),
+  });
   updateTag("storefront");
   revalidatePath("/admin");
   revalidatePath("/admin/products");
@@ -289,6 +375,14 @@ export async function startTrackingAction(_prev: { error?: string; ok?: boolean;
     }
     const { error: trackError } = await admin.from("product_variants").update({ track_stock: true }).eq("id", id);
     if (trackError) return { error: trackError.message };
+    await recordStaffActivity({
+      actorId: auth.user.id,
+      actorEmail: auth.email,
+      action: "stock",
+      targetId: id,
+      before: "not tracked",
+      after: String(desired),
+    });
     started += 1;
   }
   updateTag("storefront");
@@ -304,9 +398,10 @@ export async function startTrackingAction(_prev: { error?: string; ok?: boolean;
 }
 
 export async function setSalePricesAction(_prev: { error?: string; ok?: boolean } | null, formData: FormData) {
-  await requireAdmin();
+  const auth = await requireAdmin();
   const admin = needDb();
   const ids = formData.getAll("variantId").map(String);
+  let changed = 0;
   for (const id of ids) {
     const clear = formData.get(`clear:${id}`) === "on";
     const text = String(formData.get(`compare:${id}`) ?? "").trim();
@@ -315,6 +410,7 @@ export async function setSalePricesAction(_prev: { error?: string; ok?: boolean 
     if (clear || !text) {
       const { error } = await admin.from("product_variants").update({ compare_at_minor: null }).eq("id", id);
       if (error) return { error: "The sale price could not be saved." };
+      changed += 1;
       continue;
     }
     const compareAt = minorFromCedisInput(text);
@@ -322,6 +418,16 @@ export async function setSalePricesAction(_prev: { error?: string; ok?: boolean 
     if (compareAt <= variant.price_minor) return { error: "The compare-at price must be higher than the price." };
     const { error } = await admin.from("product_variants").update({ compare_at_minor: compareAt }).eq("id", id);
     if (error) return { error: "The sale price could not be saved." };
+    changed += 1;
+  }
+  if (changed) {
+    await recordStaffActivity({
+      actorId: auth.user.id,
+      actorEmail: auth.email,
+      action: "price",
+      targetId: "sale",
+      after: `${changed} compare-at ${changed === 1 ? "price" : "prices"}`,
+    });
   }
   updateTag("storefront");
   revalidatePath("/admin/discounts");

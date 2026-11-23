@@ -15,7 +15,7 @@ export default async function ConnectionsPage() {
     ["Moolre", launch.moolre ? "Keys present" : "Not set"],
     ["Paystack", launch.paystack ? "Keys present" : "Not set"],
     ["Order email", launch.orderEmail ? "Annex and customer" : "Not set"],
-    ["Catalog saves", launch.canSaveCatalog ? "Ready" : "Needs the service role key"],
+    ["Catalog saves", launch.canSaveCatalog ? "Ready" : "Saving is not set up yet."],
   ];
 
   return (

@@ -1,7 +1,8 @@
 import Link from "next/link";
+import { loadLaunchAttention } from "@/lib/admin/launch-checks";
 import { loadSalesSummary } from "@/lib/admin/summary";
 import { formatMoney } from "@/lib/money";
-import { previousCompare, rangePhrase, readSalesQuery } from "@/lib/admin/summary-format";
+import { emptySalesNote, previousCompare, rangePhrase, readSalesQuery } from "@/lib/admin/summary-format";
 import { RangePicker } from "@/components/admin/range-picker";
 import { cn } from "@/lib/utils";
 
@@ -30,7 +31,7 @@ export default async function AdminHomePage({
   searchParams: Promise<{ range?: string; from?: string; to?: string }>;
 }) {
   const query = readSalesQuery(await searchParams);
-  const summary = await loadSalesSummary(query.preset, query.from, query.to);
+  const [summary, attention] = await Promise.all([loadSalesSummary(query.preset, query.from, query.to), loadLaunchAttention()]);
   const phrase = rangePhrase(summary.range.preset);
   const today = accraToday();
   const peak = Math.max(1, ...summary.days.map((day) => day.revenueMinor));
@@ -52,6 +53,42 @@ export default async function AdminHomePage({
           All orders
         </Link>
       </header>
+
+      {attention.lines.length ? (
+        <section className="rounded-[1.25rem] border border-amber-200 bg-amber-50 p-5">
+          <h2 className="font-serif text-2xl">Before you sell</h2>
+          <ul className="mt-3 space-y-3">
+            {attention.lines.map((line) => (
+              <li key={line.href}>
+                <Link href={line.href} className="text-sm underline">
+                  {line.text}
+                </Link>
+                {line.details.length ? <p className="mt-1 text-sm text-taupe">{line.details.join(" · ")}</p> : null}
+              </li>
+            ))}
+            {attention.lowStock.map((size) => (
+              <li key={size.variantId}>
+                <Link href={`/admin/products/stock/${size.variantId}`} className="text-sm underline">
+                  {size.productName}, {size.label} has {size.quantity} left.
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : attention.lowStock.length ? (
+        <section className="rounded-[1.25rem] border border-amber-200 bg-amber-50 p-5">
+          <h2 className="font-serif text-2xl">Low stock</h2>
+          <ul className="mt-3 space-y-2">
+            {attention.lowStock.map((size) => (
+              <li key={size.variantId}>
+                <Link href={`/admin/products/stock/${size.variantId}`} className="text-sm underline">
+                  {size.productName}, {size.label} has {size.quantity} left.
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
 
       <section className="rounded-[1.25rem] border border-espresso/10 bg-white p-5">
         <div className="flex items-start justify-between gap-3">
@@ -99,7 +136,7 @@ export default async function AdminHomePage({
       <section className="rounded-[1.25rem] border border-espresso/10 bg-white p-5">
         <h2 className="font-serif text-2xl">{summary.days.length} days</h2>
         <p className="mt-1 text-sm text-taupe">Cedis. Today is the dark column.</p>
-        {summary.current.orders === 0 ? <p className="mt-4 text-sm text-taupe">No paid sales in this range.</p> : null}
+        {summary.current.orders === 0 ? <p className="mt-4 text-sm text-taupe">{emptySalesNote(summary.lastPaidAt)}</p> : null}
         <div className={cn("mt-6 flex h-44 items-end gap-1", summary.days.length > 10 && "overflow-x-auto")}>
           {summary.days.map((point) => {
             const bits = dayBits(point.day);

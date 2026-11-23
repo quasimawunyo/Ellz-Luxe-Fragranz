@@ -28,7 +28,28 @@ export type OrderListQuery = {
 };
 
 export function isDefaultOrderQueue(query: OrderListQuery) {
-  return !query.view && !query.q && !query.payment && !query.fulfilment && !query.method && !query.from && !query.to && query.tests !== "1" && !query.fee && !query.attention && !query.review;
+  const testsOn = query.tests === "1" || query.tests === "only" || query.tests === "suggest";
+  return !query.view && !query.q && !query.payment && !query.fulfilment && !query.method && !query.from && !query.to && !testsOn && !query.fee && !query.attention && !query.review;
+}
+
+export function phoneKey(phone: string) {
+  const digits = phone.replace(/\D/g, "");
+  if (!digits) return "";
+  return digits.length > 9 ? digits.slice(-9) : digits;
+}
+
+export function looksLikeTest(
+  order: { isTest: boolean; email: string; phone: string; totalMinor: number },
+  shop: { email: string; phone: string },
+) {
+  if (order.isTest) return false;
+  const email = order.email.trim().toLowerCase();
+  const shopEmail = shop.email.trim().toLowerCase();
+  if (email && shopEmail && email === shopEmail) return true;
+  const phone = phoneKey(order.phone);
+  const shopPhone = phoneKey(shop.phone);
+  if (phone && shopPhone && phone === shopPhone) return true;
+  return order.totalMinor < 5000;
 }
 
 function accraDay(iso: string) {
@@ -40,12 +61,14 @@ function accraDay(iso: string) {
   }).format(new Date(iso));
 }
 
-export function filterOrders(orders: StoreOrder[], query: OrderListQuery) {
+export function filterOrders(orders: StoreOrder[], query: OrderListQuery, shop?: { email: string; phone: string }) {
   const queue = isDefaultOrderQueue(query);
   const needle = query.q?.trim().toLowerCase() ?? "";
   const needleDigits = query.q?.replace(/\D/g, "") ?? "";
+  const shopContact = shop ?? { email: "", phone: "" };
   return orders
     .filter((order) => {
+      if (query.tests === "suggest") return looksLikeTest(order, shopContact);
       if (query.tests === "only") return order.isTest;
       if (query.tests !== "1" && order.isTest) return false;
       if (queue) {
@@ -79,6 +102,7 @@ export function filterOrders(orders: StoreOrder[], query: OrderListQuery) {
 }
 
 export function orderListHeading(query: OrderListQuery) {
+  if (query.tests === "suggest") return "Orders that look like tests";
   if (query.fee === "missing") return "Waiting for a delivery fee";
   if (query.attention === "1") return "Needs attention";
   if (query.review === "1") return "Review";

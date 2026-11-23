@@ -36,6 +36,7 @@ export function emptySizeRow(): SizeRow {
 
 export function SizeRows({ initial }: { initial: SizeRow[] }) {
   const [rows, setRows] = useState(initial.length ? initial : [emptySizeRow()]);
+  const [removeIndex, setRemoveIndex] = useState<number | null>(null);
 
   function update(index: number, patch: Partial<SizeRow>) {
     setRows((current) => current.map((row, rowIndex) => (rowIndex === index ? { ...row, ...patch } : row)));
@@ -132,13 +133,33 @@ export function SizeRows({ initial }: { initial: SizeRow[] }) {
           {row.ordered ? (
             <p className="text-sm text-taupe">This size has been ordered. Hide it instead of removing it.</p>
           ) : (
-            <button
-              type="button"
-              className="min-h-11 text-sm underline"
-              onClick={() => setRows((current) => (current.length === 1 ? current : current.filter((_, rowIndex) => rowIndex !== index)))}
-            >
-              Remove this size
-            </button>
+            <div>
+              <button type="button" className="min-h-11 text-sm underline" onClick={() => setRemoveIndex(index)}>
+                Remove this size
+              </button>
+              {removeIndex === index ? (
+                <div role="dialog" aria-modal="true" className="mt-3 space-y-3 rounded-2xl border border-espresso/15 bg-ivory p-4">
+                  <p className="text-sm">
+                    Remove this size when you save the bottle. No money moves. Stock for this size is not returned.
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    <button type="button" className="min-h-11 border border-espresso/15 px-4 text-sm" onClick={() => setRemoveIndex(null)}>
+                      Go back
+                    </button>
+                    <button
+                      type="button"
+                      className="min-h-11 bg-espresso px-4 text-sm text-ivory"
+                      onClick={() => {
+                        setRows((current) => (current.length === 1 ? current : current.filter((_, rowIndex) => rowIndex !== index)));
+                        setRemoveIndex(null);
+                      }}
+                    >
+                      Remove size
+                    </button>
+                  </div>
+                </div>
+              ) : null}
+            </div>
           )}
         </fieldset>
       ))}

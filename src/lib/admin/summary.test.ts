@@ -5,6 +5,8 @@ describe("sales summary labels", () => {
   it("defaults the range to the last 7 days", () => {
     expect(salesPreset(undefined)).toBe("7d");
     expect(salesPreset("today")).toBe("today");
+    expect(salesPreset("90d")).toBe("90d");
+    expect(salesPreset("all")).toBe("all");
     expect(salesPreset("year")).toBe("7d");
   });
 

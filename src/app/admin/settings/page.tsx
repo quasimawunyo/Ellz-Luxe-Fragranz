@@ -7,7 +7,7 @@ import { Input, Label, Textarea } from "@/components/ui/input";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { isSuperAdminRole } from "@/lib/auth/roles";
 
-export const metadata = { title: "Settings · Admin" };
+export const metadata = { title: "Settings · Shop desk" };
 
 export default async function AdminSettingsPage() {
   const [settings, auth] = await Promise.all([getStoreSettings(), requireAdmin()]);

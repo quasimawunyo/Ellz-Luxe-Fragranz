@@ -69,7 +69,17 @@ const GROUPS: { label: string; items: Item[] }[] = [
   },
 ];
 
-function NavLinks({ pathname, onNavigate, inboxCount }: { pathname: string; onNavigate?: () => void; inboxCount: number }) {
+function NavLinks({
+  pathname,
+  onNavigate,
+  inboxCount,
+  showActivity,
+}: {
+  pathname: string;
+  onNavigate?: () => void;
+  inboxCount: number;
+  showActivity: boolean;
+}) {
   return (
     <nav aria-label="Shop desk" className="flex flex-1 flex-col gap-6 overflow-y-auto px-3 py-4">
       {GROUPS.map((group) => (
@@ -98,6 +108,23 @@ function NavLinks({ pathname, onNavigate, inboxCount }: { pathname: string; onNa
               );
             })}
           </ul>
+          {group.label === "Shop" && showActivity ? (
+            <ul className="mt-1">
+              <li>
+                <Link
+                  href="/admin/activity"
+                  aria-current={pathname.startsWith("/admin/activity") ? "page" : undefined}
+                  onClick={onNavigate}
+                  className={cn(
+                    "flex min-h-11 items-center gap-3 rounded-xl px-3 text-[15px]",
+                    pathname.startsWith("/admin/activity") ? "bg-ivory font-medium text-espresso" : "text-ivory/90 hover:bg-white/10",
+                  )}
+                >
+                  Activity
+                </Link>
+              </li>
+            </ul>
+          ) : null}
         </div>
       ))}
     </nav>
@@ -141,11 +168,13 @@ export function AdminShell({
   name,
   email,
   inboxCount = 0,
+  showActivity = false,
   children,
 }: {
   name: string;
   email: string | null;
   inboxCount?: number;
+  showActivity?: boolean;
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
@@ -161,7 +190,7 @@ export function AdminShell({
       <div className="flex min-h-screen">
         <aside className="sticky top-0 hidden h-screen w-72 shrink-0 flex-col bg-espresso text-ivory print:hidden lg:flex">
           <DeskMark />
-          <NavLinks pathname={pathname} inboxCount={inboxCount} />
+          <NavLinks pathname={pathname} inboxCount={inboxCount} showActivity={showActivity} />
           <Person name={name} email={email} />
         </aside>
 
@@ -189,7 +218,7 @@ export function AdminShell({
               </button>
             </div>
             <DeskMark />
-            <NavLinks pathname={pathname} inboxCount={inboxCount} onNavigate={() => setOpen(false)} />
+            <NavLinks pathname={pathname} inboxCount={inboxCount} showActivity={showActivity} onNavigate={() => setOpen(false)} />
             <Person name={name} email={email} />
           </div>
         </div>

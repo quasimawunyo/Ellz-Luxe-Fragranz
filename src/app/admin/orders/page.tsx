@@ -2,13 +2,15 @@ import Link from "next/link";
 import { listOrders } from "@/lib/orders/store";
 import { filterOrders, isDefaultOrderQueue, orderListHeading, type OrderListQuery } from "@/lib/orders/desk";
 import { fulfillmentStatuses, paymentStatuses } from "@/lib/orders/transitions";
+import { getStoreSettings } from "@/lib/catalog/queries";
 import { formatMoney } from "@/lib/money";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { StatusPill } from "@/components/admin/status-pill";
 import { CustomerWhatsApp } from "@/components/admin/customer-whatsapp";
+import { TestOrderForm } from "@/components/admin/test-order-form";
 
-export const metadata = { title: "Orders · Admin" };
+export const metadata = { title: "Orders · Shop desk" };
 
 export default async function AdminOrdersPage({
   searchParams,
@@ -16,7 +18,8 @@ export default async function AdminOrdersPage({
   searchParams: Promise<OrderListQuery>;
 }) {
   const query = await searchParams;
-  const orders = filterOrders(await listOrders(), query);
+  const settings = await getStoreSettings();
+  const orders = filterOrders(await listOrders(), query, { email: settings.contactEmail, phone: settings.contactPhone });
   const queue = isDefaultOrderQueue(query);
   const exportQuery = new URLSearchParams();
   for (const [key, value] of Object.entries(query)) {
@@ -85,13 +88,17 @@ export default async function AdminOrdersPage({
         </label>
         <Button type="submit">Filter</Button>
       </form>
+      <TestOrderForm orders={orders.map((order) => ({ id: order.id, stockApplied: order.stockApplied }))}>
       <ul className="mt-6 space-y-3 lg:hidden">
         {orders.map((order) => (
           <li key={order.id} className="rounded-[1.25rem] border border-espresso/10 bg-white p-4">
             <div className="flex items-start justify-between gap-3">
-              <Link href={`/admin/orders/${order.id}`} className="inline-flex min-h-11 items-center font-medium">
-                {order.orderNumber}
-              </Link>
+              <label className="flex min-h-11 items-center gap-3">
+                <input type="checkbox" name="orderId" value={order.id} className="size-5" />
+                <Link href={`/admin/orders/${order.id}`} className="font-medium">
+                  {order.orderNumber}
+                </Link>
+              </label>
               <p className="pt-3 text-sm">{formatMoney(order.totalMinor, order.currencyCode)}</p>
             </div>
             <p className="text-sm">{order.fullName}</p>
@@ -109,6 +116,7 @@ export default async function AdminOrdersPage({
         <table className="w-full min-w-[52rem] text-left text-sm">
           <thead>
             <tr className="border-b border-espresso/10 text-xs text-taupe">
+              <th className="px-4 py-3">Select</th>
               <th className="px-4 py-3">Order</th>
               <th>Customer</th>
               <th>Method</th>
@@ -120,6 +128,9 @@ export default async function AdminOrdersPage({
           <tbody>
             {orders.map((order) => (
               <tr key={order.id} className="border-b border-espresso/10 last:border-0">
+                <td className="px-4 py-3">
+                  <input type="checkbox" name="orderId" value={order.id} aria-label={`Select ${order.orderNumber}`} className="size-5" />
+                </td>
                 <td className="px-4 py-3">
                   <Link href={`/admin/orders/${order.id}`} className="font-medium">
                     {order.orderNumber}
@@ -148,6 +159,7 @@ export default async function AdminOrdersPage({
       {!orders.length ? (
         <p className="mt-8 text-sm text-taupe">{queue ? "No paid orders need action." : "No orders match this filter."}</p>
       ) : null}
+      </TestOrderForm>
     </div>
   );
 }

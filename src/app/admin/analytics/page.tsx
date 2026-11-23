@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { loadSalesSummary } from "@/lib/admin/summary";
-import { formatAccraRange, readSalesQuery } from "@/lib/admin/summary-format";
+import { emptySalesNote, formatAccraRange, readSalesQuery } from "@/lib/admin/summary-format";
 import { formatMoney } from "@/lib/money";
 import { RangePicker } from "@/components/admin/range-picker";
 import { cn } from "@/lib/utils";
@@ -35,7 +35,7 @@ export default async function AnalyticsPage({
         </p>
       </header>
       <RangePicker base="/admin/analytics" preset={query.preset} from={query.from ?? summary.range.from} to={query.to ?? summary.range.to} />
-      {empty ? <p className="rounded-2xl border border-espresso/10 bg-white px-4 py-3 text-sm">No paid sales in this range.</p> : null}
+      {empty ? <p className="rounded-2xl border border-espresso/10 bg-white px-4 py-3 text-sm">{emptySalesNote(summary.lastPaidAt)}</p> : null}
 
       <section className="grid gap-3 sm:grid-cols-3">
         <article className="rounded-[1.25rem] border border-espresso/10 bg-white p-5">

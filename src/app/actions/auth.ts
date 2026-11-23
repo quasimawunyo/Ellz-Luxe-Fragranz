@@ -10,7 +10,7 @@ import { safeInternalPath } from "@/lib/security/paths";
 
 export async function signInAction(_prev: { error?: string } | null, formData: FormData) {
   if (!isSupabaseConfigured()) {
-    return { error: "Authentication requires Supabase configuration." };
+    return { error: "Sign-in is not set up yet. Ask the person who built the shop." };
   }
   const parsed = signInSchema.safeParse({
     email: formData.get("email"),
@@ -25,7 +25,7 @@ export async function signInAction(_prev: { error?: string } | null, formData: F
 
 export async function signUpAction(_prev: { error?: string; ok?: boolean; message?: string } | null, formData: FormData) {
   if (!isSupabaseConfigured()) {
-    return { error: "Authentication requires Supabase configuration." };
+    return { error: "Sign-in is not set up yet. Ask the person who built the shop." };
   }
   const parsed = signUpSchema.safeParse({
     email: formData.get("email"),
@@ -54,7 +54,7 @@ export async function signOutAction() {
 
 export async function recoverPasswordAction(_prev: { error?: string; ok?: boolean; message?: string } | null, formData: FormData) {
   if (!isSupabaseConfigured()) {
-    return { error: "Authentication requires Supabase configuration." };
+    return { error: "Sign-in is not set up yet. Ask the person who built the shop." };
   }
   const parsed = signInSchema.pick({ email: true }).safeParse({ email: formData.get("email") });
   if (!parsed.success) return validationState(parsed.error);
@@ -73,7 +73,7 @@ export async function updateProfileAction(_prev: { error?: string; ok?: boolean;
   });
   if (!parsed.success) return validationState(parsed.error);
   const supabase = await createUserSupabase();
-  if (!supabase) return { error: "Authentication requires Supabase configuration." };
+  if (!supabase) return { error: "Sign-in is not set up yet. Ask the person who built the shop." };
   const {
     data: { user },
   } = await supabase.auth.getUser();

@@ -6,6 +6,7 @@ import { rateLimit } from "@/lib/rate-limit";
 import { resolveCart } from "@/lib/cart/store";
 import { getVariantById } from "@/lib/catalog/queries";
 import { COUPON_COOKIE, couponDiscount, findCoupon, restoreCouponUse } from "@/lib/coupons";
+import { recordStaffActivity } from "@/lib/admin/activity";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { createServiceClient } from "@/lib/supabase/admin";
 import { minorFromCedisInput } from "@/lib/money";
@@ -40,7 +41,7 @@ export async function clearCouponAction() {
 }
 
 export async function saveCouponAction(_prev: { error?: string; ok?: boolean } | null, formData: FormData) {
-  await requireAdmin();
+  const auth = await requireAdmin();
   const admin = createServiceClient();
   if (!admin) return { error: "Database is not ready." };
   const code = String(formData.get("code") ?? "").trim();
@@ -81,17 +82,31 @@ export async function saveCouponAction(_prev: { error?: string; ok?: boolean } |
     if (error.message.toLowerCase().includes("duplicate") || error.code === "23505") return { error: "That code already exists." };
     return { error: "The coupon could not be saved." };
   }
+  await recordStaffActivity({
+    actorId: auth.user.id,
+    actorEmail: auth.email,
+    action: "coupon",
+    targetId: id || code,
+    after: `${code} ${type} ${payload.active ? "active" : "paused"}`,
+  });
   revalidatePath("/admin/coupons");
   return { ok: true as const };
 }
 
 export async function pauseCouponAction(formData: FormData) {
-  await requireAdmin();
+  const auth = await requireAdmin();
   const admin = createServiceClient();
   if (!admin) return;
   const id = String(formData.get("id") ?? "");
   const active = formData.get("active") === "true";
   await admin.from("coupons").update({ active }).eq("id", id);
+  await recordStaffActivity({
+    actorId: auth.user.id,
+    actorEmail: auth.email,
+    action: "coupon",
+    targetId: id,
+    after: active ? "resumed" : "paused",
+  });
   revalidatePath("/admin/coupons");
 }
 
@@ -104,16 +119,23 @@ export async function restoreCouponUseAction(formData: FormData) {
 }
 
 export async function deleteCouponAction(formData: FormData) {
-  await requireAdmin();
+  const auth = await requireAdmin();
   const admin = createServiceClient();
   if (!admin) return;
   const id = String(formData.get("id") ?? "");
-  const { data } = await admin.from("coupons").select("uses_count").eq("id", id).maybeSingle();
+  const { data } = await admin.from("coupons").select("uses_count, code").eq("id", id).maybeSingle();
   if (!data) return;
   if (data.uses_count > 0) {
     await admin.from("coupons").update({ active: false }).eq("id", id);
   } else {
     await admin.from("coupons").delete().eq("id", id);
   }
+  await recordStaffActivity({
+    actorId: auth.user.id,
+    actorEmail: auth.email,
+    action: "coupon",
+    targetId: id,
+    after: data.uses_count > 0 ? `${data.code} paused` : `${data.code} deleted`,
+  });
   revalidatePath("/admin/coupons");
 }

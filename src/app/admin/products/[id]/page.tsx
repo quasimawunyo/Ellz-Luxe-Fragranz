@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import { getCategories, getProductById } from "@/lib/catalog/queries";
 import { saveProductAction } from "@/app/actions/admin";
@@ -8,6 +9,13 @@ import { SizeRows, type SizeRow } from "@/components/admin/size-rows";
 import { cedisInputFromMinor } from "@/lib/money";
 import { createServiceClient } from "@/lib/supabase/admin";
 import { notFound } from "next/navigation";
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  if (id === "new") return { title: "New product · Shop desk" };
+  const product = await getProductById(id);
+  return { title: `${product?.name ?? "Edit product"} · Shop desk` };
+}
 
 export default async function AdminProductPage({
   params,
@@ -57,7 +65,7 @@ export default async function AdminProductPage({
     <div className="max-w-2xl">
       <h1 className="text-2xl font-semibold">{isNew ? "New product" : product?.name}</h1>
       <p className="mt-2 text-sm text-taupe">
-        Prices are Ghana cedis. Saving requires a Supabase service role. Leave tester unchecked for bottles you sell.
+        Prices are Ghana cedis. Leave tester unchecked for bottles you sell.
       </p>
       {notice === "photo" ? (
         <p role="status" className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm">

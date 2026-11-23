@@ -1,4 +1,5 @@
 import { deleteCouponAction, pauseCouponAction, saveCouponAction } from "@/app/actions/coupons";
+import { ConfirmSubmit } from "@/components/admin/confirm-submit";
 import { ActionForm } from "@/components/forms/form-status";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
@@ -60,7 +61,7 @@ export default async function CouponsPage() {
           Save coupon
         </Button>
       </ActionForm>
-      {result.error ? <p className="mt-6 text-sm text-taupe">Coupons are not ready yet. Apply the sizes and coupons migration first.</p> : null}
+      {result.error ? <p className="mt-6 text-sm text-taupe">Saving is not set up yet. Ask the person who built the shop.</p> : null}
       <ul className="mt-10 divide-y divide-espresso/10">
         {coupons.map((coupon) => (
           <li key={coupon.id} className="flex flex-wrap items-center justify-between gap-3 py-4 text-sm">
@@ -106,9 +107,16 @@ export default async function CouponsPage() {
               </form>
               <form action={deleteCouponAction}>
                 <input type="hidden" name="id" value={coupon.id} />
-                <Button type="submit" variant="outline" className="min-h-11">
-                  {coupon.uses_count > 0 ? "Pause" : "Delete"}
-                </Button>
+                <ConfirmSubmit
+                  idleLabel={coupon.uses_count > 0 ? "Pause" : "Delete"}
+                  confirmLabel={coupon.uses_count > 0 ? "Pause" : "Delete"}
+                  detail={
+                    coupon.uses_count > 0
+                      ? "This coupon has been used, so it will be paused. Money already taken stays as it is. Stock is not returned."
+                      : "Delete this coupon. It cannot be used again. No money moves, and stock is not returned."
+                  }
+                  variant="outline"
+                />
               </form>
             </div>
           </li>

@@ -9,7 +9,10 @@ import { safeInternalPath } from "@/lib/security/paths";
 import { pageMetadata } from "@/lib/seo";
 import { PAGE_DESCRIPTIONS } from "@/lib/seo-copy";
 
-export const metadata = pageMetadata({ title: "Sign in", description: PAGE_DESCRIPTIONS.login, path: "/login", index: false });
+export const metadata = {
+  ...pageMetadata({ title: "Sign in", description: PAGE_DESCRIPTIONS.login, path: "/login", index: false }),
+  robots: { index: false, follow: false },
+};
 
 export default async function LoginPage({
   searchParams,

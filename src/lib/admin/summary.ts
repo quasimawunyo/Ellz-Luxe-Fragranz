@@ -41,6 +41,7 @@ export type SalesSummary = {
   };
   profitMinor: number | null;
   discountMinor: number;
+  lastPaidAt: string | null;
   newCustomers: { current: number; previous: number };
   action: {
     toPack: number;
@@ -97,12 +98,25 @@ export async function loadSalesSummary(preset: SalesPreset, from?: string, to?: 
   ]);
   if (currentCustomerError) throw new Error(currentCustomerError.message);
   if (previousCustomerError) throw new Error(previousCustomerError.message);
-  const discountQuery = await admin
-    .from("orders")
-    .select("discount_minor")
-    .eq("payment_status", "paid")
-    .gte("created_at", currentFrom)
-    .lt("created_at", currentTo);
+  const [discountQuery, lastPaid] = await Promise.all([
+    admin
+      .from("orders")
+      .select("discount_minor")
+      .eq("payment_status", "paid")
+      .eq("is_test", false)
+      .neq("fulfillment_status", "cancelled")
+      .gte("created_at", currentFrom)
+      .lt("created_at", currentTo),
+    admin
+      .from("orders")
+      .select("created_at")
+      .eq("payment_status", "paid")
+      .eq("is_test", false)
+      .neq("fulfillment_status", "cancelled")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+  ]);
   const discountMinor = discountQuery.error
     ? 0
     : (discountQuery.data ?? []).reduce((sum, row) => sum + num(row.discount_minor), 0);
@@ -146,6 +160,7 @@ export async function loadSalesSummary(preset: SalesPreset, from?: string, to?: 
     },
     profitMinor: row.profitMinor == null ? null : num(row.profitMinor),
     discountMinor,
+    lastPaidAt: lastPaid.data?.created_at ? String(lastPaid.data.created_at) : null,
     newCustomers: { current: num(currentCustomers), previous: num(previousCustomers) },
     action: {
       toPack: num(action.toPack),

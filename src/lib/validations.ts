@@ -25,15 +25,30 @@ export const waitlistSchema = z.object({
   email: z.email("Enter a valid email address."),
 });
 
-export const contactSchema = z.object({
-  name: z.string().trim().min(2, "Enter your name.").max(120, "Name must be 120 characters or fewer."),
-  email: z.email("Enter a valid email address."),
-  message: z
-    .string()
-    .trim()
-    .min(10, "Enter a message of at least 10 characters.")
-    .max(2000, "Keep the message under 2000 characters."),
-});
+export const contactSchema = z
+  .object({
+    name: z.string().trim().min(2, "Enter your name.").max(120, "Name must be 120 characters or fewer."),
+    email: z.string().trim().max(160).optional().default(""),
+    phone: z.string().trim().max(20).optional().default(""),
+    message: z
+      .string()
+      .trim()
+      .min(10, "Enter a message of at least 10 characters.")
+      .max(2000, "Keep the message under 2000 characters."),
+  })
+  .superRefine((value, ctx) => {
+    const email = value.email.trim();
+    const phone = value.phone.trim();
+    if (!email && !phone) {
+      ctx.addIssue({ code: "custom", message: "Enter a phone number or an email address.", path: ["email"] });
+    }
+    if (email && !z.email().safeParse(email).success) {
+      ctx.addIssue({ code: "custom", message: "Enter a valid email address.", path: ["email"] });
+    }
+    if (phone && !/^[0-9+\s-]{9,20}$/.test(phone)) {
+      ctx.addIssue({ code: "custom", message: "Enter a valid phone number.", path: ["phone"] });
+    }
+  });
 
 export const checkoutSchema = z.object({
   fullName: z.string().trim().min(2, "Enter your name.").max(120, "Name must be 120 characters or fewer."),
