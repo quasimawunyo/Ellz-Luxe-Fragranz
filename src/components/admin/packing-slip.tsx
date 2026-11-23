@@ -47,7 +47,7 @@ export function PackingSlip({ order }: { order: StoreOrder }) {
         <tbody>
           {order.items.map((item) => (
             <tr key={`${item.sku}-${item.variantLabel}`} className="border-b border-espresso/10">
-              <td className="py-2">{item.productName}</td>
+              <td className="py-2">{item.productName}{item.variantLabel ? `, ${item.variantLabel}` : ""}</td>
               <td>{item.variantLabel}</td>
               <td>{item.quantity}</td>
               {hidePrices ? null : (
@@ -57,6 +57,11 @@ export function PackingSlip({ order }: { order: StoreOrder }) {
           ))}
         </tbody>
       </table>
+      {order.couponCode && order.discountMinor ? (
+        <p className="mt-4 text-sm">
+          Coupon {order.couponCode}: -{formatMoney(order.discountMinor, order.currencyCode)}
+        </p>
+      ) : null}
     </article>
   );
 }

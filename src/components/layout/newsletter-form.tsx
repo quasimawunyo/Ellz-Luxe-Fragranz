@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useRef } from "react";
 import { subscribeNewsletter } from "@/app/actions/commerce";
+import { FormGuard } from "@/components/forms/form-guard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -17,7 +18,8 @@ export function NewsletterForm({ compact = false }: { compact?: boolean }) {
 
   if (!compact) {
     return (
-      <form action={formAction} className="mx-auto mt-5 w-full max-w-md">
+      <form action={formAction} className="relative mx-auto mt-5 w-full max-w-md">
+        <FormGuard />
         <label className="sr-only" htmlFor="newsletter-email">
           Email address
         </label>
@@ -53,7 +55,8 @@ export function NewsletterForm({ compact = false }: { compact?: boolean }) {
   }
 
   return (
-    <form action={formAction} className="mt-6">
+    <form action={formAction} className="relative mt-6">
+      <FormGuard />
       <div className="space-y-2">
         <label className="sr-only" htmlFor="newsletter-email-compact">
           Email address

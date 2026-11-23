@@ -13,6 +13,7 @@ import {
 import { CopyText } from "@/components/admin/copy-text";
 import { CustomerWhatsApp } from "@/components/admin/customer-whatsapp";
 import { StatusPill } from "@/components/admin/status-pill";
+import { restoreCouponUseAction } from "@/app/actions/coupons";
 import { ActionForm } from "@/components/forms/form-status";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
@@ -115,7 +116,7 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
         <ul className="mt-3 space-y-2 text-sm">
           {order.items.map((item) => (
             <li key={`${item.sku}-${item.variantLabel}`}>
-              {item.productName} · {item.variantLabel} × {item.quantity} ·{" "}
+              {item.productName}{item.variantLabel ? `, ${item.variantLabel}` : ""} x {item.quantity} ·{" "}
               <Price amountMinor={item.unitPriceMinor * item.quantity} currencyCode={order.currencyCode} />
             </li>
           ))}
@@ -125,6 +126,12 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
             <dt>Goods</dt>
             <dd>{formatMoney(order.subtotalMinor, order.currencyCode)}</dd>
           </div>
+          {order.couponCode && order.discountMinor ? (
+            <div className="flex justify-between gap-4">
+              <dt>Coupon {order.couponCode}</dt>
+              <dd>-{formatMoney(order.discountMinor, order.currencyCode)}</dd>
+            </div>
+          ) : null}
           <div className="flex justify-between gap-4">
             <dt>Delivery fee</dt>
             <dd>{pickup ? "GH₵0.00" : formatMoney(order.shippingMinor, order.currencyCode)}</dd>
@@ -142,6 +149,14 @@ export default async function AdminOrderDetailPage({ params }: { params: Promise
             <dd>{formatMoney(balance, order.currencyCode)}</dd>
           </div>
         </dl>
+        {order.couponCode ? (
+          <form action={restoreCouponUseAction} className="mt-4">
+            <input type="hidden" name="orderId" value={order.id} />
+            <Button type="submit" variant="outline" className="min-h-11">
+              Restore coupon use
+            </Button>
+          </form>
+        ) : null}
       </section>
 
       <ActionForm action={setDeliveryFeeAction} className="mt-8 space-y-3 rounded-[1.25rem] border border-espresso/10 bg-white p-5">

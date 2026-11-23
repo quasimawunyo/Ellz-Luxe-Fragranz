@@ -1,3 +1,4 @@
+import { bottleSizeLabel } from "@/lib/catalog/helpers";
 import { formatMoney } from "@/lib/money";
 
 export function ghanaWaDigits(phone: string) {
@@ -47,6 +48,8 @@ export type AnnexOrderNotice = {
   currencyCode: string;
   totalMinor: number;
   shippingMinor?: number;
+  discountMinor?: number;
+  couponCode?: string | null;
   items: { productName: string; variantLabel: string; quantity: number }[];
 };
 
@@ -67,7 +70,15 @@ export function annexOrderNotice(order: AnnexOrderNotice) {
   if (quoted) {
     lines.push(`Delivery fee: quote for ${order.locality}, ${order.region}`);
   }
-  lines.push(...order.items.map((item) => `- ${item.productName} (${item.variantLabel}) × ${item.quantity}`));
+  if (order.couponCode && order.discountMinor) {
+    lines.push(`Coupon ${order.couponCode}: -${formatMoney(order.discountMinor, order.currencyCode)}`);
+  }
+  lines.push(
+    ...order.items.map((item) => {
+      const size = bottleSizeLabel({ label: item.variantLabel });
+      return size ? `- ${item.productName}, ${size} x ${item.quantity}` : `- ${item.productName} x ${item.quantity}`;
+    }),
+  );
   if (order.notes) lines.push(`Notes: ${order.notes}`);
   return lines.join("\n");
 }

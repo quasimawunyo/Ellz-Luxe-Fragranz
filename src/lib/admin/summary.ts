@@ -40,6 +40,7 @@ export type SalesSummary = {
     inStoreOrders: number;
   };
   profitMinor: number | null;
+  discountMinor: number;
   newCustomers: { current: number; previous: number };
   action: {
     toPack: number;
@@ -96,6 +97,15 @@ export async function loadSalesSummary(preset: SalesPreset, from?: string, to?: 
   ]);
   if (currentCustomerError) throw new Error(currentCustomerError.message);
   if (previousCustomerError) throw new Error(previousCustomerError.message);
+  const discountQuery = await admin
+    .from("orders")
+    .select("discount_minor")
+    .eq("payment_status", "paid")
+    .gte("created_at", currentFrom)
+    .lt("created_at", currentTo);
+  const discountMinor = discountQuery.error
+    ? 0
+    : (discountQuery.data ?? []).reduce((sum, row) => sum + num(row.discount_minor), 0);
   const range = (row.range ?? {}) as Record<string, unknown>;
   const payments = (row.payments ?? {}) as Record<string, unknown>;
   const channel = (row.channel ?? {}) as Record<string, unknown>;
@@ -135,6 +145,7 @@ export async function loadSalesSummary(preset: SalesPreset, from?: string, to?: 
       inStoreOrders: num(channel.inStoreOrders),
     },
     profitMinor: row.profitMinor == null ? null : num(row.profitMinor),
+    discountMinor,
     newCustomers: { current: num(currentCustomers), previous: num(previousCustomers) },
     action: {
       toPack: num(action.toPack),

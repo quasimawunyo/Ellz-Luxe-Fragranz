@@ -208,6 +208,7 @@ async function fetchCatalog(supabase: NonNullable<ReturnType<typeof createServic
         sku: variant.sku,
         label: variant.label,
         sizeMl: variant.size_ml,
+        visible: (variant as { visible?: boolean | null }).visible !== false,
         priceMinor: variant.price_minor,
         compareAtMinor: variant.compare_at_minor,
         costPriceMinor: variant.cost_price_minor == null ? null : Number(variant.cost_price_minor),

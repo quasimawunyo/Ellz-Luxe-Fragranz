@@ -4,6 +4,7 @@ import { isSupabaseAdminConfigured } from "@/lib/env";
 import { readJsonCookie, writeJsonCookie } from "@/lib/cookies/json-cookie";
 import type { CartItem, CartState, ResolvedCart } from "@/lib/cart/types";
 import { getVariantById, getStoreSettings } from "@/lib/catalog/queries";
+import { bottleSizeLabel } from "@/lib/catalog/helpers";
 import { lineTotalMinor } from "@/lib/money";
 import { assertPurchasableQuantity } from "@/lib/inventory";
 import { assertAvailableQuantity, isSoldOut, maxPurchasable } from "@/lib/stock";
@@ -89,8 +90,8 @@ export async function saveCartItems(items: CartItem[]) {
 export async function addItemToCart(variantId: string, quantity: number) {
   assertPurchasableQuantity(quantity);
   const match = await getVariantById(variantId);
-  if (!match || match.product.status !== "published") {
-    throw new Error("That product is unavailable.");
+  if (!match || match.product.status !== "published" || match.variant.visible === false) {
+    throw new Error("That size is not available.");
   }
   if (isSoldOut(match.variant)) {
     throw new Error(`${match.product.name} (${match.variant.label}) is out of stock.`);
@@ -112,8 +113,8 @@ export async function updateCartQuantity(variantId: string, quantity: number) {
     return;
   }
   const match = await getVariantById(variantId);
-  if (!match || match.product.status !== "published") {
-    throw new Error("That product is unavailable.");
+  if (!match || match.product.status !== "published" || match.variant.visible === false) {
+    throw new Error("That size is not available.");
   }
   assertAvailableQuantity(match.variant, quantity, match.product.name);
   const existing = items.find((item) => item.variantId === variantId);
@@ -132,13 +133,13 @@ export async function resolveCart(): Promise<ResolvedCart> {
   const lines = [];
   for (const item of items) {
     const match = await getVariantById(item.variantId);
-    if (!match || match.product.status !== "published") continue;
+    if (!match || match.product.status !== "published" || match.variant.visible === false) continue;
     const image = match.product.images[0];
     lines.push({
       variantId: match.variant.id,
       quantity: item.quantity,
       sku: match.variant.sku,
-      label: match.variant.label,
+      label: bottleSizeLabel(match.variant) || match.variant.label,
       productId: match.product.id,
       productName: match.product.name,
       productSlug: match.product.slug,

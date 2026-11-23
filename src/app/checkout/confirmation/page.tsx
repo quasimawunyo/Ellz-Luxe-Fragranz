@@ -8,12 +8,13 @@ import { getAuthContext } from "@/lib/auth/session";
 import { canViewOrder } from "@/lib/auth/roles";
 import { browserPlacedThisOrder } from "@/lib/orders/placed-cookie";
 import { getStoreSettings } from "@/lib/catalog/queries";
-import { orderShippingIsQuoted, publicVariantLabel } from "@/lib/catalog/helpers";
+import { bottleSizeLabel, orderShippingIsQuoted } from "@/lib/catalog/helpers";
 import { annexOrderWhatsAppHref } from "@/lib/whatsapp";
 import { OpenAnnexWhatsApp } from "@/components/checkout/open-annex-whatsapp";
 import { resumePaymentAction } from "@/app/actions/orders";
 import { ActionForm } from "@/components/forms/form-status";
 import { Button } from "@/components/ui/button";
+import { formatMoney } from "@/lib/money";
 import { pageMetadata } from "@/lib/seo";
 import { PAGE_DESCRIPTIONS } from "@/lib/seo-copy";
 
@@ -84,12 +85,17 @@ export default async function ConfirmationPage({
         {order.items.map((item) => (
           <li key={item.sku} className="flex justify-between">
             <span>
-              {item.productName}
-              {publicVariantLabel(item.variantLabel) ? ` · ${publicVariantLabel(item.variantLabel)}` : ""} × {item.quantity}
+              {`${item.productName}${bottleSizeLabel({ label: item.variantLabel }) ? `, ${bottleSizeLabel({ label: item.variantLabel })}` : ""} x ${item.quantity}`}
             </span>
             <Price amountMinor={item.unitPriceMinor * item.quantity} currencyCode={order.currencyCode} />
           </li>
         ))}
+        {order.couponCode && order.discountMinor ? (
+          <li className="flex justify-between border-t border-espresso/10 pt-3">
+            <span>Coupon {order.couponCode}</span>
+            <span>-{formatMoney(order.discountMinor, order.currencyCode)}</span>
+          </li>
+        ) : null}
         <li className="flex justify-between border-t border-espresso/10 pt-3">
           <span>Delivery</span>
           {orderShippingIsQuoted(order) ? (

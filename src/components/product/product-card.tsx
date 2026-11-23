@@ -3,9 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { CatalogProduct } from "@/lib/catalog/types";
-import { isDiscounted, isNewProduct, primaryImage, sellingVariant } from "@/lib/catalog/helpers";
+import { isDiscounted, isNewProduct, lowestPrice, primaryImage, shopVariants } from "@/lib/catalog/helpers";
 import { isSoldOut } from "@/lib/stock";
 import { Price } from "@/components/ui/price";
+import { formatMoney } from "@/lib/money";
 import { QuickAdd } from "@/components/product/quick-add";
 import { LikeButton } from "@/components/product/like-button";
 import { WaitlistButton } from "@/components/product/waitlist-button";
@@ -13,7 +14,9 @@ import { cn } from "@/lib/utils";
 
 export function ProductCard({ product }: { product: CatalogProduct }) {
   const image = primaryImage(product);
-  const variant = sellingVariant(product);
+  const variants = shopVariants(product);
+  const variant = variants.find((item) => !isSoldOut(item)) ?? variants[0];
+  const several = variants.length > 1;
   const soldOut = !variant || isSoldOut(variant);
   const badge = soldOut
     ? "Sold out"
@@ -59,6 +62,10 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
         <div className="absolute inset-x-3 bottom-3 hidden opacity-0 transition group-hover:opacity-100 lg:block lg:group-hover:opacity-100">
           {soldOut ? (
             <WaitlistButton productId={product.id} wide />
+          ) : several ? (
+            <Link href={`/product/${product.slug}`} className="flex min-h-11 items-center justify-center bg-leaf px-4 text-sm text-white">
+              Add to cart
+            </Link>
           ) : variant ? (
             <QuickAdd variantId={variant.id} wide />
           ) : null}
@@ -71,16 +78,23 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
       {product.isDemonstration && badge !== "Tester" ? (
         <p className="mt-1 text-xs text-taupe">Tester</p>
       ) : null}
-      {variant ? (
+      {several ? (
+        <p className="mt-3 text-xl font-semibold tracking-tight text-leaf sm:text-[1.75rem]">From {formatMoney(lowestPrice(product))}</p>
+      ) : variant ? (
         <Price
           amountMinor={variant.priceMinor}
           compareAtMinor={variant.compareAtMinor}
+          showSave
           className="mt-3 text-xl font-semibold tracking-tight text-leaf sm:text-[1.75rem]"
         />
       ) : null}
       <div className="mt-3 lg:hidden">
         {soldOut ? (
           <WaitlistButton productId={product.id} wide />
+        ) : several ? (
+          <Link href={`/product/${product.slug}`} className="flex min-h-11 items-center justify-center bg-leaf px-4 text-sm text-white">
+            Add to cart
+          </Link>
         ) : variant ? (
           <QuickAdd variantId={variant.id} wide />
         ) : null}

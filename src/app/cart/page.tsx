@@ -7,7 +7,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Price } from "@/components/ui/price";
 import { EmptyState } from "@/components/ui/states";
 import { resolveCart } from "@/lib/cart/store";
-import { isSizeOnlyLabel, publicVariantLabel } from "@/lib/catalog/helpers";
+import { bottleSizeLabel } from "@/lib/catalog/helpers";
 import { pageMetadata } from "@/lib/seo";
 import { PAGE_DESCRIPTIONS } from "@/lib/seo-copy";
 import { cn } from "@/lib/utils";
@@ -38,7 +38,7 @@ export default async function CartPage() {
         <div className="mt-10 grid gap-12 lg:grid-cols-[1fr_18rem]">
           <ul className="space-y-6">
             {cart.lines.map((line) => {
-              const detail = publicVariantLabel(line.label) || (isSizeOnlyLabel(line.label) ? line.label : "");
+              const size = bottleSizeLabel({ label: line.label });
               return (
               <li key={line.variantId} className="flex gap-4 border-b border-espresso/10 pb-6">
                 <div className="relative size-28 shrink-0 overflow-hidden bg-espresso/5">
@@ -56,10 +56,9 @@ export default async function CartPage() {
                   ) : null}
                 </div>
                 <div className="flex min-w-0 flex-1 flex-col">
-                  <Link href={`/product/${line.productSlug}`} className="font-medium">
-                    {line.productName}
+                  <Link href={`/product/${line.productSlug}${size ? `?size=${size.replace(" ml", "")}` : ""}`} className="font-medium">
+                    {`${line.productName}${size ? `, ${size}` : ""} x ${line.quantity}`}
                   </Link>
-                  {detail ? <p className="text-sm text-taupe">{detail}</p> : null}
                   <p className="mt-2 text-sm text-taupe">
                     {line.quantity} × <Price amountMinor={line.unitMinor} currencyCode={cart.currencyCode} />
                   </p>

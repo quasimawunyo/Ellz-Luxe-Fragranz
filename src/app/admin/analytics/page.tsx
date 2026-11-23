@@ -42,6 +42,7 @@ export default async function AnalyticsPage({
           <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-taupe">Paid revenue</p>
           <p className="mt-3 font-serif text-3xl">{money(summary.current.revenueMinor)}</p>
           <p className="mt-2 text-sm text-taupe">Goods {money(summary.current.goodsMinor)}</p>
+          <p className="text-sm text-taupe">Discounts given {money(summary.discountMinor)}</p>
           <p className="text-sm text-taupe">Delivery fees {money(summary.current.deliveryMinor)}</p>
           {summary.profitMinor == null ? null : <p className="text-sm text-taupe">Estimated profit {money(summary.profitMinor)}</p>}
         </article>

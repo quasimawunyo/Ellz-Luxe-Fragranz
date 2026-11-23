@@ -4,11 +4,9 @@ import { saveProductAction } from "@/app/actions/admin";
 import { ActionForm } from "@/components/forms/form-status";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/input";
-import { sellingVariant } from "@/lib/catalog/helpers";
-import { stockState } from "@/lib/stock";
-import { StockBadge } from "@/components/admin/stock-badge";
-import Link from "next/link";
-import { cedisInputFromMinor, formatMoney } from "@/lib/money";
+import { SizeRows, type SizeRow } from "@/components/admin/size-rows";
+import { cedisInputFromMinor } from "@/lib/money";
+import { createServiceClient } from "@/lib/supabase/admin";
 import { notFound } from "next/navigation";
 
 export default async function AdminProductPage({
@@ -24,9 +22,36 @@ export default async function AdminProductPage({
   const product = isNew ? null : await getProductById(id);
   if (!isNew && !product) notFound();
   const categories = await getCategories();
-  const variant = product ? sellingVariant(product) ?? product.variants[0] : undefined;
-  const otherVariants = product?.variants.filter((item) => item.id !== variant?.id) ?? [];
   const image = product?.images[0];
+  const orderedIds = new Set<string>();
+  if (product?.variants.length) {
+    const admin = createServiceClient();
+    if (admin) {
+      const { data } = await admin.from("order_items").select("variant_id").in(
+        "variant_id",
+        product.variants.map((item) => item.id),
+      );
+      for (const row of data ?? []) {
+        if (row.variant_id) orderedIds.add(row.variant_id);
+      }
+    }
+  }
+  const sizeRows: SizeRow[] = (product?.variants ?? [])
+    .slice()
+    .sort((a, b) => (a.sizeMl ?? 0) - (b.sizeMl ?? 0))
+    .map((item) => ({
+      id: item.id,
+      sizeMl: item.sizeMl == null ? "" : String(item.sizeMl),
+      priceCedis: cedisInputFromMinor(item.priceMinor),
+      compareAtCedis: item.compareAtMinor != null ? cedisInputFromMinor(item.compareAtMinor) : "",
+      sku: item.sku,
+      visible: item.visible !== false,
+      ordered: orderedIds.has(item.id),
+      stockQuantity: String(item.stockQuantity ?? 0),
+      trackStock: item.trackStock,
+      costCedis: item.costPriceMinor != null ? cedisInputFromMinor(item.costPriceMinor) : "",
+      lowStockThreshold: item.lowStockThreshold == null ? "" : String(item.lowStockThreshold),
+    }));
 
   return (
     <div className="max-w-2xl">
@@ -41,7 +66,6 @@ export default async function AdminProductPage({
       ) : null}
       <ActionForm action={saveProductAction} encType="multipart/form-data" className="mt-8 space-y-4">
         <input type="hidden" name="id" value={product?.id ?? ""} />
-        <input type="hidden" name="variantId" value={variant?.id ?? ""} />
         <input type="hidden" name="imageId" value={image?.id ?? ""} />
         <div>
           <Label htmlFor="name">Name</Label>
@@ -127,93 +151,7 @@ export default async function AdminProductPage({
           <Label htmlFor="imageAlt">Image description</Label>
           <Input id="imageAlt" name="imageAlt" defaultValue={image?.alt ?? ""} />
         </div>
-        <h2 className="pt-4 font-serif text-2xl">Size on the shop</h2>
-        {otherVariants.length ? (
-          <div className="text-sm text-taupe">
-            <p>This form saves the size shown on the shop. Other sizes stay as they are:</p>
-            <ul className="mt-2 space-y-1">
-              {otherVariants.map((item) => (
-                <li key={item.id}>
-                  {item.label} · {formatMoney(item.priceMinor)} ·{" "}
-                  <StockBadge state={stockState(item)} />{" "}
-                  <Link href={`/admin/products/stock/${item.id}`} className="text-leaf underline underline-offset-4">
-                    Adjust stock
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ) : null}
-        <div>
-          <Label htmlFor="sku">SKU</Label>
-          <Input id="sku" name="sku" defaultValue={variant?.sku} />
-        </div>
-        <div>
-          <Label htmlFor="label">Label</Label>
-          <Input id="label" name="label" defaultValue={variant?.label} />
-        </div>
-        <div>
-          <Label htmlFor="sizeMl">Size (ml)</Label>
-          <Input id="sizeMl" name="sizeMl" type="number" defaultValue={variant?.sizeMl ?? ""} />
-        </div>
-        <div>
-          <Label htmlFor="priceCedis">Price (GH₵)</Label>
-          <Input
-            id="priceCedis"
-            name="priceCedis"
-            type="number"
-            min="0"
-            step="0.01"
-            defaultValue={variant ? cedisInputFromMinor(variant.priceMinor) : "0.00"}
-            required
-          />
-        </div>
-        <div>
-          <Label htmlFor="costCedis">Cost (GH₵)</Label>
-          <Input
-            id="costCedis"
-            name="costCedis"
-            type="number"
-            min="0"
-            step="0.01"
-            defaultValue={variant?.costPriceMinor != null ? cedisInputFromMinor(variant.costPriceMinor) : ""}
-            placeholder="Optional"
-          />
-          <p className="mt-1 text-xs text-taupe">Used for estimated profit on Overview. Leave empty until you know the cost.</p>
-        </div>
-        <div>
-          <Label htmlFor="compareAtCedis">Compare-at (GH₵)</Label>
-          <Input
-            id="compareAtCedis"
-            name="compareAtCedis"
-            type="number"
-            min="0"
-            step="0.01"
-            defaultValue={variant?.compareAtMinor != null ? cedisInputFromMinor(variant.compareAtMinor) : ""}
-          />
-        </div>
-        <div className="flex items-center gap-3">
-          <input id="trackStock" name="trackStock" type="checkbox" defaultChecked={variant?.trackStock ?? false} className="size-4" />
-          <Label htmlFor="trackStock">Track stock</Label>
-        </div>
-        <div>
-          <Label htmlFor="stockQuantity">Quantity</Label>
-          <Input id="stockQuantity" name="stockQuantity" type="number" min={0} step={1} defaultValue={variant?.stockQuantity ?? 0} />
-          <p className="mt-1 text-xs text-taupe">Changing this records a stock movement. Leave tracking off until the count is the real opening stock.</p>
-        </div>
-        <div>
-          <Label htmlFor="lowStockThreshold">Low-stock threshold</Label>
-          <Input
-            id="lowStockThreshold"
-            name="lowStockThreshold"
-            type="number"
-            min={0}
-            step={1}
-            defaultValue={variant?.lowStockThreshold ?? ""}
-            placeholder="3"
-          />
-          <p className="mt-1 text-xs text-taupe">Empty uses the store default of 3.</p>
-        </div>
+        <SizeRows initial={sizeRows} />
         <Button type="submit" className="w-full sm:w-auto">Save</Button>
       </ActionForm>
     </div>

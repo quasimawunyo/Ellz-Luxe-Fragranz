@@ -1,4 +1,4 @@
-import { bottleSizeLabel, publicDescription, sellingVariant } from "@/lib/catalog/helpers";
+import { lowestPrice, publicDescription, shopVariants, sizeListLabel } from "@/lib/catalog/helpers";
 import type { CatalogProduct } from "@/lib/catalog/types";
 import { formatMoney } from "@/lib/money";
 
@@ -45,11 +45,13 @@ export function brandMetaDescription(brand: string) {
 
 export function productMetaDescription(product: CatalogProduct) {
   const sentence = publicDescription(product.description).replace(/\s+/g, " ").trim().replace(/\.+$/, "");
-  const offered = sellingVariant(product);
-  const size = bottleSizeLabel(offered);
-  const price = offered ? formatMoney(offered.priceMinor) : "";
-  const detail = [product.brand, size, price].filter(Boolean).join(", ");
-  let text = detail ? `${sentence}. ${detail}.` : `${sentence}.`;
+  const visible = shopVariants(product);
+  const sizes = sizeListLabel(visible.flatMap((variant) => (variant.sizeMl ? [variant.sizeMl] : [])));
+  const price = visible.length ? formatMoney(lowestPrice(product)) : "";
+  const priced = visible.length > 1 && price ? `from ${price}` : price;
+  const detail = [product.brand, product.name, sizes, priced].filter(Boolean).join(", ");
+  let text = detail ? `${detail}.` : `${sentence}.`;
+  if (sentence && !text.toLowerCase().includes(product.name.toLowerCase())) text = `${sentence}. ${text}`;
   if (text.length < 70) text = `${text} Free pickup in Pantang, delivery across Ghana.`;
   return text.length > 155 ? text.slice(0, 155).trim() : text;
 }

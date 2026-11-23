@@ -5,7 +5,7 @@ import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { ProductGallery } from "@/components/product/gallery";
 import { ProductGrid } from "@/components/product/product-card";
 import { PurchaseForm } from "@/components/product/purchase-form";
-import { bottleSizeLabel, primaryImage, shelfDescription, sellingVariant } from "@/lib/catalog/helpers";
+import { bottleSizeLabel, primaryImage, shelfDescription, shopVariants } from "@/lib/catalog/helpers";
 import { productMetaDescription } from "@/lib/seo-copy";
 import { isSoldOut } from "@/lib/stock";
 import { getProductBySlug, getRelated, getStoreSettings } from "@/lib/catalog/queries";
@@ -25,8 +25,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   });
 }
 
-export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function ProductPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ size?: string }>;
+}) {
   const { slug } = await params;
+  const { size: sizeQuery } = await searchParams;
   const product = await getProductBySlug(slug);
   if (!product) notFound();
   const [related, settings, nonce] = await Promise.all([
@@ -34,7 +41,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     getStoreSettings(),
     headers().then((value) => value.get("x-nonce") ?? undefined),
   ]);
-  const variant = sellingVariant(product);
+  const variants = shopVariants(product);
+  const requested = Number(sizeQuery);
+  const variant = variants.find((item) => item.sizeMl === requested) ?? variants[0];
   const description = shelfDescription(product);
   const size = bottleSizeLabel(variant);
   const jsonLd = {
@@ -44,17 +53,13 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     description,
     brand: { "@type": "Brand", name: product.brand },
     image: product.images.map((image) => image.url),
-    offers: variant
-      ? {
-          "@type": "Offer",
-          sku: variant.sku,
-          priceCurrency: settings.currencyCode,
-          price: (variant.priceMinor / 100).toFixed(2),
-          availability: isSoldOut(variant)
-            ? "https://schema.org/OutOfStock"
-            : "https://schema.org/InStock",
-        }
-      : undefined,
+    offers: variants.map((item) => ({
+      "@type": "Offer",
+      sku: item.sku,
+      priceCurrency: settings.currencyCode,
+      price: (item.priceMinor / 100).toFixed(2),
+      availability: isSoldOut(item) ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
+    })),
   };
 
   return (
@@ -75,14 +80,14 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           ) : null}
           <h1 className="mt-2 font-serif text-4xl">{product.name}</h1>
           <p className="mt-2 text-sm text-taupe">
-            {product.brand}
-            {product.concentration ? ` · ${product.concentration}` : ""}
-            {size ? ` · ${size}` : ""}
+            {[product.brand, product.concentration, size].filter(Boolean).join(", ")}
           </p>
           <p className="mt-6 max-w-lg leading-7 text-espresso/80">{description}</p>
           <PurchaseForm
-            variants={variant ? [variant] : []}
+            variants={variants}
+            selectedId={variant?.id ?? ""}
             productId={product.id}
+            productSlug={product.slug}
             productName={product.name}
             currencyCode={settings.currencyCode}
           />

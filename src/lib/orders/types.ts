@@ -47,6 +47,8 @@ export type StoreOrder = {
   currencyCode: string;
   subtotalMinor: number;
   shippingMinor: number;
+  discountMinor?: number;
+  couponCode?: string | null;
   totalMinor: number;
   orderStatus: "open" | "completed" | "cancelled";
   paymentStatus: PaymentStatus;

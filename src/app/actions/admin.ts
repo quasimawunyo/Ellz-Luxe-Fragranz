@@ -5,7 +5,8 @@ import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth/require-admin";
 import { createServiceClient } from "@/lib/supabase/admin";
 import { isSupabaseAdminConfigured } from "@/lib/env";
-import { productInputSchema, variantInputSchema } from "@/lib/validations";
+import { productInputSchema } from "@/lib/validations";
+import { parseSizeRows } from "@/lib/catalog/save-sizes";
 import { minorFromCedisInput } from "@/lib/money";
 import { isR2Configured, uploadProductPhoto } from "@/lib/storage/r2";
 import type { DeliveryMethod } from "@/lib/catalog/types";
@@ -129,65 +130,53 @@ export async function saveProductAction(_prev: { error?: string; ok?: boolean; m
   });
   if (error) return { error: error.message };
 
-  const priceMinor = minorFromCedisInput(formData.get("priceCedis"));
-  const compareAtMinor = minorFromCedisInput(formData.get("compareAtCedis"));
-  const costRaw = String(formData.get("costCedis") ?? "").trim();
-  const costMinor = minorFromCedisInput(costRaw);
-  if (priceMinor === null) return { error: "Enter a price in Ghana cedis (for example 280.00)." };
-  if (costRaw && costMinor === null) return { error: "Enter the cost in Ghana cedis, or leave it empty." };
-  const trackStock = formData.get("trackStock") === "on";
-  const quantityRaw = String(formData.get("stockQuantity") ?? "").trim();
-  const desiredQuantity = Number(quantityRaw === "" ? "0" : quantityRaw);
-  if (!Number.isInteger(desiredQuantity) || desiredQuantity < 0) {
-    return { error: "Enter a stock quantity of zero or more." };
+  const parsedSizes = parseSizeRows(String(formData.get("sizesJson") ?? ""), parsed.data.name, formData.get("confirmLowPrice") === "yes");
+  if ("error" in parsedSizes) return { error: parsedSizes.error };
+  const { data: existingVariants } = await admin.from("product_variants").select("id").eq("product_id", id);
+  const existingIds = (existingVariants ?? []).map((row) => row.id);
+  const kept = new Set(parsedSizes.sizes.map((size) => size.id).filter(Boolean));
+  const removed = existingIds.filter((variantId) => !kept.has(variantId));
+  if (removed.length) {
+    const { data: ordered } = await admin.from("order_items").select("variant_id").in("variant_id", removed);
+    if (ordered?.length) return { error: "This size has been ordered. Hide it instead of removing it." };
+    const { error: deleteError } = await admin.from("product_variants").delete().in("id", removed);
+    if (deleteError) return { error: deleteError.message };
   }
-  const thresholdRaw = String(formData.get("lowStockThreshold") ?? "").trim();
-  const lowStockThreshold = thresholdRaw === "" ? null : Number(thresholdRaw);
-  if (lowStockThreshold != null && (!Number.isInteger(lowStockThreshold) || lowStockThreshold < 0)) {
-    return { error: "Low-stock threshold must be a whole number, or left empty for the store default of 3." };
-  }
-  const variantParsed = variantInputSchema.safeParse({
-    sku: formData.get("sku"),
-    label: formData.get("label"),
-    sizeMl: formData.get("sizeMl") || undefined,
-    priceMinor,
-    compareAtMinor: compareAtMinor ?? undefined,
-    stock: desiredQuantity,
-  });
-  if (!variantParsed.success) return { error: variantParsed.error.issues[0]?.message ?? "Check the size, SKU, and stock." };
-  const variantId = String(formData.get("variantId") || crypto.randomUUID());
-  const { error: variantError } = await admin.from("product_variants").upsert({
-    id: variantId,
-    product_id: id,
-    sku: variantParsed.data.sku,
-    label: variantParsed.data.label,
-    size_ml: variantParsed.data.sizeMl ?? null,
-    price_minor: variantParsed.data.priceMinor,
-    compare_at_minor: variantParsed.data.compareAtMinor ?? null,
-    cost_price_minor: costRaw ? costMinor : null,
-    low_stock_threshold: lowStockThreshold,
-  });
-  if (variantError) return { error: variantError.message };
-  const { data: currentStock } = await admin
-    .from("product_variants")
-    .select("stock_quantity, track_stock")
-    .eq("id", variantId)
-    .maybeSingle();
-  const currentQuantity = Number(currentStock?.stock_quantity ?? 0);
-  if (desiredQuantity !== currentQuantity) {
-    const opening = trackStock && !currentStock?.track_stock;
-    const { error: stockError } = await admin.rpc("adjust_stock", {
-      p_variant_id: variantId,
-      p_change: desiredQuantity - currentQuantity,
-      p_reason: opening ? "opening_stock" : "correction",
-      p_order_id: null,
-      p_note: opening ? "Opening stock" : "Product edit",
-      p_created_by: auth.user.id,
+  for (const size of parsedSizes.sizes) {
+    const variantId = size.id || crypto.randomUUID();
+    const { data: skuOwner } = await admin.from("product_variants").select("id").eq("sku", size.sku).maybeSingle();
+    if (skuOwner && skuOwner.id !== variantId) return { error: "This SKU is already used." };
+    const { data: currentStock } = await admin.from("product_variants").select("stock, stock_quantity, track_stock").eq("id", variantId).maybeSingle();
+    const { error: variantError } = await admin.from("product_variants").upsert({
+      id: variantId,
+      product_id: id,
+      sku: size.sku,
+      label: size.label,
+      size_ml: size.sizeMl,
+      price_minor: size.priceMinor,
+      compare_at_minor: size.compareAtMinor,
+      cost_price_minor: size.costMinor,
+      low_stock_threshold: size.lowStockThreshold,
+      visible: size.visible,
+      stock: Number(currentStock?.stock ?? 0),
     });
-    if (stockError) return { error: stockErrorMessage(stockError) };
+    if (variantError) return { error: variantError.message };
+    const currentQuantity = Number(currentStock?.stock_quantity ?? 0);
+    if (size.stockQuantity !== currentQuantity) {
+      const opening = size.trackStock && !currentStock?.track_stock;
+      const { error: stockError } = await admin.rpc("adjust_stock", {
+        p_variant_id: variantId,
+        p_change: size.stockQuantity - currentQuantity,
+        p_reason: opening ? "opening_stock" : "correction",
+        p_order_id: null,
+        p_note: opening ? "Opening stock" : "Product edit",
+        p_created_by: auth.user.id,
+      });
+      if (stockError) return { error: stockErrorMessage(stockError) };
+    }
+    const { error: trackError } = await admin.from("product_variants").update({ track_stock: size.trackStock }).eq("id", variantId);
+    if (trackError) return { error: trackError.message };
   }
-  const { error: trackError } = await admin.from("product_variants").update({ track_stock: trackStock }).eq("id", variantId);
-  if (trackError) return { error: trackError.message };
 
   let imageUrl = parsed.data.imageUrl;
   const file = formData.get("imageFile");
@@ -312,4 +301,30 @@ export async function startTrackingAction(_prev: { error?: string; ok?: boolean;
       ? `Tracking started for ${started} ${started === 1 ? "size" : "sizes"}.`
       : "Those sizes are already tracked.",
   };
+}
+
+export async function setSalePricesAction(_prev: { error?: string; ok?: boolean } | null, formData: FormData) {
+  await requireAdmin();
+  const admin = needDb();
+  const ids = formData.getAll("variantId").map(String);
+  for (const id of ids) {
+    const clear = formData.get(`clear:${id}`) === "on";
+    const text = String(formData.get(`compare:${id}`) ?? "").trim();
+    const { data: variant } = await admin.from("product_variants").select("price_minor").eq("id", id).maybeSingle();
+    if (!variant) return { error: "That size is no longer on the shop." };
+    if (clear || !text) {
+      const { error } = await admin.from("product_variants").update({ compare_at_minor: null }).eq("id", id);
+      if (error) return { error: "The sale price could not be saved." };
+      continue;
+    }
+    const compareAt = minorFromCedisInput(text);
+    if (compareAt == null) return { error: "Enter the compare-at price in Ghana cedis, or leave it empty." };
+    if (compareAt <= variant.price_minor) return { error: "The compare-at price must be higher than the price." };
+    const { error } = await admin.from("product_variants").update({ compare_at_minor: compareAt }).eq("id", id);
+    if (error) return { error: "The sale price could not be saved." };
+  }
+  updateTag("storefront");
+  revalidatePath("/admin/discounts");
+  revalidatePath("/sale");
+  return { ok: true as const };
 }

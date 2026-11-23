@@ -1,12 +1,12 @@
-import { publicVariantLabel } from "@/lib/catalog/helpers";
+import { bottleSizeLabel } from "@/lib/catalog/helpers";
 import { formatMoney } from "@/lib/money";
 import { formatGhanaPhone, type AnnexOrderNotice } from "@/lib/whatsapp";
 
 function itemLine(item: AnnexOrderNotice["items"][number]) {
-  const size = publicVariantLabel(item.variantLabel);
+  const size = bottleSizeLabel({ label: item.variantLabel });
   return size
-    ? `- ${item.productName} · ${size} × ${item.quantity}`
-    : `- ${item.productName} × ${item.quantity}`;
+    ? `- ${item.productName}, ${size} x ${item.quantity}`
+    : `- ${item.productName} x ${item.quantity}`;
 }
 
 export function customerOrderEmailText(
@@ -27,6 +27,9 @@ export function customerOrderEmailText(
     "",
     ...order.items.map(itemLine),
   ];
+  if (order.couponCode && order.discountMinor) {
+    lines.splice(4, 0, `Coupon ${order.couponCode}: -${formatMoney(order.discountMinor, order.currencyCode)}`);
+  }
   if (quoted) {
     lines.push("", `Delivery fee: quoted for ${order.locality}, ${order.region}.`);
   }

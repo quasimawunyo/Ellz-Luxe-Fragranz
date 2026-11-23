@@ -5,20 +5,28 @@ export function Price({
   compareAtMinor,
   currencyCode = "GHS",
   className = "",
+  showSave = false,
 }: {
   amountMinor: number;
   compareAtMinor?: number | null;
   currencyCode?: string;
   className?: string;
+  showSave?: boolean;
 }) {
+  const onSale = compareAtMinor != null && compareAtMinor > amountMinor;
   return (
-    <span className={`inline-flex items-baseline gap-2 ${className}`}>
-      <span>{formatMoney(amountMinor, currencyCode)}</span>
-      {compareAtMinor && compareAtMinor > amountMinor ? (
+    <span className={`inline-flex flex-wrap items-baseline gap-x-2 gap-y-1 ${className}`}>
+      <span>
+        {onSale ? <span className="sr-only">now </span> : null}
+        {formatMoney(amountMinor, currencyCode)}
+      </span>
+      {onSale ? (
         <span className="text-taupe line-through">
+          <span className="sr-only">was </span>
           {formatMoney(compareAtMinor, currencyCode)}
         </span>
       ) : null}
+      {showSave && onSale ? <span className="text-sm font-medium text-espresso">Save {formatMoney(compareAtMinor - amountMinor, currencyCode)}</span> : null}
     </span>
   );
 }

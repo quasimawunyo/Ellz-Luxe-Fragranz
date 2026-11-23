@@ -12,6 +12,7 @@ export type ProductVariant = {
   sku: string;
   label: string;
   sizeMl: number | null;
+  visible?: boolean;
   priceMinor: number;
   compareAtMinor: number | null;
   costPriceMinor?: number | null;

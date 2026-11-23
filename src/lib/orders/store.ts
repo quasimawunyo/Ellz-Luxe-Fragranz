@@ -7,6 +7,7 @@ import { stockLimitMessage } from "@/lib/stock";
 import { resolveCart, clearCart } from "@/lib/cart/store";
 import { getStoreSettings } from "@/lib/catalog/queries";
 import { orderGrandTotal } from "@/lib/money";
+import { countCouponUse, couponDiscount, findCoupon, readCouponCode } from "@/lib/coupons";
 import type { CheckoutInput } from "@/lib/validations";
 import type { StoreOrder } from "@/lib/orders/types";
 import {
@@ -71,6 +72,8 @@ function mapOrder(row: {
   stock_applied?: boolean | null;
   is_test?: boolean | null;
   awaiting_review?: boolean | null;
+  coupon_code?: string | null;
+  discount_minor?: number | null;
   created_at: string;
 }, items: StoreOrder["items"], paystackReference: string | null, paymentProvider: string | null = null, payments: OrderPayment[] = [], events: OrderEvent[] = []): StoreOrder {
   return {
@@ -88,6 +91,8 @@ function mapOrder(row: {
     currencyCode: row.currency_code,
     subtotalMinor: row.subtotal_minor,
     shippingMinor: row.shipping_minor,
+    discountMinor: Number(row.discount_minor ?? 0),
+    couponCode: row.coupon_code ?? null,
     totalMinor: row.total_minor,
     orderStatus: row.order_status,
     paymentStatus: row.payment_status,
@@ -118,7 +123,7 @@ export async function createPendingOrder(input: CheckoutInput, userId: string | 
 
   for (const line of cart.lines) {
     const live = await getVariantById(line.variantId);
-    if (!live) throw new Error("A cart item is no longer available.");
+    if (!live || live.variant.visible === false) throw new Error("A cart item is no longer available.");
     if (live.variant.priceMinor !== line.unitMinor) {
       throw new Error("A price changed. Refresh your cart and try again.");
     }
@@ -128,7 +133,26 @@ export async function createPendingOrder(input: CheckoutInput, userId: string | 
   }
 
   const subtotalMinor = cart.lines.reduce((sum, line) => sum + line.lineMinor, 0);
-  const totalMinor = orderGrandTotal(subtotalMinor, method.amountMinor);
+  const couponCode = await readCouponCode();
+  let discountMinor = 0;
+  let appliedCode: string | null = null;
+  if (couponCode) {
+    const coupon = await findCoupon(couponCode);
+    if (!coupon || "missing" in coupon) throw new Error("Coupons are not ready yet.");
+    const saleLines = [];
+    for (const line of cart.lines) {
+      const live = await getVariantById(line.variantId);
+      saleLines.push({
+        lineMinor: line.lineMinor,
+        onSale: Boolean(live && live.variant.compareAtMinor && live.variant.compareAtMinor > live.variant.priceMinor),
+      });
+    }
+    const checked = couponDiscount(coupon, saleLines);
+    if ("error" in checked) throw new Error(checked.error);
+    discountMinor = checked.discountMinor;
+    appliedCode = checked.code;
+  }
+  const totalMinor = orderGrandTotal(subtotalMinor - discountMinor, method.amountMinor);
   const orderNumber = `ELF-${Date.now().toString(36).toUpperCase()}`;
   const reference = `elf_${crypto.randomUUID()}`;
   const provider = isMoolreConfigured() ? "moolre" : isPaystackConfigured() ? "paystack" : "manual";
@@ -159,6 +183,17 @@ export async function createPendingOrder(input: CheckoutInput, userId: string | 
     });
     if (error) throw new Error(error.message);
     const orderId = data as string;
+    if (appliedCode && discountMinor > 0) {
+      const { error: couponError } = await admin
+        .from("orders")
+        .update({
+          coupon_code: appliedCode,
+          discount_minor: discountMinor,
+          total_minor: totalMinor,
+        })
+        .eq("id", orderId);
+      if (couponError) throw new Error("Coupons are not ready yet.");
+    }
     await admin.from("payments").insert({
       order_id: orderId,
       provider,
@@ -195,6 +230,8 @@ export async function createPendingOrder(input: CheckoutInput, userId: string | 
     currencyCode: settings.currencyCode,
     subtotalMinor,
     shippingMinor: method.amountMinor,
+    discountMinor,
+    couponCode: appliedCode,
     totalMinor,
     orderStatus: "open",
     paymentStatus: "pending",
@@ -524,6 +561,7 @@ export async function markOrderPaid(
       });
     }
     await applyOnlineSale(payment.order_id);
+    await countCouponUse(payment.order_id);
     try {
       revalidatePath("/", "layout");
     } catch {

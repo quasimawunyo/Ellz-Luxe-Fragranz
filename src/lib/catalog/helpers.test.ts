@@ -56,9 +56,9 @@ describe("catalog filters", () => {
     expect(categories.map((category) => category.id)).toEqual([products[0].categoryId]);
     const island = products.find((product) => product.slug === "island-sun");
     expect(island).toBeTruthy();
-    expect(shelfDescription(island!)).toBe("Khadlaj Island Sun eau de parfum, 50 ml.");
+    expect(shelfDescription(island!)).toBe("Khadlaj Island Sun eau de parfum, 50 ml and 100 ml.");
     const aventos = products.find((product) => product.slug === "aventos-blue-for-him");
-    expect(shelfDescription(aventos!)).toBe("Fragrance World Aventos Blue For Him eau de parfum, 50 ml.");
+    expect(shelfDescription(aventos!)).toBe("Fragrance World Aventos Blue For Him eau de parfum, 50 ml and 100 ml.");
   });
 
   it("treats a higher compare-at price as a discount", () => {

@@ -23,20 +23,21 @@ export function publicVariantLabel(label: string) {
   return isSizeOnlyLabel(label) ? "" : label;
 }
 
+export function shopVariants(product: Product) {
+  return [...product.variants]
+    .filter((variant) => variant.visible !== false)
+    .sort((a, b) => (a.sizeMl ?? 0) - (b.sizeMl ?? 0) || a.priceMinor - b.priceMinor);
+}
+
 export function sellingVariant(product: Product) {
-  const variants = [...product.variants].sort(
-    (a, b) => (a.sizeMl ?? 0) - (b.sizeMl ?? 0) || a.priceMinor - b.priceMinor,
-  );
-  const named = variants.find((variant) => {
-    if (variant.sizeMl == null) return false;
-    return new RegExp(`\\b${variant.sizeMl}\\s*ml\\b`, "i").test(product.description);
-  });
-  const choices = named ? [named] : variants;
-  return choices.find((variant) => !isSoldOut(variant)) ?? choices[0] ?? variants[0];
+  const variants = shopVariants(product);
+  return variants.find((variant) => !isSoldOut(variant)) ?? variants[0];
 }
 
 export function lowestPrice(product: Product) {
-  return sellingVariant(product)?.priceMinor ?? Math.min(...product.variants.map((variant) => variant.priceMinor));
+  const variants = shopVariants(product);
+  if (!variants.length) return Math.min(...product.variants.map((variant) => variant.priceMinor));
+  return Math.min(...variants.map((variant) => variant.priceMinor));
 }
 
 export function totalStock(product: Product) {
@@ -92,16 +93,23 @@ export function publicDescription(description: string) {
     .trim();
 }
 
+export function sizeListLabel(sizes: number[]) {
+  const unique = [...new Set(sizes.filter((size) => size > 0))].sort((a, b) => a - b);
+  if (!unique.length) return "";
+  if (unique.length === 1) return `${unique[0]} ml`;
+  if (unique.length === 2) return `${unique[0]} ml and ${unique[1]} ml`;
+  return `${unique.slice(0, -1).map((size) => `${size} ml`).join(", ")}, and ${unique[unique.length - 1]} ml`;
+}
+
 export function shelfDescription(product: Product) {
-  const text = publicDescription(product.description);
+  const text = publicDescription(product.description).replace(/,?\s*\d+\s*ml(?:\s+and\s+\d+\s*ml)*\.?$/i, "");
+  const sizes = shopVariants(product).flatMap((variant) => (variant.sizeMl ? [variant.sizeMl] : []));
+  const sizeBit = sizeListLabel(sizes);
+  if (!sizeBit) return text;
   if (/\d+\s*ml\b/i.test(text) || text.includes(". ") || /notes/i.test(text)) return text;
-  const offered = sellingVariant(product);
-  const sizes = offered?.sizeMl && offered.sizeMl > 0 ? [offered.sizeMl] : [];
-  if (!sizes.length) return text;
   const concentration = product.concentration?.trim();
   const hasConcentration = concentration ? text.toLowerCase().includes(concentration.toLowerCase()) : true;
   const concentrationBit = !hasConcentration && concentration ? ` ${concentration.toLowerCase()}` : "";
-  const sizeBit = sizes.map((size) => `${size} ml`).join(" and ");
   return `${text.replace(/\.\s*$/, "")}${concentrationBit}, ${sizeBit}.`;
 }
 
@@ -117,9 +125,7 @@ export function isDiscounted(product: Product) {
 }
 
 export function discountedVariantOffers(product: Product) {
-  return product.variants
-    .filter((variant) => variant.compareAtMinor != null && variant.compareAtMinor > variant.priceMinor)
-    .sort((a, b) => (a.sizeMl ?? 0) - (b.sizeMl ?? 0) || a.priceMinor - b.priceMinor);
+  return shopVariants(product).filter((variant) => variant.compareAtMinor != null && variant.compareAtMinor > variant.priceMinor);
 }
 
 export function searchHaystack(product: Product) {
@@ -131,7 +137,7 @@ export function searchHaystack(product: Product) {
     ...product.notes.top,
     ...product.notes.heart,
     ...product.notes.base,
-    ...product.variants.map((variant) => variant.sku),
+    ...shopVariants(product).map((variant) => variant.sku),
   ]
     .join(" ")
     .toLowerCase();

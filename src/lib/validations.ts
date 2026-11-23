@@ -32,7 +32,7 @@ export const contactSchema = z.object({
     .string()
     .trim()
     .min(10, "Enter a message of at least 10 characters.")
-    .max(4000, "Message must be 4,000 characters or fewer."),
+    .max(2000, "Keep the message under 2000 characters."),
 });
 
 export const checkoutSchema = z.object({

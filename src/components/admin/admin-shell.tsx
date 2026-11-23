@@ -69,7 +69,7 @@ const GROUPS: { label: string; items: Item[] }[] = [
   },
 ];
 
-function NavLinks({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
+function NavLinks({ pathname, onNavigate, inboxCount }: { pathname: string; onNavigate?: () => void; inboxCount: number }) {
   return (
     <nav aria-label="Shop desk" className="flex flex-1 flex-col gap-6 overflow-y-auto px-3 py-4">
       {GROUPS.map((group) => (
@@ -92,6 +92,7 @@ function NavLinks({ pathname, onNavigate }: { pathname: string; onNavigate?: () 
                   >
                     <Icon className="size-[18px] shrink-0" strokeWidth={1.75} aria-hidden />
                     {item.label}
+                    {item.href === "/admin/inbox" && inboxCount > 0 ? <span className="ml-auto text-xs">{inboxCount}</span> : null}
                   </Link>
                 </li>
               );
@@ -136,7 +137,17 @@ function Person({ name, email }: { name: string; email: string | null }) {
   );
 }
 
-export function AdminShell({ name, email, children }: { name: string; email: string | null; children: React.ReactNode }) {
+export function AdminShell({
+  name,
+  email,
+  inboxCount = 0,
+  children,
+}: {
+  name: string;
+  email: string | null;
+  inboxCount?: number;
+  children: React.ReactNode;
+}) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [seenPath, setSeenPath] = useState(pathname);
@@ -150,7 +161,7 @@ export function AdminShell({ name, email, children }: { name: string; email: str
       <div className="flex min-h-screen">
         <aside className="sticky top-0 hidden h-screen w-72 shrink-0 flex-col bg-espresso text-ivory print:hidden lg:flex">
           <DeskMark />
-          <NavLinks pathname={pathname} />
+          <NavLinks pathname={pathname} inboxCount={inboxCount} />
           <Person name={name} email={email} />
         </aside>
 
@@ -178,7 +189,7 @@ export function AdminShell({ name, email, children }: { name: string; email: str
               </button>
             </div>
             <DeskMark />
-            <NavLinks pathname={pathname} onNavigate={() => setOpen(false)} />
+            <NavLinks pathname={pathname} inboxCount={inboxCount} onNavigate={() => setOpen(false)} />
             <Person name={name} email={email} />
           </div>
         </div>

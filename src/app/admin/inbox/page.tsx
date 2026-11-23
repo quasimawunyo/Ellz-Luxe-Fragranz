@@ -1,14 +1,18 @@
-import { listContactMessages, countNewsletterSubscribers, listRestockWaitlist } from "@/lib/admin/inbox";
+import Link from "next/link";
+import { markMessageSpamAction } from "@/app/actions/inbox";
+import { listContactMessages, countNewsletterSubscribers, listRestockWaitlist, countInboxMessages } from "@/lib/admin/inbox";
 import { getAllProductsForAdmin } from "@/lib/catalog/queries";
 
 export const metadata = { title: "Inbox · Admin" };
 
-export default async function AdminInboxPage() {
-  const [messages, subscribers, waitlist, products] = await Promise.all([
-    listContactMessages(),
+export default async function AdminInboxPage({ searchParams }: { searchParams: Promise<{ view?: string }> }) {
+  const spam = (await searchParams).view === "spam";
+  const [messages, subscribers, waitlist, products, inboxCount] = await Promise.all([
+    listContactMessages(spam),
     countNewsletterSubscribers(),
     listRestockWaitlist(),
     getAllProductsForAdmin(),
+    countInboxMessages(),
   ]);
   const names = Object.fromEntries(products.map((product) => [product.id, product.name]));
 
@@ -16,10 +20,21 @@ export default async function AdminInboxPage() {
     <div>
       <h1 className="text-2xl font-semibold">Inbox</h1>
       <p className="mt-2 text-sm text-taupe">
-        {subscribers} newsletter {subscribers === 1 ? "subscriber" : "subscribers"} · {waitlist.length} restock{" "}
-        {waitlist.length === 1 ? "request" : "requests"}.
+        {inboxCount} new {inboxCount === 1 ? "message" : "messages"} · {subscribers} newsletter {subscribers === 1 ? "subscriber" : "subscribers"} ·{" "}
+        {waitlist.length} restock {waitlist.length === 1 ? "request" : "requests"}.
       </p>
-      {waitlist.length ? (
+      <p className="mt-3 text-sm">
+        {spam ? (
+          <Link href="/admin/inbox" className="underline">
+            Back to inbox
+          </Link>
+        ) : (
+          <Link href="/admin/inbox?view=spam" className="underline">
+            Spam
+          </Link>
+        )}
+      </p>
+      {waitlist.length && !spam ? (
         <section className="mt-8">
           <h2 className="text-lg font-semibold">Restock waitlist</h2>
           <ul className="luxe-panel mt-3 divide-y divide-espresso/10">
@@ -48,10 +63,17 @@ export default async function AdminInboxPage() {
             </div>
             <p className="mt-1 text-sm text-taupe">{note.email}</p>
             <p className="mt-3 whitespace-pre-wrap text-sm leading-7">{note.message}</p>
+            <form action={markMessageSpamAction} className="mt-3">
+              <input type="hidden" name="id" value={note.id} />
+              <input type="hidden" name="spam" value={spam ? "false" : "true"} />
+              <button type="submit" className="min-h-11 text-sm underline">
+                {spam ? "Not spam" : "Mark as spam"}
+              </button>
+            </form>
           </li>
         ))}
         {!messages.length ? (
-          <li className="px-6 py-12 text-sm text-taupe">No contact messages yet.</li>
+          <li className="px-6 py-12 text-sm text-taupe">{spam ? "No spam messages." : "No contact messages yet."}</li>
         ) : null}
       </ul>
     </div>

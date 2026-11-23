@@ -29,7 +29,7 @@ export default async function PackDeskPage() {
             <ul className="mt-3 space-y-1 text-sm">
               {order.items.map((item) => (
                 <li key={`${item.sku}-${item.variantLabel}`}>
-                  {item.productName} · {item.variantLabel} × {item.quantity}
+                  {item.productName}{item.variantLabel ? `, ${item.variantLabel}` : ""} x {item.quantity}
                 </li>
               ))}
             </ul>

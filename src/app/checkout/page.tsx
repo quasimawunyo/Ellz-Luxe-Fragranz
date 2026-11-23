@@ -2,7 +2,8 @@ import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { CheckoutView } from "@/components/checkout/checkout-view";
 import { EmptyState } from "@/components/ui/states";
 import { resolveCart } from "@/lib/cart/store";
-import { getStoreSettings } from "@/lib/catalog/queries";
+import { couponDiscount, findCoupon, readCouponCode } from "@/lib/coupons";
+import { getStoreSettings, getVariantById } from "@/lib/catalog/queries";
 import { getAuthContext } from "@/lib/auth/session";
 import { isMoolreConfigured } from "@/lib/payments/moolre";
 import { isPaystackConfigured } from "@/lib/payments/paystack";
@@ -36,6 +37,32 @@ export default async function CheckoutPage() {
     );
   }
 
+  const savedCode = await readCouponCode();
+  let couponCode: string | null = null;
+  let discountMinor = 0;
+  let couponError: string | null = null;
+  if (savedCode) {
+    const coupon = await findCoupon(savedCode);
+    if (!coupon || "missing" in coupon) {
+      couponError = "Coupons are not ready yet.";
+    } else {
+      const lines = [];
+      for (const line of cart.lines) {
+        const match = await getVariantById(line.variantId);
+        lines.push({
+          lineMinor: line.lineMinor,
+          onSale: Boolean(match && match.variant.compareAtMinor && match.variant.compareAtMinor > match.variant.priceMinor),
+        });
+      }
+      const quote = couponDiscount(coupon, lines);
+      if ("error" in quote) couponError = quote.error;
+      else {
+        couponCode = quote.code;
+        discountMinor = quote.discountMinor;
+      }
+    }
+  }
+
   const hosted = isMoolreConfigured() || isPaystackConfigured();
   const payCopy = hosted
     ? "No account needed. Place the order to pay by mobile money or card. Pickup is free. Delivery is quoted on WhatsApp from your location. The order is marked paid only after payment is confirmed."
@@ -60,6 +87,9 @@ export default async function CheckoutPage() {
         currencyCode={cart.currencyCode}
         deliveryMethods={settings.deliveryMethods}
         payLabel={hosted ? "Place order and pay" : "Place order"}
+        couponCode={couponCode}
+        discountMinor={discountMinor}
+        couponError={couponError}
       />
     </div>
   );

@@ -8,17 +8,29 @@ import { contactSchema, newsletterSchema } from "@/lib/validations";
 import { rateLimit } from "@/lib/rate-limit";
 import { isSupabaseAdminConfigured } from "@/lib/env";
 import { createServiceClient } from "@/lib/supabase/admin";
+import { guardForm } from "@/lib/spam";
 
 function clientKey(prefix: string, extra: string) {
   return `${prefix}:${extra}`;
 }
 
+function hourlyLimit(prefix: string, ip: string, email: string) {
+  const address = email.trim().toLowerCase();
+  const windowMs = 60 * 60 * 1000;
+  if (!rateLimit(clientKey(`${prefix}:ip`, ip), 3, windowMs).ok) return false;
+  if (!rateLimit(clientKey(`${prefix}:email`, address), 3, windowMs).ok) return false;
+  return true;
+}
+
 export async function subscribeNewsletter(_prev: FormState | null, formData: FormData): Promise<FormState> {
+  const guard = guardForm(formData);
+  if ("drop" in guard) return { ok: true as const, message: "Thank you. You are on the list." };
+  if ("error" in guard) return { error: guard.error };
   const parsed = newsletterSchema.safeParse({ email: formData.get("email") });
   if (!parsed.success) return validationState(parsed.error);
   const hdrs = await headers();
-  const ip = hdrs.get("x-forwarded-for") ?? "anon";
-  if (!rateLimit(clientKey("news", ip), 5, 60_000).ok) {
+  const ip = hdrs.get("x-forwarded-for")?.split(",")[0]?.trim() || "anon";
+  if (!hourlyLimit("news", ip, parsed.data.email)) {
     return { error: "Please wait before submitting again." };
   }
   if (isSupabaseAdminConfigured()) {
@@ -34,16 +46,22 @@ export async function subscribeNewsletter(_prev: FormState | null, formData: For
 }
 
 export async function submitContact(_prev: FormState | null, formData: FormData): Promise<FormState> {
+  const message = String(formData.get("message") ?? "");
+  const guard = guardForm(formData, message);
+  if ("drop" in guard) {
+    return { ok: true as const, message: "Message received. We will reply to the address you provided." };
+  }
+  if ("error" in guard) return { error: guard.error };
   const parsed = contactSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
-    message: formData.get("message"),
+    message,
   });
   if (!parsed.success) return validationState(parsed.error);
   const hdrs = await headers();
-  const ip = hdrs.get("x-forwarded-for") ?? "anon";
-  if (!rateLimit(clientKey("contact", ip), 4, 60_000).ok) {
-    return { error: "Please wait before submitting again." };
+  const ip = hdrs.get("x-forwarded-for")?.split(",")[0]?.trim() || "anon";
+  if (!hourlyLimit("contact", ip, parsed.data.email)) {
+    return { error: "Please wait before sending another message." };
   }
   if (isSupabaseAdminConfigured()) {
     const admin = createServiceClient();

@@ -21,6 +21,8 @@ export function orderToAnnexNotice(order: StoreOrder): AnnexOrderNotice {
     currencyCode: order.currencyCode,
     totalMinor: order.totalMinor,
     shippingMinor: order.shippingMinor,
+    discountMinor: order.discountMinor,
+    couponCode: order.couponCode,
     items: order.items.map((item) => ({
       productName: item.productName,
       variantLabel: item.variantLabel,

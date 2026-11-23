@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/input";
 import { Price } from "@/components/ui/price";
 import { GHANA_REGIONS } from "@/lib/ghana";
-import { deliveryIsQuoted, publicVariantLabel } from "@/lib/catalog/helpers";
+import { CouponBox } from "@/components/checkout/coupon-box";
+import { bottleSizeLabel, deliveryIsQuoted } from "@/lib/catalog/helpers";
 import { orderGrandTotal } from "@/lib/money";
 import type { DeliveryMethod } from "@/lib/catalog/types";
 
@@ -27,6 +28,9 @@ export function CheckoutView({
   currencyCode,
   deliveryMethods,
   payLabel,
+  couponCode,
+  discountMinor,
+  couponError,
 }: {
   fullName: string;
   email: string;
@@ -35,13 +39,17 @@ export function CheckoutView({
   currencyCode: string;
   deliveryMethods: DeliveryMethod[];
   payLabel: string;
+  couponCode: string | null;
+  discountMinor: number;
+  couponError: string | null;
 }) {
   const [region, setRegion] = useState<(typeof GHANA_REGIONS)[number]>("Greater Accra");
   const [deliveryMethodId, setDeliveryMethodId] = useState(deliveryMethods[0]?.id ?? "accra");
   const selectedMethod = deliveryMethods.find((method) => method.id === deliveryMethodId);
   const shipping = selectedMethod?.amountMinor ?? 0;
   const quoted = selectedMethod ? deliveryIsQuoted(selectedMethod) : false;
-  const totalMinor = orderGrandTotal(subtotalMinor, shipping);
+  const goodsAfterDiscount = Math.max(0, subtotalMinor - discountMinor);
+  const totalMinor = orderGrandTotal(goodsAfterDiscount, shipping);
 
   return (
     <div className="mt-10 grid gap-12 lg:grid-cols-[1fr_20rem]">
@@ -135,22 +143,28 @@ export function CheckoutView({
         </Button>
       </ActionForm>
       <aside className="luxe-panel h-fit p-6">
+        <CouponBox code={couponCode} discountMinor={discountMinor} currencyCode={currencyCode} error={couponError} />
         <h2 className="text-lg font-semibold">Summary</h2>
         <ul className="mt-4 space-y-3 text-sm">
           {lines.map((line) => (
             <li key={line.variantId} className="flex justify-between gap-3">
               <span>
-                {line.productName}
-                {publicVariantLabel(line.label) ? ` · ${publicVariantLabel(line.label)}` : ""} × {line.quantity}
+                {`${line.productName}${bottleSizeLabel({ label: line.label }) ? `, ${bottleSizeLabel({ label: line.label })}` : ""} x ${line.quantity}`}
               </span>
               <Price amountMinor={line.lineMinor} currencyCode={currencyCode} />
             </li>
           ))}
         </ul>
         <p className="mt-6 flex justify-between border-t border-espresso/10 pt-4 text-sm">
-          <span>Subtotal</span>
+          <span>Goods</span>
           <Price amountMinor={subtotalMinor} currencyCode={currencyCode} />
         </p>
+        {discountMinor > 0 ? (
+          <p className="mt-2 flex justify-between text-sm">
+            <span>Goods after coupon</span>
+            <Price amountMinor={goodsAfterDiscount} currencyCode={currencyCode} />
+          </p>
+        ) : null}
         <p className="mt-2 flex justify-between text-sm">
           <span>Delivery</span>
           <span>

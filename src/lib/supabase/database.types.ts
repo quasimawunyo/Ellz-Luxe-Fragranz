@@ -83,6 +83,7 @@ export type Database = {
           compare_at_minor: number | null;
           cost_price_minor: number | null;
           stock: number;
+          visible: boolean;
           created_at: string;
         };
         Insert: Omit<Database["public"]["Tables"]["product_variants"]["Row"], "created_at"> & {
@@ -155,6 +156,8 @@ export type Database = {
           is_test: boolean;
           awaiting_review: boolean;
           sales_channel: "online" | "in_store";
+          coupon_code: string | null;
+          discount_minor: number;
           created_at: string;
         };
         Insert: Omit<Database["public"]["Tables"]["orders"]["Row"], "created_at"> & {
@@ -216,11 +219,46 @@ export type Database = {
           name: string;
           email: string;
           message: string;
+          is_spam: boolean;
           created_at: string;
         };
-        Insert: Omit<Database["public"]["Tables"]["contact_messages"]["Row"], "id" | "created_at"> & {
+        Insert: Omit<Database["public"]["Tables"]["contact_messages"]["Row"], "id" | "created_at" | "is_spam"> & {
           id?: string;
+          is_spam?: boolean;
         };
+        Update: { is_spam?: boolean };
+      };
+      coupons: {
+        Row: {
+          id: string;
+          code: string;
+          discount_type: "percent" | "fixed";
+          value_minor: number;
+          starts_at: string | null;
+          expires_at: string | null;
+          max_uses: number | null;
+          uses_count: number;
+          minimum_order_minor: number | null;
+          active: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          code: string;
+          discount_type: "percent" | "fixed";
+          value_minor: number;
+          starts_at?: string | null;
+          expires_at?: string | null;
+          max_uses?: number | null;
+          uses_count?: number;
+          minimum_order_minor?: number | null;
+          active?: boolean;
+        };
+        Update: Partial<Database["public"]["Tables"]["coupons"]["Insert"]>;
+      };
+      coupon_redemptions: {
+        Row: { id: string; coupon_id: string; order_id: string; created_at: string };
+        Insert: { id?: string; coupon_id: string; order_id: string };
         Update: never;
       };
       store_settings: {
@@ -257,6 +295,10 @@ export type Database = {
           p_items: Json;
         };
         Returns: string;
+      };
+      redeem_coupon: {
+        Args: { p_order_id: string };
+        Returns: boolean;
       };
     };
     Enums: Record<string, never>;

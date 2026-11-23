@@ -1,6 +1,7 @@
 import { submitContact } from "@/app/actions/commerce";
 import { ActionForm, FieldError } from "@/components/forms/form-status";
 import { StoreContact, StoreSocials, WhatsAppCta } from "@/components/layout/store-details";
+import { FormGuard } from "@/components/forms/form-guard";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/input";
 import { getStoreSettings } from "@/lib/catalog/queries";
@@ -27,7 +28,8 @@ export default async function ContactPage() {
         <h2 className="mt-10 text-lg font-semibold">Social</h2>
         <StoreSocials settings={settings} />
       </div>
-      <ActionForm action={submitContact} className="space-y-4">
+      <ActionForm action={submitContact} className="relative space-y-4">
+        <FormGuard />
         <div>
           <Label htmlFor="name">Name</Label>
           <Input id="name" name="name" required autoComplete="name" />

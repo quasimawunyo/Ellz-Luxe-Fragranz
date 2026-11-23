@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useState } from "react";
 import { joinWaitlistAction } from "@/app/actions/waitlist";
 import { useSavedLists } from "@/lib/saved/use-saved-lists";
+import { FormGuard } from "@/components/forms/form-guard";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -29,7 +30,8 @@ export function WaitlistButton({ productId, wide }: { productId: string; wide?: 
   }
 
   return (
-    <form action={formAction} className="space-y-2">
+    <form action={formAction} className="relative space-y-2">
+      <FormGuard />
       <input type="hidden" name="productId" value={productId} />
       <label className="sr-only" htmlFor={`wait-${productId}`}>
         Email for restock notice

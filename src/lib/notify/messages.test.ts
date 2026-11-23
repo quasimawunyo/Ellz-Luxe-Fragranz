@@ -19,14 +19,13 @@ const order = {
 };
 
 describe("customerOrderEmailText", () => {
-  it("hides size-only labels and does not mark the order paid", () => {
+  it("names the size and does not mark the order paid", () => {
     const text = customerOrderEmailText(order, {
       siteUrl: "https://ellz-luxe-fragranz.vercel.app",
       contactPhone: "0593634512",
     });
     expect(text).toContain("ELF-TEST");
-    expect(text).toContain("Citrus Veil × 1");
-    expect(text).not.toContain("50 ml");
+    expect(text).toContain("Citrus Veil, 50 ml x 1");
     expect(text).toContain("not marked paid");
     expect(text).toContain("/track");
     expect(text.toLowerCase()).not.toContain("moolre");
